@@ -1,0 +1,12 @@
+{
+  "name": "super-mario",
+  "version": "1.0.0",
+  "description": "Super Mario Game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "serve ./public"
+  },
+  "author": "Rumen Neshev",
+  "license": "MIT"
+}
