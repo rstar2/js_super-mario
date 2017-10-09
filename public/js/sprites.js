@@ -1,6 +1,6 @@
-import CONFIG from './config.js'
-import SpriteSheet from './spritesheet.js'
-import { loadImage, loadData } from './utils.js'
+import CONFIG from './config.js';
+import SpriteSheet from './spritesheet.js';
+import { loadImage, loadData } from './utils.js';
 
 export function loadBackgroudSprites() {
     return Promise.all([loadImage(CONFIG.TILES_NAME_IMAGE), loadData(CONFIG.TILES_NAME_DATA)]).

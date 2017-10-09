@@ -1,4 +1,4 @@
-import CONFIG from './config.js'
+import CONFIG from './config.js';
 
 export function createBackgroundLayer(sprites, level) {
     const image = document.createElement('canvas');
@@ -11,8 +11,8 @@ export function createBackgroundLayer(sprites, level) {
     }
 }
 
-export function createTileLayer(sprites, tile, pos) {
+export function createEntityLayer(entity) {
     return function (context) {
-        sprites.draw(tile, context, pos.x, pos.y);
+        entity.draw(context);
     }
 }
