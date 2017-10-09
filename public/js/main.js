@@ -1,6 +1,8 @@
 import CONFIG from './config.js';
 import SpriteSheet from './SpriteSheet.js';
 import LayerManager from './LayerManager.js';
+import Timer from './Timer.js';
+import KeyManager, { KEY_SPACE } from './KeyboardManager.js';
 import { loadLevel } from './utils.js';
 import { loadBackgroudSprites } from './sprites.js';
 import { createBackgroundLayer, createEntityLayer } from './layers.js';
@@ -11,29 +13,39 @@ const context = canvas.getContext('2d');
 
 Promise.all([loadBackgroudSprites(), loadLevel('1_1'), createEntityMario()]).
     then(([backgroundSprites, level, mario]) => {
-
-        const gravity = 30;
-        mario.position.set(64, 180);
-        mario.velocity.set(200, -600);
+        const gravity = 2000;
+        mario.pos.set(64, 180);
+        // mario.vel.set(200, -600);
 
         const layers = new LayerManager();
-        layers.add(createBackgroundLayer(backgroundSprites, level));
+        // layers.add(createBackgroundLayer(backgroundSprites, level));
         layers.add(createEntityLayer(mario));
 
-        let deltaTime = 0;
+
+        const keyManager = new KeyManager();
+        keyManager.register(KEY_SPACE, keyState => {
+            if (keyState) {
+                mario.jump.start();
+            } else {
+                mario.jump.cancel();
+            }
+        });
+        keyManager.start(window);
+
+
+        const timer = new Timer();
         let lastTime = 0;
+        let accumulatedTime = 0;
 
-        function update(time) {
-            deltaTime = (time - lastTime) / 1000;
-            layers.draw(context);
+        timer.update = (rate) => {
+            mario.update(rate);
 
-            mario.update(deltaTime);
+
             // add some gravity
-            mario.velocity.update(0, gravity);
+            mario.vel.updateBy(0, gravity * rate);
 
-            requestAnimationFrame(update);
+            layers.draw(context);
+        };
 
-            lastTime = time;
-        }
-        update(0);
+        timer.start();
     });

@@ -1,5 +1,5 @@
 import CONFIG from './config.js';
-import SpriteSheet from './spritesheet.js';
+import SpriteSheet from './SpriteSheet.js';
 import { loadImage, loadData } from './utils.js';
 
 export function loadBackgroudSprites() {

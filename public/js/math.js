@@ -16,7 +16,7 @@ export class Vector {
         this._y = y;
     }
 
-    update(x, y) {
+    updateBy(x, y) {
         this._x += x;
         this._y += y;
     }
