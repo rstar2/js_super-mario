@@ -8,18 +8,24 @@ export default class SpriteSheet {
         this._tiles = new Map();
     }
 
-    registerTile(tile, col, row) {
+    register(tile, x, y, width, height) {
         const tileImage = document.createElement('canvas');
-        tileImage.width = this._tileWidth;
-        tileImage.height = this._tileHeight;
+        width = width || this._tileWidth;
+        height = height || this._tileHeight;
+        tileImage.width = width;
+        tileImage.height = height;
 
         tileImage.getContext('2d').drawImage(this._image,
-            col * this._tileWidth, row * this._tileHeight,
-            this._tileWidth, this._tileHeight,
+            x, y,
+            width, height,
             0, 0,
-            this._tileWidth, this._tileHeight);
+            width, height);
 
         this._tiles.set(tile, tileImage);
+    }
+
+    registerTile(tile, col, row) {
+        this.register(tile, col * this._tileWidth, row * this._tileHeight);
     }
 
     registerTiles(tiles) {
@@ -52,4 +58,9 @@ export default class SpriteSheet {
         }
     }
 
+    drawLevel(level, context) {
+        this.drawBackgrounds(level.backgrounds, context)
+    }
+
 }
+
