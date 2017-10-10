@@ -6,7 +6,7 @@ export default class Timer {
     }
 
     _updadeProxy(time) {
-        this._accumulatedTime = (time - this._lastTime) / 1000;
+        this._accumulatedTime += (time - this._lastTime) / 1000;
 
         while (this._accumulatedTime > this._rate) {
             this._accumulatedTime -= this._rate;
@@ -20,6 +20,7 @@ export default class Timer {
 
     update(rate) {
         // users should overwrite it
+        throw new Error("Users should attach a real update method");
     }
 
     start() {

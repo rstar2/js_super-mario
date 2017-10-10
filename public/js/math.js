@@ -3,6 +3,11 @@ export class Vector {
         this.set(x, y);
     }
 
+    set(x, y) {
+        this._x = x;
+        this._y = y;
+    }
+
     get x() {
         return this._x;
     }
@@ -11,13 +16,13 @@ export class Vector {
         return this._y;
     }
 
-    set(x, y) {
+    set x(x) {
         this._x = x;
-        this._y = y;
     }
 
-    updateBy(x, y) {
-        this._x += x;
-        this._y += y;
+    set y(y) {
+        this._y = y;
     }
+    
+
 }

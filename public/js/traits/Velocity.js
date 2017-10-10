@@ -6,6 +6,7 @@ export default class VelocityTrait extends Trait {
     }
 
     update(entity, rate) {
-        entity.pos.updateBy(entity.vel.x * rate, entity.vel.y * rate);
+        entity.pos.x += entity.vel.x * rate;
+        entity.pos.y += entity.vel.y * rate;
     }
 }

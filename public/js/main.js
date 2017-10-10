@@ -15,7 +15,8 @@ Promise.all([loadBackgroudSprites(), loadLevel('1_1'), createEntityMario()]).
     then(([backgroundSprites, level, mario]) => {
         const gravity = 2000;
         mario.pos.set(64, 180);
-        // mario.vel.set(200, -600);
+        mario.vel.set(200, -600);
+    
 
         const layers = new LayerManager();
         // layers.add(createBackgroundLayer(backgroundSprites, level));
@@ -24,6 +25,7 @@ Promise.all([loadBackgroudSprites(), loadLevel('1_1'), createEntityMario()]).
 
         const keyManager = new KeyManager();
         keyManager.register(KEY_SPACE, keyState => {
+            console.log(keyState);
             if (keyState) {
                 mario.jump.start();
             } else {
@@ -34,17 +36,13 @@ Promise.all([loadBackgroudSprites(), loadLevel('1_1'), createEntityMario()]).
 
 
         const timer = new Timer();
-        let lastTime = 0;
-        let accumulatedTime = 0;
-
         timer.update = (rate) => {
             mario.update(rate);
 
+            layers.draw(context);
 
             // add some gravity
-            mario.vel.updateBy(0, gravity * rate);
-
-            layers.draw(context);
+            mario.vel.y += gravity * rate;
         };
 
         timer.start();

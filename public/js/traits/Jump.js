@@ -10,17 +10,20 @@ export default class JumpTrait extends Trait {
     }
 
     start() {
+        console.log('jump start');
         this._engagedTime = this._duration;
     }
 
     cancel() {
+        console.log('jump cancel');
         this._engagedTime = 0;
     }
 
     update(entity, rate) {
         if (this._engagedTime > 0) {
-            // update ust the 'y' coordinate
-            entity.pos.updateBy(0, this._velocity);
+            console.log('jumping');
+            // update just the 'y' coordinate
+            entity.vel.y = -this._velocity;
             this._engagedTime -= rate;
         }
         
