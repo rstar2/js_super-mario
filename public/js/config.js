@@ -8,5 +8,8 @@ export default {
     URL_PREFIX_LEVEL: '/data/levels/',
     TILES_NAME_IMAGE: 'tiles.png',
     TILES_NAME_DATA: 'tiles.json',
-    CHARACTERS_NAME_IMAGE: 'characters.gif'
+    CHARACTERS_NAME_IMAGE: 'characters.gif',
+
+    RATE: 1 / 60,
+    GRAVITY: 2000
 }

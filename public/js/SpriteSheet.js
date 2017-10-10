@@ -28,12 +28,6 @@ export default class SpriteSheet {
         this.register(tile, col * this._tileWidth, row * this._tileHeight);
     }
 
-    registerTiles(tiles) {
-        for (let tile in tiles) {
-            this.registerTile(tile, tiles[tile][0], tiles[tile][1]);
-        }
-    }
-
     draw(tile, context, x, y) {
         const tileImage = this._tiles.get(tile);
         if (tileImage) {
@@ -45,8 +39,7 @@ export default class SpriteSheet {
         this.draw(tile, context, col * this._tileWidth, row * this._tileHeight);
     }
 
-    drawLevel(level, context) {
-        const backgrounds = level.backgrounds;
+    drawBackgrounds(backgrounds, context) {
         for (let tile in backgrounds) {
             const background = backgrounds[tile];
             background.ranges.forEach(([x1, x2, y1, y2]) => {

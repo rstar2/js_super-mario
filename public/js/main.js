@@ -2,47 +2,27 @@ import CONFIG from './config.js';
 import SpriteSheet from './SpriteSheet.js';
 import LayerManager from './LayerManager.js';
 import Timer from './Timer.js';
-import KeyManager, { KEY_SPACE } from './KeyboardManager.js';
-import { loadLevel } from './utils.js';
-import { loadBackgroudSprites } from './sprites.js';
-import { createBackgroundLayer, createEntityLayer } from './layers.js';
-import { createEntityMario } from './entities.js';
+import KeyManager from './KeyboardManager.js';
+import { loadLevel } from './Level.js';
+
 
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
 
-Promise.all([loadBackgroudSprites(), loadLevel('1_1'), createEntityMario()]).
-    then(([backgroundSprites, level, mario]) => {
-        const gravity = 2000;
-        mario.pos.set(64, 180);
-        mario.vel.set(200, -600);
-    
-
-        const layers = new LayerManager();
-        // layers.add(createBackgroundLayer(backgroundSprites, level));
-        layers.add(createEntityLayer(mario));
-
-
+Promise.all([loadLevel('1_1')]).
+    then(([level]) => {
         const keyManager = new KeyManager();
-        keyManager.register(KEY_SPACE, keyState => {
-            console.log(keyState);
-            if (keyState) {
-                mario.jump.start();
-            } else {
-                mario.jump.cancel();
-            }
-        });
         keyManager.start(window);
 
+        level.init(keyManager);
 
-        const timer = new Timer();
-        timer.update = (rate) => {
-            mario.update(rate);
+        const timer = new Timer(CONFIG.RATE);
+        timer.update = function (rate) {
+            level.update(rate);
 
-            layers.draw(context);
+            level.draw(context);
 
-            // add some gravity
-            mario.vel.y += gravity * rate;
+            level.updateAfter(rate);
         };
 
         timer.start();
