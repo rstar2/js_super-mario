@@ -1,8 +1,7 @@
 export default {
     CANVAS_WIDTH: 400,
     CANVAS_HEIGH: 224,
-    TILE_WIDTH: 16,
-    TILE_HEIGHT: 16,
+    TILE_SIZE: 16,
     URL_PREFIX_IMAGE: '/img/',
     URL_PREFIX_DATA: '/data/',
     URL_PREFIX_LEVEL: '/data/levels/',

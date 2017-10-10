@@ -23,6 +23,33 @@ export class Vector {
     set y(y) {
         this._y = y;
     }
-    
+
+
+}
+
+export class Matrix {
+    constructor() {
+        this._grid = [];
+    }
+
+    set(x, y, value) {
+        if (!this._grid[x]) {
+            this._grid[x] = [];
+        }
+        this._grid[x][y] = value;
+    }
+
+    get(x, y) {
+        const col = this._grid[x];
+        return col ? col[y] : undefined;
+    }
+
+    forEach(callback) {
+        this._grid.forEach((column, x) => {
+            column.forEach((value, y) => {
+                callback(x, y, value);
+            });
+        })
+    }
 
 }

@@ -1,10 +1,14 @@
 import CONFIG from './config.js';
 
-export function createBackgroundLayer(sprites, backgrounds) {
+export function createBackgroundLayer(level, sprites) {
     const image = document.createElement('canvas');
     image.width = CONFIG.CANVAS_WIDTH;
     image.height = CONFIG.CANVAS_HEIGH;
-    sprites.drawBackgrounds(backgrounds, image.getContext('2d'));
+    const imageContext = image.getContext('2d');
+
+    level.forEachTile((x, y, tile) => {
+        sprites.drawTile(tile, imageContext, x, y);
+    });
 
     return function (context) {
         context.drawImage(image, 0, 0);
