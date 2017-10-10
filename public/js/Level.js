@@ -1,22 +1,24 @@
 import CONFIG from './config.js';
-import LayerManager from './LayerManager.js'
-import Entity from './Entity.js'
-import TileCollider from './TileCollider.js'
+import LayerManager from './LayerManager.js';
+import Entity from './Entity.js';
+import TileCollider from './TileCollider.js';
 import { KEY_SPACE } from './KeyboardManager.js';
 import { Matrix } from './math.js';
-import { loadLevel as _loadLevel } from './utils.js'
+import { loadLevel as _loadLevel } from './utils.js';
 import { loadBackgroudSprites, loadCharacterSprites } from './sprites.js';
 import { createEntityMario } from './entities.js';
-import { createBackgroundLayer, createEntitiesLayer, createEntityLayer } from './layers.js';
+import {
+    createBackgroundLayer, createEntitiesLayer, createEntityLayer,
+    createTileDebugLayer
+} from './layers.js';
 
 
 export default class Level {
-    constructor() {
+    constructor(tileSize) {
         this._layerManager = new LayerManager();
         this._entities = new Set();
         this._tiles = new Matrix();
-
-        this._tileCollider = new TileCollider(this._tiles);
+        this._tileCollider = new TileCollider(this._tiles, tileSize);
     }
 
     init(keyManager) {
@@ -37,7 +39,11 @@ export default class Level {
     forEachTile(callback) {
         this._tiles.forEach((x, y, tile) => {
             callback(x, y, tile.name);
-        })
+        });
+    }
+
+    forEachEntity(callback) {
+        this._entities.forEach(entity => callback(entity));
     }
 
     addLayer(layer) {
@@ -65,6 +71,10 @@ export default class Level {
     draw(context) {
         this._layerManager.draw(context);
     }
+
+    getTileCollider() {
+        return this._tileCollider;
+    }
 }
 
 function createTiles(backgrounds, level) {
@@ -84,7 +94,7 @@ function createTiles(backgrounds, level) {
 export function loadLevel(levelName) {
     return Promise.all([_loadLevel(levelName), loadBackgroudSprites(), createEntityMario()]).
         then(([levelSpec, backgroundSprites, mario]) => {
-            const level = new Level();
+            const level = new Level(CONFIG.TILE_SIZE);
 
             // attach tiles to the level's grid
             createTiles(levelSpec.backgrounds, level);
@@ -95,7 +105,6 @@ export function loadLevel(levelName) {
             // todo - fix
             level.addEntity(mario);
             mario.pos.set(64, 180);
-            mario.vel.set(200, -600);
             mario.updateAfter = function (rate) {
                 // add some gravity to the entity
                 this.vel.y += CONFIG.GRAVITY * rate;
@@ -114,6 +123,8 @@ export function loadLevel(levelName) {
             });
 
             level.addLayer(createEntityLayer(mario));
+
+            level.addLayer(createTileDebugLayer(level));
 
             return level;
         });

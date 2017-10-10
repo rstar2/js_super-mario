@@ -4,6 +4,7 @@ export default class Entity {
     constructor(x, y) {
         this._pos = new Vector(0, 0);
         this._vel = new Vector(0, 0);
+        this._size = new Vector(0, 0);
 
         this._traits = [];
     }
@@ -14,6 +15,10 @@ export default class Entity {
 
     get vel() {
         return this._vel;
+    }
+
+    get size() {
+        return this._size;
     }
 
     registerTrait(trait) {
