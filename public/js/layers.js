@@ -31,7 +31,7 @@ export function createEntitiesLayer(entities) {
     };
 }
 
-export function createTileDebugLayer(level) {
+export function createTileCollisionDebugLayer(level) {
     const tileResolver = level.getTileCollider().getTileResolver();
     const tileSize = tileResolver.getTileSize();
 

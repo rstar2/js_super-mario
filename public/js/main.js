@@ -1,25 +1,46 @@
 import CONFIG from './config.js';
 import Timer from './Timer.js';
-import KeyManager from './KeyboardManager.js';
+import KeyboardManager from './KeyboardManager.js';
 import { loadLevel } from './Level.js';
+import { createMario, setupKeyboardMario } from './entities.js';
 
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
+const keyboardManager = new KeyboardManager();
 
-Promise.all([loadLevel('1_1')]).
-    then(([level]) => {
-        const keyManager = new KeyManager();
-        keyManager.start(window);
+function setupDebugMario(mario) {
+    if (CONFIG.DEBUG_MARIO) {
+        // debug utility
+        const canvas = document.getElementById('screen');
+        ['mousedown', 'mousemove'].forEach(eventName => {
+            canvas.addEventListener(eventName, event => {
+                if (event.buttons === 1) {
+                    mario.vel.set(0, 0);
+                    mario.pos.set(event.offsetX, event.offsetY);
+                }
+            });
+        });
+    }
+}
 
-        level.init(keyManager);
+Promise.all([createMario(), loadLevel('1_1')]).
+    then(([mario, level]) => {
+        // add Mario to the level
+        level.addMario(mario);
+
+        // setup the keyboard actions for Mario
+        // adn start the keyboard manager
+        setupKeyboardMario(mario, keyboardManager);
+        keyboardManager.start(window);
+
+        // add debugging
+        setupDebugMario(mario);
 
         const timer = new Timer(CONFIG.RATE);
         timer.update = function (rate) {
             level.update(rate);
 
             level.draw(context);
-
-            level.updateAfter(rate);
         };
 
         timer.start();

@@ -1,14 +1,12 @@
 import CONFIG from './config.js';
 import LayerManager from './LayerManager.js';
 import TileCollider from './TileCollider.js';
-import { KEY_SPACE, KEY_LEFT, KEY_RIGHT } from './KeyboardManager.js';
 import { Matrix } from './math.js';
 import { loadLevel as _loadLevel } from './utils.js';
 import { loadBackgroudSprites } from './sprites.js';
-import { createEntityMario } from './entities.js';
 import {
-    createBackgroundLayer, createEntitiesLayer, createEntityLayer,
-    createTileDebugLayer
+    createBackgroundLayer, createEntitiesLayer,
+    createEntityLayer, createTileCollisionDebugLayer
 } from './layers.js';
 
 
@@ -18,31 +16,10 @@ export default class Level {
         this._entities = new Set();
         this._tiles = new Matrix();
         this._tileCollider = new TileCollider(this._tiles, tileSize);
-    }
 
-    init(keyManager) {
-        // todo - fix
-        keyManager.register(KEY_SPACE, keyState => {
-            if (keyState) {
-                this._mario.jump.start();
-            } else {
-                this._mario.jump.cancel();
-            }
-        });
-        keyManager.register(KEY_LEFT, keyState => {
-            if (keyState) {
-                this._mario.walk.left();
-            } else {
-                this._mario.walk.cancel();
-            }
-        });
-        keyManager.register(KEY_RIGHT, keyState => {
-            if (keyState) {
-                this._mario.walk.right();
-            } else {
-                this._mario.walk.cancel();
-            }
-        });
+        // the gravity should be on the level - thus applied to all entities
+        // make this a level property - maybe each level can have different gravity
+        this._gavity = 2000;
     }
 
     setTile(x, y, tile) {
@@ -67,17 +44,29 @@ export default class Level {
         this._entities.add(entity);
     }
 
+    // utility method to do all all 'Mario' related stuff in one place
+    addMario(mario) {
+        // TODO - make this a level property
+        mario.pos.set(64, 64);
+
+        this.addEntity(mario);
+        this.addLayer(createEntityLayer(mario));
+    }
+
     update(rate) {
         this._entities.forEach(entity => {
             entity.update(rate);
 
-            this._tileCollider.test(entity);
-        });
-    }
+            // NOTE !!! : the x an y positions SHOULD be updated separately
+            // before checking for collisions 
+            entity.pos.x += entity.vel.x * rate;
+            this._tileCollider.checkX(entity);
+            entity.pos.y += entity.vel.y * rate;
+            this._tileCollider.checkY(entity);
 
-    updateAfter(rate) {
-        this._entities.forEach(entity => {
-            entity.updateAfter(rate);
+            // add some gravity to all entities
+            //  Note - it should be added finally after the tile-collision checks
+            entity.vel.y += this._gavity * rate;
         });
     }
 
@@ -103,10 +92,9 @@ function createTiles(backgrounds, level) {
     });
 }
 
-
 export function loadLevel(levelName) {
-    return Promise.all([_loadLevel(levelName), loadBackgroudSprites(), createEntityMario()]).
-        then(([levelSpec, backgroundSprites, mario]) => {
+    return Promise.all([_loadLevel(levelName), loadBackgroudSprites()]).
+        then(([levelSpec, backgroundSprites]) => {
             const level = new Level(CONFIG.TILE_SIZE);
 
             // attach tiles to the level's grid
@@ -115,29 +103,9 @@ export function loadLevel(levelName) {
             level.addLayer(createBackgroundLayer(level, backgroundSprites));
             level.addLayer(createEntitiesLayer(levelSpec.entities));
 
-            // todo - fix
-            level.addEntity(mario);
-            mario.pos.set(64, 180);
-            mario.updateAfter = function (rate) {
-                // add some gravity to the entity
-                this.vel.y += CONFIG.GRAVITY * rate;
-            };
-            level._mario = mario;
-
-            // debug utility
-            const canvas = document.getElementById('screen');
-            ['mousedown', 'mousemove'].forEach(eventName => {
-                canvas.addEventListener(eventName, event => {
-                    if (event.buttons === 1) {
-                        mario.vel.set(0, 0);
-                        mario.pos.set(event.offsetX, event.offsetY);
-                    }
-                });
-            });
-
-            level.addLayer(createEntityLayer(mario));
-
-            level.addLayer(createTileDebugLayer(level));
+            if (CONFIG.DEBUG_TILE_COLLISION) {
+                level.addLayer(createTileCollisionDebugLayer(level));
+            }
 
             return level;
         });

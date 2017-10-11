@@ -1,10 +1,10 @@
+import { KEY_SPACE, KEY_LEFT, KEY_RIGHT } from './KeyboardManager.js';
 import Entity from './Entity.js';
-import Velocity from './traits/Velocity.js';
-import Jump from './traits/Jump.js';
 import Walk from './traits/Walk.js';
+import Jump from './traits/Jump.js';
 import { loadCharacterSprites } from './sprites.js';
 
-export function createEntityMario() {
+export function createMario() {
     return loadCharacterSprites().
         then(sprites => {
             const mario = new Entity();
@@ -16,9 +16,35 @@ export function createEntityMario() {
 
             mario.registerTrait(new Walk());
             mario.registerTrait(new Jump());
-            mario.registerTrait(new Velocity());
-            
+
+            // these will be applied on the whole Level
+            // mario.registerTrait(new Gravity());
+            // mario.registerTrait(new Velocity());
 
             return mario;
         });
+}
+
+export function setupKeyboardMario(mario, keyboardManager) {
+    keyboardManager.register(KEY_SPACE, keyState => {
+        if (keyState) {
+            mario.jump.start();
+        } else {
+            mario.jump.cancel();
+        }
+    });
+    keyboardManager.register(KEY_LEFT, keyState => {
+        if (keyState) {
+            mario.walk.left();
+        } else {
+            mario.walk.cancel();
+        }
+    });
+    keyboardManager.register(KEY_RIGHT, keyState => {
+        if (keyState) {
+            mario.walk.right();
+        } else {
+            mario.walk.cancel();
+        }
+    });
 }

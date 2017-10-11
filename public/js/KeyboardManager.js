@@ -1,16 +1,27 @@
+import * as logger from './logger.js';
+
 export const KEY_STATE_RELEASED = 0;
 export const KEY_STATE_PRESSED = 1;
 
-export default class KeyboardManager {
+export class KeyboardManager {
     constructor() {
         // keyCode to registered callback
         this._keyMap = new Map();
 
-        // down - up state fo a key
+        // down-up state for a key
         this._keyState = new Map();
+
+        this._started = false;
     }
 
     start(window) {
+        if (this._started) {
+            logger.logWarn("KeyboardManager is already started");
+            return;
+        }
+
+        logger.logDbg("KeyboardManager is started");
+
         ['keydown', 'keyup'].forEach(eventName => {
             window.addEventListener(eventName, event => {
                 this._handleEvent(event);
@@ -40,7 +51,7 @@ export default class KeyboardManager {
             callback(newState);
             this._keyState.set(key, newState);
         }
-        
+
     }
 
 }
@@ -50,3 +61,5 @@ export const KEY_LEFT = 37;
 export const KEY_UP = 38;
 export const KEY_RIGHT = 39;
 export const KEY_DOWN = 40;
+
+export default KeyboardManager;

@@ -10,5 +10,7 @@ export default {
     CHARACTERS_NAME_IMAGE: 'characters.gif',
 
     RATE: 1 / 60,
-    GRAVITY: 2000
+
+    DEBUG_MARIO: false,
+    DEBUG_TILE_COLLISION: false
 };
