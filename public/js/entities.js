@@ -1,6 +1,7 @@
 import Entity from './Entity.js';
 import Velocity from './traits/Velocity.js';
 import Jump from './traits/Jump.js';
+import Walk from './traits/Walk.js';
 import { loadCharacterSprites } from './sprites.js';
 
 export function createEntityMario() {
@@ -11,8 +12,9 @@ export function createEntityMario() {
 
             mario.draw = function (context) {
                 sprites.draw('idle', context, this.pos.x, this.pos.y);
-            }
+            };
 
+            mario.registerTrait(new Walk());
             mario.registerTrait(new Jump());
             mario.registerTrait(new Velocity());
             

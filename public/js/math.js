@@ -49,7 +49,7 @@ export class Matrix {
             column.forEach((value, y) => {
                 callback(x, y, value);
             });
-        })
+        });
     }
 
 }

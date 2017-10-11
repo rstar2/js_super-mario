@@ -11,4 +11,4 @@ export default {
 
     RATE: 1 / 60,
     GRAVITY: 2000
-}
+};

@@ -1,11 +1,10 @@
 import CONFIG from './config.js';
 import LayerManager from './LayerManager.js';
-import Entity from './Entity.js';
 import TileCollider from './TileCollider.js';
-import { KEY_SPACE } from './KeyboardManager.js';
+import { KEY_SPACE, KEY_LEFT, KEY_RIGHT } from './KeyboardManager.js';
 import { Matrix } from './math.js';
 import { loadLevel as _loadLevel } from './utils.js';
-import { loadBackgroudSprites, loadCharacterSprites } from './sprites.js';
+import { loadBackgroudSprites } from './sprites.js';
 import { createEntityMario } from './entities.js';
 import {
     createBackgroundLayer, createEntitiesLayer, createEntityLayer,
@@ -28,6 +27,20 @@ export default class Level {
                 this._mario.jump.start();
             } else {
                 this._mario.jump.cancel();
+            }
+        });
+        keyManager.register(KEY_LEFT, keyState => {
+            if (keyState) {
+                this._mario.walk.left();
+            } else {
+                this._mario.walk.cancel();
+            }
+        });
+        keyManager.register(KEY_RIGHT, keyState => {
+            if (keyState) {
+                this._mario.walk.right();
+            } else {
+                this._mario.walk.cancel();
             }
         });
     }
@@ -119,7 +132,7 @@ export function loadLevel(levelName) {
                         mario.vel.set(0, 0);
                         mario.pos.set(event.offsetX, event.offsetY);
                     }
-                })
+                });
             });
 
             level.addLayer(createEntityLayer(mario));

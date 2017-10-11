@@ -1,10 +1,7 @@
 import CONFIG from './config.js';
-import SpriteSheet from './SpriteSheet.js';
-import LayerManager from './LayerManager.js';
 import Timer from './Timer.js';
 import KeyManager from './KeyboardManager.js';
 import { loadLevel } from './Level.js';
-
 
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');

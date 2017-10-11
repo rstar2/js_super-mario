@@ -1,7 +1,7 @@
 import { Vector } from './math.js';
 
 export default class Entity {
-    constructor(x, y) {
+    constructor() {
         this._pos = new Vector(0, 0);
         this._vel = new Vector(0, 0);
         this._size = new Vector(0, 0);

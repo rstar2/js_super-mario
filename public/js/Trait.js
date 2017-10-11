@@ -3,7 +3,8 @@ export default class Trait {
         this.NAME = name;
     }
 
-    update(entity, rate) {
+    // eslint-disable-next-line no-unused-vars
+    update(entity, rate) { 
         throw new Error("Abstract method not implemented");
     }
 }

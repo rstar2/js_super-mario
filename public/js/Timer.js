@@ -18,6 +18,7 @@ export default class Timer {
         this.enqueue();
     }
 
+    // eslint-disable-next-line no-unused-vars
     update(rate) {
         // users should overwrite it
         throw new Error("Users should attach a real update method");

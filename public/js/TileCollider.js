@@ -4,8 +4,26 @@ class TileResolver {
         this._tileSize = tileSize;
     }
 
+    getTileSize() {
+        return this._tileSize;
+    }
+
     _toIndex(pos) {
         return Math.floor(pos / this._tileSize);
+    }
+
+    _toIndexRange(pos1, pos2) {
+        // this method is axis agnostic
+        const posMax = Math.ceil(pos2 / this._tileSize) * this._tileSize;
+
+        const indexRange = [];
+        let pos = pos1;
+        do {
+            indexRange.push(this._toIndex(pos));
+            pos += this._tileSize;
+        } while (pos < posMax);
+
+        return indexRange;
     }
 
     getByIndex(indexX, indexY) {
@@ -19,15 +37,28 @@ class TileResolver {
                 tile, y1, y2, x1, x2
             };
         }
+        return null;
     }
 
-    getByPosition(pos) {
-        return this.getByIndex(this._toIndex(pos.x), this._toIndex(pos.y));
+    getByPosition(posX, posY) {
+        return this.getByIndex(this._toIndex(posX), this._toIndex(posY));
     }
 
-    getTileSize() {
-        return this._tileSize;
+    getByRange(posX1, posX2, posY1, posY2) {
+        const tiles = [];
+
+        this._toIndexRange(posX1, posX2).forEach(indexX => {
+            this._toIndexRange(posY1, posY2).forEach(indexY => {
+                const tile = this.getByIndex(indexX, indexY);
+                if (tile) {
+                    tiles.push(tile);
+                }
+            });
+        });
+
+        return tiles;
     }
+
 }
 
 
@@ -41,37 +72,39 @@ export default class TileCollider {
         return this._tiles;
     }
 
-    checkY(entity, match) {
-        match = match || this._tiles.getByPosition(entity.pos);
-        if (!match) {
-            return;
-        }
+    checkY(entity) {
 
-        // check if collided with a ground
-        if (match.tile.name !== 'ground') {
-            return;
-        }
+        const matches = this._tiles.getByRange(entity.pos.x, entity.pos.x + entity.size.x,
+            entity.pos.y, entity.pos.y + entity.size.y);
 
-        // check if the entity is falling
-        if (entity.vel.y > 0) {
-            if (entity.pos.y > match.y1) {
-                entity.pos.y = match.y1;
-                entity.vel.y = 0;
+
+        matches.forEach(match => {
+            // check if collided with a ground
+            if (match.tile.name !== 'ground') {
+                return;
             }
-        } 
-        // else if juming
-        else if (entity.vel.y < 0) {
-            if (entity.pos.y < match.y2) {
-                entity.pos.y = match.y2;
-                entity.vel.y = 0;
+
+            // check if the entity is falling
+            if (entity.vel.y > 0) {
+                if (entity.pos.y + entity.size.y> match.y1) {
+                    entity.pos.y = match.y1 - entity.size.y;
+                    entity.vel.y = 0;
+                }
             }
-        }
+            // else if juming
+            else if (entity.vel.y < 0) {
+                if (entity.pos.y < match.y2) {
+                    entity.pos.y = match.y2;
+                    entity.vel.y = 0;
+                }
+            }
+        });
     }
 
     test(entity) {
-        const match = this._tiles.getByPosition(entity.pos);
-        if (match) {
-            this.checkY(entity, match);
+        const entityTile = this._tiles.getByPosition(entity.pos.x, entity.pos.y);
+        if (entityTile) {
+            this.checkY(entity);
         }
     }
 }
