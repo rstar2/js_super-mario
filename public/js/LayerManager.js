@@ -7,7 +7,7 @@ export default class LayerManager {
         this._layers.push(layer);
     }
 
-    draw(context) {
-        this._layers.forEach(layer => layer(context));
+    draw(context, view) {
+        this._layers.forEach(layer => layer(context, view));
     }
 }

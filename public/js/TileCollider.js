@@ -92,7 +92,7 @@ export default class TileCollider {
 
         matches.forEach(match => {
             // check if collided with a ground
-            if (match.tile.name !== 'ground') {
+            if (match.tile.type !== 'ground') {
                 return;
             }
 
@@ -131,7 +131,7 @@ export default class TileCollider {
 
         matches.forEach(match => {
             // check if collided with a ground
-            if (match.tile.name !== 'ground') {
+            if (match.tile.type !== 'ground') {
                 return;
             }
 

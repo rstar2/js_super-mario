@@ -11,24 +11,28 @@ import {
 
 
 export default class Level {
-    constructor(tileSize) {
+    constructor(tiles, tileSize, gravity = 2000) {
+        this._tiles = tiles;
         this._layerManager = new LayerManager();
         this._entities = new Set();
-        this._tiles = new Matrix();
         this._tileCollider = new TileCollider(this._tiles, tileSize);
 
         // the gravity should be on the level - thus applied to all entities
-        // make this a level property - maybe each level can have different gravity
-        this._gavity = 2000;
-    }
+        this._gavity = gravity;
 
-    setTile(x, y, tile) {
-        this._tiles.set(x, y, { name: tile });
+        // compute the width and height from the tiles and tileSize
+        let maxX = 0, maxY = 0;
+        this.forEachTile((x, y) => {
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+        });
+        this._width = maxX * tileSize;
+        this._height = maxY * tileSize;
     }
 
     forEachTile(callback) {
         this._tiles.forEach((x, y, tile) => {
-            callback(x, y, tile.name);
+            callback(x, y, tile);
         });
     }
 
@@ -70,38 +74,63 @@ export default class Level {
         });
     }
 
-    draw(context) {
-        this._layerManager.draw(context);
+    draw(context, view) {
+        this._layerManager.draw(context, view);
     }
 
     getTileCollider() {
         return this._tileCollider;
     }
+
+    getWidth() {
+        return this._width;
+    }
+
+    getHeight() {
+        return this._height;
+    }
+
+    getGravity() {
+        return this._gravity;
+    }
 }
 
-function createTiles(backgrounds, level) {
+export class Tile {
+    constructor(type) {
+        this._type = type;
+    }
+
+    get type() {
+        return this._type;
+    }
+}
+
+function createTiles(backgrounds) {
+    const tiles = new Matrix();
     backgrounds.forEach(background => {
         const tile = background.tile;
         background.ranges.forEach(([x1, x2, y1, y2]) => {
             for (let x = x1; x < x2; x++) {
                 for (let y = y1; y < y2; y++) {
-                    level.setTile(x, y, tile);
+                    tiles.set(x, y, new Tile(tile));
                 }
             }
         });
     });
+
+    return tiles;
 }
 
 export function loadLevel(levelName) {
     return Promise.all([_loadLevel(levelName), loadBackgroudSprites()]).
         then(([levelSpec, backgroundSprites]) => {
-            const level = new Level(CONFIG.TILE_SIZE);
-
-            // attach tiles to the level's grid
-            createTiles(levelSpec.backgrounds, level);
+            const { backgrounds, entities, gravity } = levelSpec;
+            const tiles = createTiles(backgrounds);
+            // create the level
+            const level = new Level(tiles, CONFIG.TILE_SIZE, gravity);
 
             level.addLayer(createBackgroundLayer(level, backgroundSprites));
-            level.addLayer(createEntitiesLayer(levelSpec.entities));
+            level.addLayer(createEntitiesLayer(entities));
 
             // DEBUG: add visual collisions if needed
             if (CONFIG.DEBUG_TILE_COLLISION) {

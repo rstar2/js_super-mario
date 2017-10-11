@@ -1,4 +1,5 @@
 import CONFIG from './config.js';
+import View from './view.js';
 import Timer from './Timer.js';
 import KeyboardManager from './KeyboardManager.js';
 import { loadLevel } from './Level.js';
@@ -36,11 +37,14 @@ Promise.all([createMario(), loadLevel('1_1')]).
             setupDebugMario(mario);
         }
 
+        const view = new View();
+
         const timer = new Timer(CONFIG.RATE);
         timer.update = function (rate) {
+            // update all level entities (including Mario)
             level.update(rate);
-
-            level.draw(context);
+            // draw next frame
+            level.draw(context, view);
         };
 
         timer.start();

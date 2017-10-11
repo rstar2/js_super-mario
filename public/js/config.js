@@ -1,6 +1,4 @@
 export default {
-    CANVAS_WIDTH: 400,
-    CANVAS_HEIGH: 224,
     TILE_SIZE: 16,
     URL_PREFIX_IMAGE: '/img/',
     URL_PREFIX_DATA: '/data/',
@@ -12,5 +10,6 @@ export default {
     RATE: 1 / 60,
 
     DEBUG_MARIO: false,
-    DEBUG_TILE_COLLISION: false
+    DEBUG_TILE_COLLISION: false,
+    DEBUG_VIEW_SCROLL: true
 };

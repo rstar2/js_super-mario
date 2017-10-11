@@ -1,19 +1,19 @@
-import CONFIG from './config.js';
 import * as logger from './logger.js';
 
 export function createBackgroundLayer(level, sprites) {
+    // create a static/cached bachground image from the level's tiles
     const image = document.createElement('canvas');
-    image.width = CONFIG.CANVAS_WIDTH;
-    image.height = CONFIG.CANVAS_HEIGH;
+    image.width = level.getWidth();
+    image.height = level.getHeight();
     const imageContext = image.getContext('2d');
 
     level.forEachTile((x, y, tile) => {
-        sprites.drawTile(tile, imageContext, x, y);
+        sprites.drawTile(tile.type, imageContext, x, y);
     });
 
-    return function (context) {
+    return function (context, view) {
         logger.logDbg("Background layer");
-        context.drawImage(image, 0, 0);
+        context.drawImage(image, -view.pos.x, -view.pos.y);
     };
 }
 
