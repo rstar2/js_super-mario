@@ -103,6 +103,7 @@ export function loadLevel(levelName) {
             level.addLayer(createBackgroundLayer(level, backgroundSprites));
             level.addLayer(createEntitiesLayer(levelSpec.entities));
 
+            // DEBUG: add visual collisions if needed
             if (CONFIG.DEBUG_TILE_COLLISION) {
                 level.addLayer(createTileCollisionDebugLayer(level));
             }

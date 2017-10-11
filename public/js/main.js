@@ -9,18 +9,16 @@ const context = canvas.getContext('2d');
 const keyboardManager = new KeyboardManager();
 
 function setupDebugMario(mario) {
-    if (CONFIG.DEBUG_MARIO) {
-        // debug utility
-        const canvas = document.getElementById('screen');
-        ['mousedown', 'mousemove'].forEach(eventName => {
-            canvas.addEventListener(eventName, event => {
-                if (event.buttons === 1) {
-                    mario.vel.set(0, 0);
-                    mario.pos.set(event.offsetX, event.offsetY);
-                }
-            });
+    // debug utility
+    const canvas = document.getElementById('screen');
+    ['mousedown', 'mousemove'].forEach(eventName => {
+        canvas.addEventListener(eventName, event => {
+            if (event.buttons === 1) {
+                mario.vel.set(0, 0);
+                mario.pos.set(event.offsetX, event.offsetY);
+            }
         });
-    }
+    });
 }
 
 Promise.all([createMario(), loadLevel('1_1')]).
@@ -33,8 +31,10 @@ Promise.all([createMario(), loadLevel('1_1')]).
         setupKeyboardMario(mario, keyboardManager);
         keyboardManager.start(window);
 
-        // add debugging
-        setupDebugMario(mario);
+        // DEBUG: add Mario easy replacement if needed
+        if (CONFIG.DEBUG_MARIO) {
+            setupDebugMario(mario);
+        }
 
         const timer = new Timer(CONFIG.RATE);
         timer.update = function (rate) {
