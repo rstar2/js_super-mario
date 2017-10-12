@@ -1,7 +1,7 @@
 import * as logger from './logger.js';
 
 export function createBackgroundLayer(level, sprites) {
-    // create a static/cached bachground image from the level's tiles
+    // create a static/cached bachground image buffer from the level's tiles
     const image = document.createElement('canvas');
     image.width = level.getWidth();
     image.height = level.getHeight();
@@ -17,17 +17,25 @@ export function createBackgroundLayer(level, sprites) {
     };
 }
 
-export function createEntityLayer(entity) {
-    return function (context) {
-        logger.logDbg("Entity layer");
-        entity.draw(context);
-    };
-}
+export function createEntitiesLayer(level, maxEntityWidth = 64, maxEntityHeight = 64) {
+    // create a static/cached image buffer fin which each entity will be drawn first
+    const image = document.createElement('canvas');
+    image.width = maxEntityWidth;
+    image.height = maxEntityHeight;
+    const imageContext = image.getContext('2d');
 
-export function createEntitiesLayer(entities) {
-    return function (context) {
+    return function (context, view) {
         logger.logDbg("Entities layer");
-        entities.forEach(entity => entity.draw(context));
+
+        const { x, y } = view.pos;
+        level.forEachEntity(entity => {
+            // draw the entity tile in the buffer image after it's been cleared
+            imageContext.clearRect(0, 0, maxEntityWidth, maxEntityHeight);
+            entity.draw(imageContext);
+            
+            // draw the buffer image in the main canvas
+            context.drawImage(image, entity.pos.x - x, entity.pos.y - y);
+        });
     };
 }
 
@@ -43,13 +51,15 @@ export function createTileCollisionDebugLayer(level) {
         return getIndexByORIG.call(this, indexX, indexY);
     };
 
-    return function (context) {
+    return function (context, view) {
         logger.logDbg("Debug layer", collisionTiles.length);
+
+        const { x, y } = view.pos;
         // draw a box arround each collision-tile
         context.strokeStyle = 'green';
         collisionTiles.forEach(({ indexX, indexY }) => {
             context.beginPath();
-            context.rect(indexX * tileSize, indexY * tileSize,
+            context.rect(indexX * tileSize - x, indexY * tileSize - y,
                 tileSize, tileSize);
             context.stroke();
         });
@@ -60,7 +70,7 @@ export function createTileCollisionDebugLayer(level) {
         context.strokeStyle = 'red';
         level.forEachEntity(entity => {
             context.beginPath();
-            context.rect(entity.pos.x, entity.pos.y,
+            context.rect(entity.pos.x - x, entity.pos.y - y,
                 entity.size.x, entity.size.y);
             context.stroke();
         });

@@ -8,21 +8,23 @@ import { createMario, setupKeyboardMario } from './entities.js';
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
 const keyboardManager = new KeyboardManager();
+const view = new View();
+window.view = view;
 
-function setupDebugMario(mario) {
+function setupDebugMario(mario, view) {
     // debug utility
     const canvas = document.getElementById('screen');
     ['mousedown', 'mousemove'].forEach(eventName => {
         canvas.addEventListener(eventName, event => {
             if (event.buttons === 1) {
                 mario.vel.set(0, 0);
-                mario.pos.set(event.offsetX, event.offsetY);
+                mario.pos.set(event.offsetX + view.pos.x, event.offsetY + view.pos.y);
             }
         });
     });
 }
 
-Promise.all([createMario(), loadLevel('1_1')]).
+Promise.all([createMario('characters'), loadLevel('world', '1_1')]).
     then(([mario, level]) => {
         // add Mario to the level
         level.addMario(mario);
@@ -34,10 +36,8 @@ Promise.all([createMario(), loadLevel('1_1')]).
 
         // DEBUG: add Mario easy replacement if needed
         if (CONFIG.DEBUG_MARIO) {
-            setupDebugMario(mario);
+            setupDebugMario(mario, view);
         }
-
-        const view = new View();
 
         const timer = new Timer(CONFIG.RATE);
         timer.update = function (rate) {

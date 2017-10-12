@@ -1,11 +1,9 @@
-import CONFIG from './config.js';
-
 export function loadImage(name) {
     return new Promise((resolve, reject) => {
         const image = new Image();
         image.addEventListener('load', () => resolve(image));
         image.addEventListener('error', () => reject(image));
-        image.src = CONFIG.URL_PREFIX_IMAGE + name;
+        image.src = name;
     });
 }
 
@@ -13,10 +11,10 @@ const loadJson = (url) => {
     return fetch(url).then(r => r.json());
 };
 
-export function loadLevel(level) {
-    return loadJson(CONFIG.URL_PREFIX_LEVEL + level + '.json');
+export function loadLevel(name) {
+    return loadJson(`/data/levels/${name}.json`);
 }
 
 export function loadData(name) {
-    return loadJson(CONFIG.URL_PREFIX_DATA + name);
+    return loadJson(`/data/${name}.json`);
 }

@@ -1,12 +1,13 @@
 import CONFIG from './config.js';
+import Entity from './Entity.js';
 import LayerManager from './LayerManager.js';
 import TileCollider from './TileCollider.js';
 import { Matrix } from './math.js';
 import { loadLevel as _loadLevel } from './utils.js';
-import { loadBackgroudSprites } from './sprites.js';
+import { loadWorld } from './sprites.js';
 import {
     createBackgroundLayer, createEntitiesLayer,
-    createEntityLayer, createTileCollisionDebugLayer
+    createTileCollisionDebugLayer
 } from './layers.js';
 
 
@@ -50,11 +51,10 @@ export default class Level {
 
     // utility method to do all all 'Mario' related stuff in one place
     addMario(mario) {
-        // TODO - make this a level property
+        // TODO:  make this a level property
         mario.pos.set(64, 64);
 
         this.addEntity(mario);
-        this.addLayer(createEntityLayer(mario));
     }
 
     update(rate) {
@@ -121,16 +121,27 @@ function createTiles(backgrounds) {
     return tiles;
 }
 
-export function loadLevel(levelName) {
-    return Promise.all([_loadLevel(levelName), loadBackgroudSprites()]).
-        then(([levelSpec, backgroundSprites]) => {
-            const { backgrounds, entities, gravity } = levelSpec;
+export function loadLevel(worldName, levelName) {
+    return Promise.all([loadWorld(worldName), _loadLevel(levelName)]).
+        then(([backgroundSprites, levelSpec]) => {
+            // parse the level's background tiles, entities and other props
+            const { backgrounds, entities, props } = levelSpec;
+            
+            // create the tiles grid
             const tiles = createTiles(backgrounds);
+            
             // create the level
-            const level = new Level(tiles, CONFIG.TILE_SIZE, gravity);
+            const level = new Level(tiles, 16, props && props.gravity);
+
+            // attach entities to the Level
+            // Note that Mario will be additioanlly attached in 'main.js'
+            entities.forEach(entity => {
+                const e = new Entity();
+                level.addEntity(e);
+            });
 
             level.addLayer(createBackgroundLayer(level, backgroundSprites));
-            level.addLayer(createEntitiesLayer(entities));
+            level.addLayer(createEntitiesLayer(level));
 
             // DEBUG: add visual collisions if needed
             if (CONFIG.DEBUG_TILE_COLLISION) {

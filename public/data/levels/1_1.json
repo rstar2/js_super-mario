@@ -43,5 +43,8 @@
             ]
         }
     ],
-    "entities" : []
+    "entities": [],
+    "props": {
+        "gravity": 200
+    }
 }

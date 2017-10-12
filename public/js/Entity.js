@@ -33,4 +33,9 @@ export default class Entity {
         this._traits.forEach(trait => trait.update(this, rate));
     }
 
+    // eslint-disable-next-line no-unused-vars
+    draw(context) {
+        throw new Error("Each Entity should overwrite this abstract method");
+    }
+
 }

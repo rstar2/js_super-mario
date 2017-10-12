@@ -4,14 +4,14 @@ import Walk from './traits/Walk.js';
 import Jump from './traits/Jump.js';
 import { loadCharacterSprites } from './sprites.js';
 
-export function createMario() {
-    return loadCharacterSprites().
+export function createMario(entitiesName) {
+    return loadCharacterSprites(entitiesName).
         then(sprites => {
             const mario = new Entity();
             mario.size.set(14, 16);
 
             mario.draw = function (context) {
-                sprites.draw('idle', context, this.pos.x, this.pos.y);
+                sprites.draw('idle', context, 0, 0);
             };
 
             mario.registerTrait(new Walk());
