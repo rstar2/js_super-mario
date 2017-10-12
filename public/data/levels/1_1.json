@@ -45,6 +45,6 @@
     ],
     "entities": [],
     "props": {
-        "gravity": 200
+        "gravity": 2000
     }
 }

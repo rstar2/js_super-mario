@@ -23,8 +23,8 @@ export function loadCharacterSprites(name) {
         then(([characters, spritesImage]) => {
             const sprites = new SpriteSheet(spritesImage);
 
-            // TODO: register all charcaters
-            sprites.register('idle', 276, 44);
+            // TODO: register all charcaters with their specific size
+            sprites.register('idle', 276, 44, 16, 16);
 
             return sprites;
         });
