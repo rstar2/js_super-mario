@@ -1,14 +1,14 @@
 {
-    "tilesURL" : "/img/tiles.png",
+    "spritesURL" : "/img/tiles.png",
     "tileWidth": 16,
     "tileHeight": 16,
     "tiles": [
         {
-            "tile": "ground",
+            "name": "ground",
             "index": [0, 0]
         },
         {
-            "tile": "sky",
+            "name": "sky",
             "index": [3, 23]
         }
     ]

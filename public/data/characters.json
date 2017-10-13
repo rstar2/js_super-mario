@@ -1,3 +1,10 @@
 {
-    "entitiesURL": "/img/characters.gif"
+    "spritesURL": "/img/characters.gif",
+    "tiles": [
+        {
+            "name": "idle",
+            "pos": [276, 44],
+            "size": [14, 16]
+        }
+    ]
 }

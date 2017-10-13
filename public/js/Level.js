@@ -4,7 +4,7 @@ import LayerManager from './LayerManager.js';
 import TileCollider from './TileCollider.js';
 import { Matrix } from './math.js';
 import { loadLevel as _loadLevel } from './utils.js';
-import { loadWorld } from './sprites.js';
+import { loadSprites } from './sprites.js';
 import {
     createBackgroundLayer, createEntitiesLayer,
     createTileCollisionDebugLayer
@@ -121,15 +121,16 @@ function createTiles(backgrounds) {
     return tiles;
 }
 
-export function loadLevel(worldName, levelName) {
-    return Promise.all([loadWorld(worldName), _loadLevel(levelName)]).
-        then(([backgroundSprites, levelSpec]) => {
+export function loadLevel(levelName) {
+    return _loadLevel(levelName).
+        then(levelSpec => Promise.all([levelSpec, loadSprites(levelSpec.sprites),])).
+        then(([levelSpec, backgroundSprites]) => {
             // parse the level's background tiles, entities and other props
             const { backgrounds, entities, props } = levelSpec;
-            
+
             // create the tiles grid
             const tiles = createTiles(backgrounds);
-            
+
             // create the level
             const level = new Level(tiles, 16, props && props.gravity);
 

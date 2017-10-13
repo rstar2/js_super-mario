@@ -1,4 +1,6 @@
 {
+    "_sprites": "underworld",
+    "sprites": "overworld",
     "backgrounds": [
         {
             "tile": "sky",

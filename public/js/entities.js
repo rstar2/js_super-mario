@@ -2,10 +2,10 @@ import { KEY_SPACE, KEY_LEFT, KEY_RIGHT } from './KeyboardManager.js';
 import Entity from './Entity.js';
 import Walk from './traits/Walk.js';
 import Jump from './traits/Jump.js';
-import { loadCharacterSprites } from './sprites.js';
+import { loadSprites } from './sprites.js';
 
 export function createMario(entitiesName) {
-    return loadCharacterSprites(entitiesName).
+    return loadSprites(entitiesName).
         then(sprites => {
             const mario = new Entity();
             mario.size.set(14, 16);
@@ -25,7 +25,7 @@ export function createMario(entitiesName) {
         });
 }
 
-export function setupKeyboardMario(mario, keyboardManager) {
+export function setupKeyboardControl(mario, keyboardManager) {
     keyboardManager.register(KEY_SPACE, keyState => {
         if (keyState) {
             mario.jump.start();

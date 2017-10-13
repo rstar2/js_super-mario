@@ -1,30 +1,35 @@
 import SpriteSheet from './SpriteSheet.js';
 import { loadImage, loadData } from './utils.js';
 
-export function loadWorld(name) {
+export function loadSprites(name) {
     return loadData(name).
-        then(world => Promise.all([world, loadImage(world.tilesURL)])).
-        then(([world, spritesImage]) => {
-            const sprites = new SpriteSheet(spritesImage, world.tileWidth, world.tileHeight);
+        then(spritesSpec => Promise.all([spritesSpec, loadImage(spritesSpec.spritesURL)])).
+        then(([spritesSpec, spritesImage]) => {
+            const sprites = new SpriteSheet(spritesImage, spritesSpec.tileWidth, spritesSpec.tileHeight);
 
-            world.tiles.forEach(tileSpec => {
-                const { tile, index } = tileSpec;
-                const [indexX, indexY] = index;
-                sprites.registerTile(tile, indexX, indexY);
+            spritesSpec.tiles.forEach(tileSpec => {
+                // the specific tile's width and height are optional in the tileSpec
+                // if missing then the global spritesSpec.tileWidth/spritesSpec.tileHeight will be used
+
+                // a tile can be specified by index (when sprite is with fixed size grid)
+                // or by pos and size (optional)
+                const { name, index } = tileSpec;
+
+                if (index) {
+                    const [indexX, indexY] = index;
+                    sprites.registerTile(name, indexX, indexY);
+                } else {
+                    // pos is obligatory then, but size is again optional
+                    const [x, y] = tileSpec.pos;
+                    
+                    let width, height;
+                    if (tileSpec.size) {
+                        width = tileSpec.size[0];
+                        height = tileSpec.size[1];
+                    }
+                    sprites.register(name, x, y, width, height);
+                }
             });
-
-            return sprites;
-        });
-}
-
-export function loadCharacterSprites(name) {
-    return loadData(name).
-        then(characters => Promise.all([characters, loadImage(characters.entitiesURL)])).
-        then(([characters, spritesImage]) => {
-            const sprites = new SpriteSheet(spritesImage);
-
-            // TODO: register all charcaters with their specific size
-            sprites.register('idle', 276, 44, 16, 16);
 
             return sprites;
         });
