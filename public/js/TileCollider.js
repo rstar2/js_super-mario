@@ -8,18 +8,18 @@ class TileResolver {
         return this._tileSize;
     }
 
-    _toIndex(pos) {
+    toIndex(pos) {
         return Math.floor(pos / this._tileSize);
     }
 
-    _toIndexRange(pos1, pos2) {
+    toIndexRange(pos1, pos2) {
         // this method is axis agnostic
         const posMax = Math.ceil(pos2 / this._tileSize) * this._tileSize;
 
         const indexRange = [];
         let pos = pos1;
         do {
-            indexRange.push(this._toIndex(pos));
+            indexRange.push(this.toIndex(pos));
             pos += this._tileSize;
         } while (pos < posMax);
 
@@ -41,14 +41,14 @@ class TileResolver {
     }
 
     getByPosition(posX, posY) {
-        return this.getByIndex(this._toIndex(posX), this._toIndex(posY));
+        return this.getByIndex(this.toIndex(posX), this.toIndex(posY));
     }
 
     getByRange(posX1, posX2, posY1, posY2) {
         const tiles = [];
 
-        this._toIndexRange(posX1, posX2).forEach(indexX => {
-            this._toIndexRange(posY1, posY2).forEach(indexY => {
+        this.toIndexRange(posX1, posX2).forEach(indexX => {
+            this.toIndexRange(posY1, posY2).forEach(indexY => {
                 const tile = this.getByIndex(indexX, indexY);
                 if (tile) {
                     tiles.push(tile);

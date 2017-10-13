@@ -46,10 +46,15 @@ export class Matrix {
 
     forEach(callback) {
         this._grid.forEach((column, x) => {
-            column.forEach((value, y) => {
-                callback(x, y, value);
-            });
+            column.forEach((value, y) => callback(x, y, value));
         });
+    }
+
+    forEachInColumn(x, callback) {
+        const column = this._grid[x];
+        if (column) {
+            column.forEach((value, y) => callback(x, y, value));
+        }
     }
 
 }

@@ -2,7 +2,7 @@ import SpriteSheet from './SpriteSheet.js';
 import { loadImage, loadData } from './utils.js';
 
 export function loadSprites(name) {
-    return loadData(name).
+    return loadData(`/sprites/${name}`).
         then(spritesSpec => Promise.all([spritesSpec, loadImage(spritesSpec.spritesURL)])).
         then(([spritesSpec, spritesImage]) => {
             const sprites = new SpriteSheet(spritesImage, spritesSpec.tileWidth, spritesSpec.tileHeight);
