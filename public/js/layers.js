@@ -91,7 +91,7 @@ export function createBackgroundLayer(level, sprites) {
         const drawIndexStart = tileResolver.toIndex(view.pos.x);
         const drawIndexEnd = drawIndexStart + drawWidth;
         if (lastIndexStart !== drawIndexStart && lastIndexEnd !== drawIndexEnd) {
-            console.log("Background layer redrawing");
+            logger.logDbg("Background layer redrawing");
             redraw(drawIndexStart, drawIndexEnd);
 
             lastIndexStart = drawIndexStart;
