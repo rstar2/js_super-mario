@@ -96,10 +96,15 @@ export default class Level {
 }
 
 export class Tile {
-    constructor(type) {
-        this._type = type;
+    constructor(tileSpec) {
+        this._name = tileSpec.tile;
+        this._type = tileSpec.type;
     }
 
+    get name() {
+        return this._name;
+    }
+    
     get type() {
         return this._type;
     }
@@ -108,11 +113,10 @@ export class Tile {
 function createTiles(backgrounds) {
     const tiles = new Matrix();
     backgrounds.forEach(background => {
-        const tile = background.tile;
         background.ranges.forEach(([x1, x2, y1, y2]) => {
             for (let x = x1; x < x2; x++) {
                 for (let y = y1; y < y2; y++) {
-                    tiles.set(x, y, new Tile(tile));
+                    tiles.set(x, y, new Tile(background));
                 }
             }
         });

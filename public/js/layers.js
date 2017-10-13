@@ -8,7 +8,7 @@ export function createBackgroundLayer(level, sprites) {
     const imageContext = image.getContext('2d');
 
     level.forEachTile((x, y, tile) => {
-        sprites.drawTile(tile.type, imageContext, x, y);
+        sprites.drawTile(tile.name, imageContext, x, y);
     });
 
     return function (context, view) {
