@@ -11,7 +11,7 @@ const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
 const keyboardManager = new KeyboardManager();
 
-Promise.all([createMario('characters'), loadLevel('1_1')]).
+Promise.all([createMario('characters', 'mario'), loadLevel('1_1')]).
     then(([mario, level]) => {
         const view = new View(CONFIG.VIEW_WIDTH, CONFIG.VIEW_HEIGHT);
 

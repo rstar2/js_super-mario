@@ -8,6 +8,11 @@ export default class Timer {
     _updadeProxy(time) {
         this._accumulatedTime += (time - this._lastTime) / 1000;
 
+        // temporary fix for not updating so often
+        if (this._accumulatedTime > 1) {
+            this._accumulatedTime = 1;
+        }
+
         while (this._accumulatedTime > this._rate) {
             this._accumulatedTime -= this._rate;
 

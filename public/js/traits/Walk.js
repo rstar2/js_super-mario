@@ -48,4 +48,12 @@ export default class WalkTrait extends Trait {
         return this._lastDirection;
     }
 
+    animate(entity, animation) {
+        let tile = this.distance ? animation(this.distance) : undefined;
+        const mirrored = this.heading < 0;
+
+        return { tile, mirrored };
+
+    }
+
 }
