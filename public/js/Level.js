@@ -166,6 +166,7 @@ export function loadLevel(levelName) {
 
             // attach entities to the Level
             // Note that Mario will be additioanlly attached in 'main.js'
+            // eslint-disable-next-line no-unused-vars
             entities.forEach(entity => {
                 const e = new Entity();
                 level.addEntity(e);
