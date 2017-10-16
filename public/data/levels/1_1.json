@@ -127,6 +127,7 @@
             "tile": "chance",
             "type": "ground",
             "ranges": [
+                [2, 8],
                 [23, 9],
                 [28, 9],
                 [30, 9],
@@ -182,6 +183,7 @@
     ],
     "entities": [],
     "props": {
-        "gravity": 2000
+        "gravity": 2000,
+        "marioPos": [64, 64]
     }
 }

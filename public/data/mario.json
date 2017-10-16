@@ -1,0 +1,9 @@
+{
+    "animations": [
+        {
+            "name": "walk",
+            "frameRate": 10,
+            "frames": ["run-1", "run-2", "run-3"]
+        }
+    ]
+}

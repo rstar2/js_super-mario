@@ -62,26 +62,37 @@ export function _createBackgroundLayer(level, sprites) {
 
 // OPTIMIZATION - keep a small buffur in memory - just as needed to draw the view
 // so a little wider than view's size
-// ALso - we can redraw ONLY when there's a change in 
+// ALso - we can redraw ONLY when there's a change in view's position
 export function createBackgroundLayer(level, sprites) {
     const tileResolver = level.getTileCollider().getTileResolver();
     const tileSize = tileResolver.getTileSize();
-    
+
     // create a static/cached bachground image buffer from the level's tiles
     const buffer = document.createElement('canvas');
     buffer.width = CONFIG.VIEW_WIDTH + tileSize;
     buffer.height = CONFIG.VIEW_HEIGHT;
     const bufferContext = buffer.getContext('2d');
 
+
     function redraw(indexStart, indexEnd) {
+        let hasTileAnimations = false;
         for (let x = indexStart; x <= indexEnd; x++) {
             level.forEachTileInColumn(x, (x, y, tile) => {
-                sprites.drawTile(tile.name, bufferContext, x - indexStart, y);
+                const tileName = tile.name;
+                if (sprites.isTileAnim(tileName)) {
+                    // animate the tile
+                    sprites.drawTileAnim(tileName, bufferContext, x - indexStart, y, level.getTotalTime());
+                    hasTileAnimations = true;
+                } else {
+                    // normal tie tile draw
+                    sprites.drawTile(tileName, bufferContext, x - indexStart, y);
+                }
             });
         }
+        return hasTileAnimations;
     }
 
-    let lastIndexStart, lastIndexEnd;
+    let lastIndexStart, lastIndexEnd, hasTileAnimations;
 
     return function (context, view) {
         logger.logDbg("Background layer");
@@ -90,10 +101,12 @@ export function createBackgroundLayer(level, sprites) {
         const drawWidth = tileResolver.toIndex(view.size.x);
         const drawIndexStart = tileResolver.toIndex(view.pos.x);
         const drawIndexEnd = drawIndexStart + drawWidth;
-        if (lastIndexStart !== drawIndexStart && lastIndexEnd !== drawIndexEnd) {
-            logger.logDbg("Background layer redrawing");
-            redraw(drawIndexStart, drawIndexEnd);
 
+        // redraw if there are animations or view's positions has changed
+        if (hasTileAnimations ||
+            (lastIndexStart !== drawIndexStart && lastIndexEnd !== drawIndexEnd)) {
+            logger.logDbg("Background layer redrawing");
+            hasTileAnimations = redraw(drawIndexStart, drawIndexEnd);
             lastIndexStart = drawIndexStart;
             lastIndexEnd = drawIndexEnd;
         }

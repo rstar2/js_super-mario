@@ -3,23 +3,26 @@ import Entity from './Entity.js';
 import Walk from './traits/Walk.js';
 import Jump from './traits/Jump.js';
 import { loadSprites } from './sprites.js';
+import { createAnimation } from './animation.js';
+
 
 export function createMario(entitiesName) {
-    return loadSprites(entitiesName).
+    return loadSprites(entitiesName, true).
         then(sprites => {
             const mario = new Entity();
+
+            // TODO: use the mario.json
             mario.size.set(14, 16);
+            const walkAnimation = createAnimation(["run-1", "run-2", "run-3"], 10);
 
             mario.draw = function (context) {
-                sprites.draw('idle', context, 0, 0);
+                let tile = !this.walk.distance ? "idle" : walkAnimation(this.walk.distance);
+                const mirrored = this.walk.heading < 0;
+                sprites.draw(tile, context, 0, 0, mirrored);
             };
 
             mario.registerTrait(new Walk());
             mario.registerTrait(new Jump());
-
-            // these will be applied on the whole Level
-            // mario.registerTrait(new Gravity());
-            // mario.registerTrait(new Velocity());
 
             return mario;
         });

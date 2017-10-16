@@ -1,11 +1,13 @@
 import SpriteSheet from './SpriteSheet.js';
 import { loadImage, loadData } from './utils.js';
+import { createAnimation } from './animation.js';
 
-export function loadSprites(name) {
+export function loadSprites(name, mirrored) {
     return loadData(`/sprites/${name}`).
         then(spritesSpec => Promise.all([spritesSpec, loadImage(spritesSpec.spritesURL)])).
         then(([spritesSpec, spritesImage]) => {
-            const sprites = new SpriteSheet(spritesImage, spritesSpec.tileWidth, spritesSpec.tileHeight);
+            const sprites = new SpriteSheet(spritesImage, mirrored,
+                spritesSpec.tileWidth, spritesSpec.tileHeight);
 
             spritesSpec.tiles.forEach(tileSpec => {
                 // the specific tile's width and height are optional in the tileSpec
@@ -21,7 +23,7 @@ export function loadSprites(name) {
                 } else {
                     // pos is obligatory then, but size is again optional
                     const [x, y] = tileSpec.pos;
-                    
+
                     let width, height;
                     if (tileSpec.size) {
                         width = tileSpec.size[0];
@@ -29,7 +31,17 @@ export function loadSprites(name) {
                     }
                     sprites.register(name, x, y, width, height);
                 }
+
+
             });
+
+            // if defined animations for any tile
+            if (spritesSpec.animations) {
+                spritesSpec.animations.forEach(animSpec => {
+                    const animation = createAnimation(animSpec.frames, animSpec.frameRate);
+                    sprites.registerAnimation(animSpec.name, animation);
+                });
+            }
 
             return sprites;
         });

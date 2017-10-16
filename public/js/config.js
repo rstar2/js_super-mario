@@ -5,6 +5,6 @@ export default {
     VIEW_HEIGHT: 240,
 
     DEBUG_MARIO: true,
-    DEBUG_TILE_COLLISION: true,
-    DEBUG_VIEW_SCROLL: true
+    DEBUG_TILE_COLLISION: false,
+    DEBUG_VIEW_SCROLL: false
 };

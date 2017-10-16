@@ -8,7 +8,7 @@ import { createBackgroundLayer, createEntitiesLayer } from './layers.js';
 
 
 export default class Level {
-    constructor(tiles, tileSize, gravity = 2000) {
+    constructor(tiles, tileSize, { gravity = 2000, marioPos = [10, 0] }) {
         this._tiles = tiles;
         this._layerManager = new LayerManager();
         this._entities = new Set();
@@ -16,6 +16,7 @@ export default class Level {
 
         // the gravity should be on the level - thus applied to all entities
         this._gavity = gravity;
+        this._marioPos = marioPos;
 
         // compute the width and height from the tiles and tileSize
         let maxX = 0, maxY = 0;
@@ -25,6 +26,8 @@ export default class Level {
         });
         this._width = maxX * tileSize;
         this._height = maxY * tileSize;
+
+        this._totalTime = 0;
     }
 
     forEachTile(callback) {
@@ -49,10 +52,14 @@ export default class Level {
 
     // utility method to do all all 'Mario' related stuff in one place
     addMario(mario) {
-        // TODO:  make this a level property
-        mario.pos.set(64, 64);
-
         this.addEntity(mario);
+
+        // set Mario's initial pos depending on the level
+        mario.pos.set(...this._marioPos);
+    }
+
+    getTotalTime() {
+        return this._totalTime;
     }
 
     update(rate) {
@@ -67,9 +74,11 @@ export default class Level {
             this._tileCollider.checkY(entity);
 
             // add some gravity to all entities
-            //  Note - it should be added finally after the tile-collision checks
+            // Note - it should be added finally after the tile-collision checks
             entity.vel.y += this._gavity * rate;
         });
+
+        this._totalTime += rate;
     }
 
     draw(context, view) {
@@ -152,7 +161,8 @@ export function loadLevel(levelName) {
             const tiles = createTiles(backgrounds);
 
             // create the level
-            const level = new Level(tiles, 16, props && props.gravity);
+            // TODO: tileSize should be get from the backgroundSprites.getWidth()/getHeight()
+            const level = new Level(tiles, 16, props);
 
             // attach entities to the Level
             // Note that Mario will be additioanlly attached in 'main.js'
