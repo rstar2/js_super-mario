@@ -58,14 +58,20 @@ export default class SpriteSheet {
     draw(tile, context, x, y, mirrored = false) {
         const tileImage = this._tiles.get(tile);
         if (tileImage) {
+            let image = tileImage;
             if (this._mirrored) {
                 // if sprites is mirror this means that 2 image tiles are registered for each name
                 // so we have to draw the desired one
-                context.drawImage(tileImage[mirrored ? 1 : 0], x, y);
-            } else {
-                context.drawImage(tileImage, x, y);
+                image = tileImage[mirrored ? 1 : 0];
             }
+            context.drawImage(image, x, y);
+            
+            return [image.width, image.height];
+        } else {
+            logger.logWarn(`No tile set for ${tile}`);
         }
+
+        return [0, 0];
     }
 
     drawTile(tile, context, indexX, indexY, mirrored) {
@@ -77,7 +83,7 @@ export default class SpriteSheet {
         if (animation) {
             tile = animation(progress);
         } else {
-            logger.logWarn("No animation set for ", tile);
+            logger.logWarn(`No animation set for ${tile}`);
         }
         this.draw(tile, context, indexX * this._tileWidth, indexY * this._tileHeight, mirrored);
     }

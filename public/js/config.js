@@ -1,6 +1,8 @@
 export default {
     RATE: 1 / 60,
 
+    FIX_TIMER: true,
+
     VIEW_WIDTH: 256,
     VIEW_HEIGHT: 240,
 

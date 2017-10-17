@@ -22,13 +22,14 @@ export function createMario(entitiesName, marioName) {
                 });
             }
 
-            mario.draw = function (context) {
-                const { tile, mirrored } = this.animate();
-                // if no tile to animate then draw the default "idle" one
+            mario.draw = function (context, level) {
+                const { tile, mirrored } = this.animate(level);
+                // if no tile to animate then draw the default "idle" one,
+                // tileSize is array with [width, height]
                 const tileSize = sprites.draw(tile || 'idle', context, 0, 0, mirrored);
 
-                // TODO:  mario.size.set(...tileSize);
-                mario.size.set(14, 16);
+                // set the size of the entity to the size of the real drawn tile
+                mario.size.set(...tileSize);
             };
 
             return mario;

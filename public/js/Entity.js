@@ -35,18 +35,20 @@ export default class Entity {
         this._animations.set(animName, animation);
     }
 
-    animate() {
+    animate(level) {
         return Array.from(this._animations).reduce((accum, [animName, animation]) => {
             const trait = this[animName];
-            // check to see if there's such Trait registered and call it's animation method
-            if (trait) {
-                let { tile, mirrored } = trait.animate(this, animation);
-                if (accum.tile === undefined) {
-                    accum.tile = tile;
-                }
-                if (accum.mirrored === undefined) {
-                    accum.mirrored = mirrored;
-                }
+            // check to see if there's such Trait registered and if there is then
+            // call it's animation method,
+            // if not then use the level's total time as a progress for a animation
+            // that is not connected to a Trait
+            let { tile, mirrored } = trait ? trait.animate(this, animation, level.getTotalTime()) :
+                animation(level.getTotalTime());
+            if (accum.tile === undefined) {
+                accum.tile = tile;
+            }
+            if (accum.mirrored === undefined) {
+                accum.mirrored = mirrored;
             }
             return accum;
         }, {});
@@ -57,7 +59,7 @@ export default class Entity {
     }
 
     // eslint-disable-next-line no-unused-vars
-    draw(context) {
+    draw(context, level) {
         throw new Error("Each Entity should overwrite this abstract method");
     }
 

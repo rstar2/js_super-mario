@@ -129,7 +129,7 @@ export function createEntitiesLayer(level, maxEntityWidth = 64, maxEntityHeight 
         level.forEachEntity(entity => {
             // draw the entity tile in the buffer image after it's been cleared
             bufferContext.clearRect(0, 0, maxEntityWidth, maxEntityHeight);
-            entity.draw(bufferContext);
+            entity.draw(bufferContext, level);
 
             // draw the buffer image in the main canvas
             context.drawImage(buffer, entity.pos.x - x, entity.pos.y - y);
