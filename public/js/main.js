@@ -42,6 +42,14 @@ Promise.all([createMario('characters', 'mario'), loadLevel('1_1')]).
         timer.update = function (rate) {
             // update all level entities (including Mario)
             level.update(rate);
+
+
+            // move the camera/view together with Mario
+            // TODO: Don't position Mario always in the center, allow some margin left and right
+            if (mario.pos.x > view.size.x/2) {
+                view.pos.x = mario.pos.x - view.size.x/2;
+            }
+
             // draw next frame
             level.draw(context, view);
         };

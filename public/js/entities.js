@@ -45,17 +45,9 @@ export function setupKeyboardControl(mario, keyboardManager) {
         }
     });
     keyboardManager.register(KEY_LEFT, keyState => {
-        if (keyState) {
-            mario.walk.left();
-        } else {
-            mario.walk.cancel();
-        }
+        mario.walk.left(!!keyState);
     });
     keyboardManager.register(KEY_RIGHT, keyState => {
-        if (keyState) {
-            mario.walk.right();
-        } else {
-            mario.walk.cancel();
-        }
+        mario.walk.right(!!keyState);
     });
 }
