@@ -110,22 +110,22 @@ export default class Entity {
  * @constant
  * @static
  */
-Entity.COLLIDE_TOP = 1;
+Entity.COLLIDE_TOP = Symbol(1);
 /**
  * Collide directon BOTTOM
  * @constant
  * @static
  */
-Entity.COLLIDE_BOTTOM = 2;
+Entity.COLLIDE_BOTTOM = Symbol(2);
 /**
  * Collide directon LEFT
  * @constant
  * @static
  */
-Entity.COLLIDE_LEFT = 3;
+Entity.COLLIDE_LEFT = Symbol(3);
 /**
  * Collide directon RIGHT
  * @constant
  * @static
  */
-Entity.COLLIDE_RIGHT = 4;
+Entity.COLLIDE_RIGHT = Symbol(4);

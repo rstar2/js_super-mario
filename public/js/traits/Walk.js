@@ -113,11 +113,11 @@ export default class WalkTrait extends Trait {
     }
 
     /**
-     * 
      * @param {Entity} entity 
      * @param {(progress: Number)} animation
+     * @param {Number} levelTotalTime 
      */
-    animate(entity, animation) {
+    animate(entity, animation, levelTotalTime) {
         // TODO: Don't hardcore the  'break' tile like that
         // For this allow each trait to have multiple animations for fifferent purposes
         // "run" -> ["run-1", "run-2", "run-3"]
