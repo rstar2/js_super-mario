@@ -112,6 +112,11 @@ export default class WalkTrait extends Trait {
         return this._lastDirection;
     }
 
+    /**
+     * 
+     * @param {Entity} entity 
+     * @param {(progress: Number)} animation
+     */
     animate(entity, animation) {
         // TODO: Don't hardcore the  'break' tile like that
         // For this allow each trait to have multiple animations for fifferent purposes

@@ -1,7 +1,12 @@
 import * as logger from './logger.js';
 import CONFIG from './config.js';
 
-// this will redraw the whole level everytime
+/**
+ * this will redraw the whole level everytime
+ * @param {Level} level 
+ * @param {SpriteSheet} sprites
+ * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
+ */
 export function __createBackgroundLayer(level, sprites) {
     // create a static/cached bachground image buffer from the level's tiles
     const buffer = document.createElement('canvas');
@@ -19,10 +24,15 @@ export function __createBackgroundLayer(level, sprites) {
     };
 }
 
-// OPTIMIZATION - this will draw NEW columns only when only on demand (when needed while scrolling)
-// Note - old already drawn columns are already buffered
-// Note - with this case we still have a very huge buffer (as we've set the whole level's size) 
-// in memory.
+/**
+ * OPTIMIZATION - this will draw NEW columns only when only on demand (when needed while scrolling)
+ * Note - old already drawn columns are already buffered
+ * Note - with this case we still have a very huge buffer (as we've set the whole level's size) 
+ * in memory.
+ * @param {Level} level 
+ * @param {SpriteSheet} sprites
+ * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
+ */
 export function _createBackgroundLayer(level, sprites) {
     // create a static/cached bachground image buffer from the level's tiles
     const buffer = document.createElement('canvas');
@@ -60,9 +70,14 @@ export function _createBackgroundLayer(level, sprites) {
     };
 }
 
-// OPTIMIZATION - keep a small buffur in memory - just as needed to draw the view
-// so a little wider than view's size
-// ALso - we can redraw ONLY when there's a change in view's position
+/**
+ * OPTIMIZATION - keep a small buffur in memory - just as needed to draw the view
+ * so a little wider than view's size
+ * ALso - we can redraw ONLY when there's a change in view's position
+ * @param {Level} level 
+ * @param {SpriteSheet} sprites
+ * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
+ */
 export function createBackgroundLayer(level, sprites) {
     const tileResolver = level.getTileCollider().getTileResolver();
     const tileSize = tileResolver.getTileSize();
@@ -115,6 +130,12 @@ export function createBackgroundLayer(level, sprites) {
     };
 }
 
+/**
+ * @param {Level} level 
+ * @param {Number} maxEntityWidth 
+ * @param {Number} maxEntityHeight
+ * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
+ */
 export function createEntitiesLayer(level, maxEntityWidth = 64, maxEntityHeight = 64) {
     // create a static/cached image buffer fin which each entity will be drawn first
     const buffer = document.createElement('canvas');
@@ -137,6 +158,10 @@ export function createEntitiesLayer(level, maxEntityWidth = 64, maxEntityHeight 
     };
 }
 
+/**
+ * @param {Level} level
+ * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
+ */
 export function createDebugTileCollisionLayer(level) {
     const tileResolver = level.getTileCollider().getTileResolver();
     const tileSize = tileResolver.getTileSize();
@@ -175,6 +200,10 @@ export function createDebugTileCollisionLayer(level) {
     };
 }
 
+/**
+ * @param {View} view
+ * @returns {(context: CanvasRenderingContext2D, view: View) => void}
+ */
 export function createDebugViewLayer(viewToDraw) {
     return function (context, view) {
         context.strokeStyle = 'purple';

@@ -16,7 +16,7 @@ export default class Trait {
     /**
      * 
      * @param {Entity} entity 
-     * @param {Function} animation 
+     * @param {(progress: Number)} animation 
      * @param {Number} levelTotalTime 
      */
     // should return an object { tile, mirrored }

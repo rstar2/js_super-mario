@@ -1,5 +1,6 @@
 import Entity from './Entity.js';
 import LayerManager from './LayerManager.js';
+import Tile from './Tile.js';
 import TileCollider from './TileCollider.js';
 import { Matrix } from './math.js';
 import { loadLevel as _loadLevel } from './utils.js';
@@ -8,6 +9,12 @@ import { createBackgroundLayer, createEntitiesLayer } from './layers.js';
 
 
 export default class Level {
+    /**
+     * 
+     * @param {Matrix} tiles 
+     * @param {Number} tileSize 
+     * @param {{gravity:NUmber, marioPos: Number[]}} param2 
+     */
     constructor(tiles, tileSize, { gravity = 2000, marioPos = [10, 0] }) {
         this._tiles = tiles;
         this._layerManager = new LayerManager();
@@ -20,9 +27,10 @@ export default class Level {
 
         // compute the width and height from the tiles and tileSize
         let maxX = 0, maxY = 0;
-        this.forEachTile((x, y) => {
+        this.forEachTile((x, y, tile) => {
             maxX = Math.max(maxX, x);
             maxY = Math.max(maxY, y);
+            tile._name == 0;
         });
         this._width = maxX * tileSize;
         this._height = maxY * tileSize;
@@ -32,7 +40,7 @@ export default class Level {
 
     /**
      * 
-     * @param {Function} callback 
+     * @param {(x: Number, y: Number, tile: Tile) => void} callback 
      */
     forEachTile(callback) {
         this._tiles.forEach(callback);
@@ -40,7 +48,7 @@ export default class Level {
 
     /**
      * @param {Number} x
-     * @param {Function} callback 
+     * @param {(x: Number, y: Number, tile: Tile) => void} callback
      */
     forEachTileInColumn(x, callback) {
         this._tiles.forEachInColumn(x, callback);
@@ -48,15 +56,14 @@ export default class Level {
 
     /**
      * 
-     * @param {Function} callback 
+     * @param {(progress: Entity)} callback 
      */
     forEachEntity(callback) {
         this._entities.forEach(entity => callback(entity));
     }
 
     /**
-     * 
-     * @param {Function} layer 
+     * @param {(context: CanvasRenderingContext2D, view: View) => void} layer 
      */
     addLayer(layer) {
         this._layerManager.add(layer);
@@ -117,7 +124,6 @@ export default class Level {
     }
 
     /**
-     * 
      * @param {Number} rate 
      */
     update(rate) {
@@ -140,7 +146,6 @@ export default class Level {
     }
 
     /**
-     * 
      * @param {CanvasRenderingContext2D} context 
      * @param {View} view 
      */
@@ -148,27 +153,6 @@ export default class Level {
         this._layerManager.draw(context, view);
     }
 
-}
-
-export class Tile {
-    constructor(tileSpec) {
-        this._name = tileSpec.tile;
-        this._type = tileSpec.type;
-    }
-
-    /**
-     * @returns {String}
-     */
-    get name() {
-        return this._name;
-    }
-
-    /**
-     * @returns {String}
-     */
-    get type() {
-        return this._type;
-    }
 }
 
 function createTiles(backgrounds) {

@@ -47,7 +47,7 @@ export default class Entity {
     /**
      * 
      * @param {String} animName 
-     * @param {Function} animation 
+     * @param {(progress: Number)} animation 
      */
     registerAnimatation(animName, animation) {
         this._animations.set(animName, animation);
