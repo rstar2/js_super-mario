@@ -1,5 +1,5 @@
 import CONFIG from './config.js';
-import View from './view.js';
+import View from './View.js';
 import Timer from './Timer.js';
 import KeyboardManager from './KeyboardManager.js';
 import { loadLevel } from './Level.js';

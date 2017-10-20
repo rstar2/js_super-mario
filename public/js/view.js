@@ -6,10 +6,16 @@ export default class View {
         this._size = new Vector(width, height);
     }
 
+    /**
+     * @returns {Vector}
+     */
     get pos() {
         return this._pos;
     }
 
+    /**
+     * @returns {Vector}
+     */
     get size() {
         return this._size;
     }

@@ -30,27 +30,50 @@ export default class Level {
         this._totalTime = 0;
     }
 
+    /**
+     * 
+     * @param {Function} callback 
+     */
     forEachTile(callback) {
         this._tiles.forEach(callback);
     }
 
+    /**
+     * @param {Number} x
+     * @param {Function} callback 
+     */
     forEachTileInColumn(x, callback) {
         this._tiles.forEachInColumn(x, callback);
     }
 
+    /**
+     * 
+     * @param {Function} callback 
+     */
     forEachEntity(callback) {
         this._entities.forEach(entity => callback(entity));
     }
 
+    /**
+     * 
+     * @param {Function} layer 
+     */
     addLayer(layer) {
         this._layerManager.add(layer);
     }
 
+    /**
+     * 
+     * @param {Entity} entity 
+     */
     addEntity(entity) {
         this._entities.add(entity);
     }
 
-    // utility method to do all all 'Mario' related stuff in one place
+    /**
+     * Utility method to do all all 'Mario' related stuff in one place.
+     * @param {Entity} mario 
+     */
     addMario(mario) {
         this.addEntity(mario);
 
@@ -58,10 +81,45 @@ export default class Level {
         mario.pos.set(...this._marioPos);
     }
 
+    /**
+     * @returns {Number}
+     */
     getTotalTime() {
         return this._totalTime;
     }
 
+    /**
+     * @returns {TileCollider}
+     */
+    getTileCollider() {
+        return this._tileCollider;
+    }
+
+    /**
+     * @returns {Number}
+     */
+    getWidth() {
+        return this._width;
+    }
+
+    /**
+     * @returns {Number}
+     */
+    getHeight() {
+        return this._height;
+    }
+
+    /**
+     * @returns {Number}
+     */
+    getGravity() {
+        return this._gravity;
+    }
+
+    /**
+     * 
+     * @param {Number} rate 
+     */
     update(rate) {
         this._entities.forEach(entity => {
             entity.update(rate);
@@ -81,25 +139,15 @@ export default class Level {
         this._totalTime += rate;
     }
 
+    /**
+     * 
+     * @param {CanvasRenderingContext2D} context 
+     * @param {View} view 
+     */
     draw(context, view) {
         this._layerManager.draw(context, view);
     }
 
-    getTileCollider() {
-        return this._tileCollider;
-    }
-
-    getWidth() {
-        return this._width;
-    }
-
-    getHeight() {
-        return this._height;
-    }
-
-    getGravity() {
-        return this._gravity;
-    }
 }
 
 export class Tile {
@@ -108,10 +156,16 @@ export class Tile {
         this._type = tileSpec.type;
     }
 
+    /**
+     * @returns {String}
+     */
     get name() {
         return this._name;
     }
 
+    /**
+     * @returns {String}
+     */
     get type() {
         return this._type;
     }

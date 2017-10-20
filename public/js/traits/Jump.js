@@ -23,6 +23,9 @@ export default class JumpTrait extends Trait {
             entity.vel.y = -this._velocity;
             this._engagedTime -= rate;
         }
-        
+    }
+
+    collide(entity, obstacle, direction) {
+        // keep empty , inheritors may overwrite it they need to
     }
 }
