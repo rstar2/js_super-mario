@@ -5,11 +5,11 @@ export default class JumpTrait extends Trait {
     constructor() {
         super('jump');
 
-        this._duration = 1.3;
+        this._duration = 0.3;
         this._velocity = 200;
         this._engagedTime = 0;
 
-        // state to indicate whether it can jump - it can only from when touched a 'ground'
+        // state to indicate whether we can jump - it can only from when touched a 'ground'
         // this means that there will be needed a 2 step-update in order to animate
         this._ready = 0;
 
@@ -17,7 +17,17 @@ export default class JumpTrait extends Trait {
         // next jump can occur while falling and start
         // is pressed when very close to the ground (allow a grace period)
         this._requestTime = 0;
-        this._gracePeriod = 1.5; // seconds
+        this._gracePeriod = 0.2; // seconds
+
+        // the faster we walk/run the higher the jump
+        this._speedBoost = 0.3;
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    get falling() {
+        return this._ready < 0;
     }
 
     start() {
@@ -40,10 +50,11 @@ export default class JumpTrait extends Trait {
                 this._requestTime -= rate;
             }
         }
-        
+
         if (this._engagedTime > 0) {
             // update just the 'y' coordinate
-            entity.vel.y = -this._velocity;
+            // the faster we run the more speed we gain and thus higher jump
+            entity.vel.y = -(this._velocity + Math.abs(entity.vel.x) * this._speedBoost);
             this._engagedTime -= rate;
         }
 
@@ -72,10 +83,10 @@ export default class JumpTrait extends Trait {
         let tile;
 
         // catch the case when jumping
-        if (this._ready < 0) {
+        if (this.falling) {
             tile = animation(levelTotalTime);
         }
 
-        return {tile};
+        return { tile };
     }
 }

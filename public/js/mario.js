@@ -1,4 +1,4 @@
-import { KEY_SPACE, KEY_LEFT, KEY_RIGHT } from './KeyboardManager.js';
+import KeyboardManager from './KeyboardManager.js';
 import Entity from './Entity.js';
 import Walk from './traits/Walk.js';
 import Jump from './traits/Jump.js';
@@ -6,6 +6,11 @@ import { loadData } from './utils.js';
 import { loadSprites } from './sprites.js';
 import { createAnimation } from './animation.js';
 
+// constants for the keyboarad control - these are keyCode 
+const KEY_LEFT = 65;     // A
+const KEY_RIGHT = 68;    // D
+const KEY_TURBO = 79;    // O
+const KEY_JUMP = 80;     // P
 
 export function createMario(entitiesName, marioName) {
     return Promise.all([loadSprites(entitiesName, true), loadData(marioName)]).
@@ -36,8 +41,13 @@ export function createMario(entitiesName, marioName) {
         });
 }
 
-export function setupKeyboardControl(mario, keyboardManager) {
-    keyboardManager.register(KEY_SPACE, keyState => {
+/**
+ * 
+ * @param {Entity} mario 
+ * @param {KeyboardManager} keyboardManager 
+ */
+export function setupMarioKeyboard(mario, keyboardManager) {
+    keyboardManager.register(KEY_JUMP, keyState => {
         if (keyState) {
             mario.jump.start();
         } else {
@@ -49,5 +59,8 @@ export function setupKeyboardControl(mario, keyboardManager) {
     });
     keyboardManager.register(KEY_RIGHT, keyState => {
         mario.walk.right(!!keyState);
+    });
+    keyboardManager.register(KEY_TURBO, keyState => {
+        mario.walk.turbo(!!keyState);
     });
 }

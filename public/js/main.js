@@ -3,12 +3,18 @@ import View from './View.js';
 import Timer from './Timer.js';
 import KeyboardManager from './KeyboardManager.js';
 import { loadLevel } from './Level.js';
-import { createMario, setupKeyboardControl } from './entities.js';
+import { createMario, setupMarioKeyboard } from './mario.js';
 import { setupMouseControl } from './debug.js';
 import { createDebugTileCollisionLayer, createDebugViewLayer } from './layers.js';
 
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
+context.scale(2, 2);
+context.imageSmoothingEnabled = false;
+context.mozImageSmoothingEnabled = false;
+context.webkitImageSmoothingEnabled = false;
+
+
 const keyboardManager = new KeyboardManager();
 
 Promise.all([createMario('characters', 'mario'), loadLevel('1_1')]).
@@ -20,7 +26,7 @@ Promise.all([createMario('characters', 'mario'), loadLevel('1_1')]).
 
         // setup the keyboard actions for Mario
         // adn start the keyboard manager
-        setupKeyboardControl(mario, keyboardManager);
+        setupMarioKeyboard(mario, keyboardManager);
         keyboardManager.start(window);
 
         // DEBUG: add Mario easy replacement if needed

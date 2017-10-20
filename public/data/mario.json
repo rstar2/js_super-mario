@@ -8,19 +8,19 @@
 
         {
             "name": "walk",
-            "frameRate": 10,
+            "frameRate": 6,
             "frames": ["run-1", "run-2", "run-3"],
             "deprecated": true
         },
         
         {
             "name": "walk-run",
-            "frameRate": 10,
+            "frameRate": 6,
             "frames": ["run-1", "run-2", "run-3"]
         },
         {
             "name": "walk-break",
-            "frameRate": 10,
+            "frameRate": 1,
             "frames": ["break"]
         }
     ]
