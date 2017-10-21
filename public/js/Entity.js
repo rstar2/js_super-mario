@@ -45,32 +45,54 @@ export default class Entity {
     }
 
     /**
-     * 
+     * Register an animation. It can be bound to a {@link Trait} instance.
+     * It also allow a {@link Trait} to have multiple animations
+     * Like main "walk", "walk-run", "walk-break", "walk-turbo", etc...
      * @param {String} animName 
      * @param {(progress: Number)} animation 
      */
     registerAnimatation(animName, animation) {
-        this._animations.set(animName, animation);
+        const idx = animName.indexOf('-');
+        let mainName = animName;
+        let subName = animName;
+        if (idx > 0) {
+            mainName = animName.substring(0, idx);
+            subName = animName.substring(idx + 1);
+        }
+        let animations = this._animations.get(mainName);
+        if (!animations) {
+            animations = new Map();
+            this._animations.set(mainName, animations);
+        }
+        animations.set(subName, animation);
     }
     /**
      * 
      * @param {Level} level 
      */
     animate(level) {
-        return Array.from(this._animations).reduce((accum, [animName, animation]) => {
-            const trait = this[animName];
+        return Array.from(this._animations).reduce((accum, [animName, animations]) => {
             // check to see if there's such Trait registered and if there is then
             // call it's animation method,
             // if not then use the level's total time as a progress for a animation
             // that is not connected to a Trait
-            let { tile, mirrored } = trait ? trait.animate(this, animation, level.getTotalTime()) :
-                animation(level.getTotalTime());
-            if (accum.tile === undefined) {
-                accum.tile = tile;
+
+            const trait = this[animName];
+            if (trait) {
+                let { tile, mirrored } = trait.animate(this, animations, level.getTotalTime());
+                if (accum.tile === undefined) {
+                    accum.tile = tile;
+                }
+                if (accum.mirrored === undefined) {
+                    accum.mirrored = mirrored;
+                }
+            } else {
+                throw new Error(`Unsupported standalone animation ${animName}`);
+                // not used for now - all animation for an entity are connnected to a Trait.
+                // thus if needed a "standalone" animation then a specific Trait can be created
+                // just for it
             }
-            if (accum.mirrored === undefined) {
-                accum.mirrored = mirrored;
-            }
+
             return accum;
         }, {});
     }

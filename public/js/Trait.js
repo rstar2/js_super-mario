@@ -18,13 +18,13 @@ export default class Trait {
     /**
      * 
      * @param {Entity} entity 
-     * @param {(progress: Number)} animation 
+     * @param {Map<name:String, (progress: Number)>} animations 
      * @param {Number} levelTotalTime 
      */
     // should return an object { tile, mirrored }
     // with the next frame/tile name to be drawn, and whether or not it's mirrored in the sprites
     // eslint-disable-next-line no-unused-vars
-    animate(entity, animation, levelTotalTime) {
+    animate(entity, animations, levelTotalTime) {
         throw new Error("Abstract method 'animate' is not implemented");
     }
 

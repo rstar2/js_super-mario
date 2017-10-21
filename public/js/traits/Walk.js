@@ -139,18 +139,19 @@ export default class WalkTrait extends Trait {
      * @param {(progress: Number)} animation
      * @param {Number} levelTotalTime 
      */
-    animate(entity, animation, levelTotalTime) {
-        // TODO: Don't hardcore the  'break' tile like that
-        // For this allow each trait to have multiple animations for fifferent purposes
-        // "run" -> ["run-1", "run-2", "run-3"]
-        // "break" -> ["break", ...]
+    animate(entity, animations, levelTotalTime) {
         let tile;
         if (this.distance > 0) {
             if ((entity.vel.x > 0 && this.direction < 0) ||
                 (entity.vel.x < 0 && this.direction > 0)) {
                 // when "breaking" - e.g. changing the direction
-                tile = 'break';
+                
+                // use the 'break' animation
+                const animation = animations.get('break');
+                tile = animation(levelTotalTime);
             } else {
+                // use main animation
+                const animation = animations.get(this.NAME);
                 tile = animation(this.distance);
             }
         }

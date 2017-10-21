@@ -2,26 +2,17 @@
     "animations": [
         {
             "name": "jump",
-            "frameRate": 10,
-            "frames": ["jump"]
+            "frames": "jump"
         },
 
         {
             "name": "walk",
             "frameRate": 6,
-            "frames": ["run-1", "run-2", "run-3"],
-            "deprecated": true
-        },
-        
-        {
-            "name": "walk-run",
-            "frameRate": 6,
             "frames": ["run-1", "run-2", "run-3"]
         },
         {
             "name": "walk-break",
-            "frameRate": 1,
-            "frames": ["break"]
+            "frames": "break"
         }
     ]
 }

@@ -76,14 +76,16 @@ export default class JumpTrait extends Trait {
 
     /**
      * @param {Entity} entity 
-     * @param {(progress: Number)} animation
+     * @param {Map<name:String, (progress: Number)>} animations
      * @param {Number} levelTotalTime 
      */
-    animate(entity, animation, levelTotalTime) {
+    animate(entity, animations, levelTotalTime) {
         let tile;
 
         // catch the case when jumping
         if (this.falling) {
+            // get the main animation
+            const animation = animations.get(this.NAME);
             tile = animation(levelTotalTime);
         }
 
