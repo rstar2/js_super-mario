@@ -9,7 +9,7 @@ import { createDebugTileCollisionLayer, createDebugViewLayer } from './layers.js
 
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
-context.scale(2, 2);
+// context.scale(2, 2);
 context.imageSmoothingEnabled = false;
 context.mozImageSmoothingEnabled = false;
 context.webkitImageSmoothingEnabled = false;

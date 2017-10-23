@@ -1,20 +1,22 @@
 import * as logger from './logger.js';
 import CONFIG from './config.js';
+import TileResolver from './TileResolver.js';
 
 /**
  * this will redraw the whole level everytime
  * @param {Level} level 
+ * @param {Matrix} tiles 
  * @param {SpriteSheet} sprites
  * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
  */
-export function __createBackgroundLayer(level, sprites) {
+export function ___createBackgroundLayer(level, tiles, tileSize, sprites) {
     // create a static/cached bachground image buffer from the level's tiles
     const buffer = document.createElement('canvas');
     buffer.width = level.getWidth();
     buffer.height = level.getHeight();
     const imageContext = buffer.getContext('2d');
 
-    level.forEachTile((x, y, tile) => {
+    tiles.forEach((x, y, tile) => {
         sprites.drawTile(tile.name, imageContext, x, y);
     });
 
@@ -29,11 +31,14 @@ export function __createBackgroundLayer(level, sprites) {
  * Note - old already drawn columns are already buffered
  * Note - with this case we still have a very huge buffer (as we've set the whole level's size) 
  * in memory.
- * @param {Level} level 
+ * @param {Level} level
+ * @param {Matrix} tiles 
  * @param {SpriteSheet} sprites
  * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
  */
-export function _createBackgroundLayer(level, sprites) {
+export function __createBackgroundLayer(level, tiles, tileSize, sprites) {
+    const tileResolver = new TileResolver(tiles, tileSize);
+
     // create a static/cached bachground image buffer from the level's tiles
     const buffer = document.createElement('canvas');
     buffer.width = level.getWidth();
@@ -42,14 +47,11 @@ export function _createBackgroundLayer(level, sprites) {
 
     function redraw(indexStart, indexEnd) {
         for (let x = indexStart; x <= indexEnd; x++) {
-            level.forEachTileInColumn(x, (x, y, tile) => {
+            tiles.forEachInColumn(x, (x, y, tile) => {
                 sprites.drawTile(tile.name, bufferContext, x, y);
             });
         }
     }
-
-    const tileResolver = level.getTileCollider().getTileResolver();
-
 
     let drawnIndexEnd = 0;
     return function (context, view) {
@@ -75,12 +77,12 @@ export function _createBackgroundLayer(level, sprites) {
  * so a little wider than view's size
  * ALso - we can redraw ONLY when there's a change in view's position
  * @param {Level} level 
+ * @param {Matrix} tiles
  * @param {SpriteSheet} sprites
  * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
  */
-export function createBackgroundLayer(level, sprites) {
-    const tileResolver = level.getTileCollider().getTileResolver();
-    const tileSize = tileResolver.getTileSize();
+export function _createBackgroundLayer(level, tiles, tileSize, sprites) {
+    const tileResolver = new TileResolver(tiles, tileSize);
 
     // create a static/cached bachground image buffer from the level's tiles
     const buffer = document.createElement('canvas');
@@ -92,7 +94,7 @@ export function createBackgroundLayer(level, sprites) {
     function redraw(indexStart, indexEnd) {
         let hasTileAnimations = false;
         for (let x = indexStart; x <= indexEnd; x++) {
-            level.forEachTileInColumn(x, (x, y, tile) => {
+            tiles.forEachInColumn(x, (x, y, tile) => {
                 const tileName = tile.name;
                 if (sprites.isTileAnim(tileName)) {
                     // animate the tile
@@ -131,13 +133,63 @@ export function createBackgroundLayer(level, sprites) {
 }
 
 /**
+ * OPTIMIZATION - keep a small buffur in memory - just as needed to draw the view
+ * so a little wider than view's size
+ * ALso - we can redraw ONLY when there's a change in view's position
+ * @param {Level} level 
+ * @param {Matrix} tiles
+ * @param {SpriteSheet} sprites
+ * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
+ */
+export function createBackgroundLayer(level, tiles, tileSize, sprites) {
+    const tileResolver = new TileResolver(tiles, tileSize);
+
+    // create a static/cached bachground image buffer from the level's tiles
+    const buffer = document.createElement('canvas');
+    buffer.width = CONFIG.VIEW_WIDTH + tileSize;
+    buffer.height = CONFIG.VIEW_HEIGHT;
+    const bufferContext = buffer.getContext('2d');
+
+
+    function redraw(indexStart, indexEnd) {
+        bufferContext.clearRect(0, 0, buffer.width, buffer.height);
+        for (let x = indexStart; x <= indexEnd; x++) {
+            tiles.forEachInColumn(x, (x, y, tile) => {
+                const tileName = tile.name;
+                if (sprites.isTileAnim(tileName)) {
+                    // animate the tile
+                    sprites.drawTileAnim(tileName, bufferContext, x - indexStart, y, level.getTotalTime());
+                } else {
+                    // normal tie tile draw
+                    sprites.drawTile(tileName, bufferContext, x - indexStart, y);
+                }
+            });
+        }
+    }
+
+    return function (context, view) {
+        logger.logDbg("Background layer");
+
+        // redraw just the needed view an ONLY when needed
+        const drawWidth = tileResolver.toIndex(view.size.x);
+        const drawIndexStart = tileResolver.toIndex(view.pos.x);
+        const drawIndexEnd = drawIndexStart + drawWidth;
+
+        logger.logDbg("Background layer redrawing");
+        redraw(drawIndexStart, drawIndexEnd);
+
+        context.drawImage(buffer, -view.pos.x % tileSize, -view.pos.y);
+    };
+}
+
+/**
  * @param {Level} level 
  * @param {Number} maxEntityWidth 
  * @param {Number} maxEntityHeight
  * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
  */
 export function createEntitiesLayer(level, maxEntityWidth = 64, maxEntityHeight = 64) {
-    // create a static/cached image buffer fin which each entity will be drawn first
+    // create a middle image buffer in which each entity will be drawn first
     const buffer = document.createElement('canvas');
     buffer.width = maxEntityWidth;
     buffer.height = maxEntityHeight;
@@ -175,7 +227,7 @@ export function createDebugTileCollisionLayer(level) {
     };
 
     return function (context, view) {
-        logger.logDbg("Debug layer", collisionTiles.length);
+        logger.logDbg("Debug tile-collision layer", collisionTiles.length);
 
         const { x, y } = view.pos;
         // draw a box arround each collision-tile
@@ -187,6 +239,18 @@ export function createDebugTileCollisionLayer(level) {
             context.stroke();
         });
         collisionTiles.length = 0;
+    };
+}
+
+/**
+ * @param {Level} level
+ * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
+ */
+export function createDebugEntityLayer(level) {
+    return function (context, view) {
+        logger.logDbg("Debug entity layer");
+
+        const { x, y } = view.pos;
 
         // draw a box arround each entity
         // Note - the entity may not be perfectly fit in a grid tile

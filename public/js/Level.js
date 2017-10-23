@@ -1,3 +1,4 @@
+import * as logger from './logger.js';
 import Entity from './Entity.js';
 import LayerManager from './LayerManager.js';
 import Tile from './Tile.js';
@@ -16,10 +17,10 @@ export default class Level {
      * @param {{gravity:NUmber, marioPos: Number[]}} param2 
      */
     constructor(tiles, tileSize, { gravity = 2000, marioPos = [10, 0] }) {
-        this._tiles = tiles;
+        this._tileCollider = new TileCollider(tiles, tileSize);
         this._layerManager = new LayerManager();
         this._entities = new Set();
-        this._tileCollider = new TileCollider(this._tiles, tileSize);
+        
 
         // the gravity should be on the level - thus applied to all entities
         this._gavity = gravity;
@@ -27,7 +28,7 @@ export default class Level {
 
         // compute the width and height from the tiles and tileSize
         let maxX = 0, maxY = 0;
-        this.forEachTile((x, y, tile) => {
+        tiles.forEach((x, y, tile) => {
             maxX = Math.max(maxX, x);
             maxY = Math.max(maxY, y);
             tile._name == 0;
@@ -39,19 +40,10 @@ export default class Level {
     }
 
     /**
-     * 
-     * @param {(x: Number, y: Number, tile: Tile) => void} callback 
+     * @returns {TileCollider}
      */
-    forEachTile(callback) {
-        this._tiles.forEach(callback);
-    }
-
-    /**
-     * @param {Number} x
-     * @param {(x: Number, y: Number, tile: Tile) => void} callback
-     */
-    forEachTileInColumn(x, callback) {
-        this._tiles.forEachInColumn(x, callback);
+    getTileCollider() {
+        return this._tileCollider;
     }
 
     /**
@@ -93,13 +85,6 @@ export default class Level {
      */
     getTotalTime() {
         return this._totalTime;
-    }
-
-    /**
-     * @returns {TileCollider}
-     */
-    getTileCollider() {
-        return this._tileCollider;
     }
 
     /**
@@ -155,37 +140,83 @@ export default class Level {
 
 }
 
-function createTiles(backgrounds) {
-    const tiles = new Matrix();
 
-    function applyRange(background, xStart, xLen, yStart, yLen) {
-        const xEnd = xStart + xLen;
-        const yEnd = yStart + yLen;
-        for (let x = xStart; x < xEnd; ++x) {
-            for (let y = yStart; y < yEnd; ++y) {
-                tiles.set(x, y, new Tile(background));
+function* expandSpan(xStart, xLen, yStart, yLen) {
+    const xEnd = xStart + xLen;
+    const yEnd = yStart + yLen;
+    for (let x = xStart; x < xEnd; ++x) {
+        for (let y = yStart; y < yEnd; ++y) {
+            yield { x, y };
+        }
+    }
+}
+
+function expandRange(range) {
+    if (range.length === 4) {
+        const [xStart, xLen, yStart, yLen] = range;
+        return expandSpan(xStart, xLen, yStart, yLen);
+
+    } else if (range.length === 3) {
+        const [xStart, xLen, yStart] = range;
+        return expandSpan(xStart, xLen, yStart, 1);
+
+    } else if (range.length === 2) {
+        const [xStart, yStart] = range;
+        return expandSpan(xStart, 1, yStart, 1);
+    }
+    throw new Error(`Unsupported range params legnth ${range.length}`);
+}
+
+function* expandRanges(ranges) {
+    for (const range of ranges) {
+        for (const item of expandRange(range)) {
+            yield item;
+        }
+    }
+}
+
+
+function expandTiles(tiles, patterns) {
+    const expandedTiles = [];
+    function walkTiles(tiles, offsetX, offsetY) {
+        for (const tile of tiles) {
+            for (const { x, y } of expandRanges(tile.ranges)) {
+                // take in mind the 'offset'
+                const realX = x + offsetX;
+                const realY = y + offsetY;
+
+                // check if want to draw a pattern (a block of predifined tiles)
+                // e.g. like "little" backgrounds over the main
+                const patternName = tile.pattern;
+                if (patternName) {
+                    const patternSpec = patterns[patternName];
+                    if (patternSpec) {
+                        // Note - patterns can have patterns - e.g. recursion
+                        walkTiles(patternSpec.tiles, realX, realY);
+                    } else {
+                        logger.logWarn(`No pattern defined with name ${patternName}`);
+                    }
+                } else {
+                    expandedTiles.push({
+                        x: realX, y: realY, tile: new Tile(tile)
+                    });
+                }
             }
         }
     }
 
-    backgrounds.forEach(background => {
-        background.ranges.forEach(range => {
-            if (range.length === 4) {
-                const [xStart, xLen, yStart, yLen] = range;
-                applyRange(background, xStart, xLen, yStart, yLen);
+    walkTiles(tiles, 0, 0);
 
-            } else if (range.length === 3) {
-                const [xStart, xLen, yStart] = range;
-                applyRange(background, xStart, xLen, yStart, 1);
+    return expandedTiles;
+}
 
-            } else if (range.length === 2) {
-                const [xStart, yStart] = range;
-                applyRange(background, xStart, 1, yStart, 1);
-            }
-        });
-    });
+function createGrid(tiles, patterns) {
+    const grid = new Matrix();
+    for (const { x, y, tile } of expandTiles(tiles, patterns)) {
+        grid.set(x, y, tile);
+    }
 
-    return tiles;
+    return grid;
 }
 
 export function loadLevel(levelName) {
@@ -193,14 +224,26 @@ export function loadLevel(levelName) {
         then(levelSpec => Promise.all([levelSpec, loadSprites(levelSpec.sprites),])).
         then(([levelSpec, backgroundSprites]) => {
             // parse the level's background tiles, entities and other props
-            const { backgrounds, entities, props } = levelSpec;
+            const { layers, patterns, entities, props } = levelSpec;
 
-            // create the tiles grid
-            const tiles = createTiles(backgrounds);
-
-            // create the level
             // TODO: tileSize should be get from the backgroundSprites.getWidth()/getHeight()
-            const level = new Level(tiles, 16, props);
+            const tileSize = 16;
+
+            // create the main collision grid
+            const mergedTiles = layers.reduce((mergedTiles, layerSpec) => {
+                return mergedTiles.concat(layerSpec.tiles);
+            }, []);
+            const gridCollision = createGrid(mergedTiles, patterns);
+            
+            // create the level
+            const level = new Level(gridCollision, tileSize, props);
+
+            // create all background layers - the drawing ones
+            layers.forEach(layerSpec => {
+                const grid = createGrid(layerSpec.tiles, patterns);
+                level.addLayer(createBackgroundLayer(level, grid, tileSize, backgroundSprites));
+            });
+            
 
             // attach entities to the Level
             // Note that Mario will be additioanlly attached in 'main.js'
@@ -210,7 +253,7 @@ export function loadLevel(levelName) {
                 level.addEntity(e);
             });
 
-            level.addLayer(createBackgroundLayer(level, backgroundSprites));
+            // creaate and add the entity layer
             level.addLayer(createEntitiesLayer(level));
 
             return level;
