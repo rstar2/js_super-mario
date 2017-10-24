@@ -5,7 +5,7 @@ import KeyboardManager from './KeyboardManager.js';
 import { loadLevel } from './Level.js';
 import { createMario, setupMarioKeyboard } from './mario.js';
 import { setupMouseControl } from './debug.js';
-import { createDebugTileCollisionLayer, createDebugViewLayer } from './layers.js';
+import { createDebugTileCollisionLayer, createDebugEntityLayer, createDebugViewLayer } from './layers.js';
 
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
@@ -37,6 +37,7 @@ Promise.all([createMario('characters', 'mario'), loadLevel('1_1')]).
         // DEBUG: add visual collisions if needed
         if (CONFIG.DEBUG_TILE_COLLISION) {
             level.addLayer(createDebugTileCollisionLayer(level));
+            level.addLayer(createDebugEntityLayer(level));
         }
 
         if (CONFIG.DEBUG_VIEW_SCROLL) {

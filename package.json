@@ -2,10 +2,14 @@
   "name": "super-mario",
   "version": "1.0.0",
   "description": "Super Mario Game",
-  "main": "index.js",
+  "main": "public/js/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "serve ./public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rstar2/js_super-mario.git"
   },
   "author": "Rumen Neshev",
   "license": "MIT"
