@@ -3,7 +3,8 @@ import View from './View.js';
 import Timer from './Timer.js';
 import KeyboardManager from './KeyboardManager.js';
 import { loadLevel } from './Level.js';
-import { createMario, setupMarioKeyboard } from './mario.js';
+import { loadMario, setupMarioKeyboard } from './entities/Mario.js';
+import { loadGoomba } from './entities/Goomba.js';
 import { setupMouseControl } from './debug.js';
 import { createDebugTileCollisionLayer, createDebugEntityLayer, createDebugViewLayer } from './layers.js';
 
@@ -17,12 +18,20 @@ context.webkitImageSmoothingEnabled = false;
 
 const keyboardManager = new KeyboardManager();
 
-Promise.all([createMario('characters', 'mario'), loadLevel('1_1')]).
-    then(([mario, level]) => {
+Promise.all([loadMario('mario'), loadGoomba('goomba'), loadLevel('1_1')]).
+    then(([createMario, createGoomba, level]) => {
         const view = new View(CONFIG.VIEW_WIDTH, CONFIG.VIEW_HEIGHT);
+
+        // now this createMario function can be called multiple times
+        const mario = createMario();
 
         // add Mario to the level
         level.addMario(mario);
+
+        const goomba = createGoomba();
+        goomba.pos.x = 160;
+        goomba.pos.y = 140;
+        level.addEntity(goomba)
 
         // setup the keyboard actions for Mario
         // adn start the keyboard manager

@@ -1,5 +1,7 @@
 {
+    
     "spritesURL": "/img/characters.gif",
+    
     "tiles": [
         {
             "name": "idle",
@@ -30,6 +32,23 @@
             "name": "jump",
             "pos": [355, 44],
             "size": [14, 16]
+        }
+    ],
+    
+    "animations": [
+        {
+            "name": "jump",
+            "frames": "jump"
+        },
+
+        {
+            "name": "walk",
+            "frameRate": 6,
+            "frames": ["run-1", "run-2", "run-3"]
+        },
+        {
+            "name": "walk-break",
+            "frames": "break"
         }
     ]
 }

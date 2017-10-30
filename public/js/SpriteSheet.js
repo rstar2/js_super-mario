@@ -55,6 +55,13 @@ export default class SpriteSheet {
         this._animations.set(tile, animation);
     }
 
+    /**
+     * @param {(animation:Function, name:String)=>void} callback 
+     */
+    forEachAnimation(callback) {
+        this._animations.forEach(callback);
+    }
+
     draw(tile, context, x, y, mirrored = false) {
         const tileImage = this._tiles.get(tile);
         if (tileImage) {
@@ -65,7 +72,7 @@ export default class SpriteSheet {
                 image = tileImage[mirrored ? 1 : 0];
             }
             context.drawImage(image, x, y);
-            
+
             return [image.width, image.height];
         } else {
             logger.logWarn(`No tile set for ${tile}`);

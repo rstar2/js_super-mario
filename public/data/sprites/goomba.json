@@ -1,0 +1,29 @@
+{
+    "spritesURL": "/img/characters.gif",
+    
+    "tiles": [
+        {
+            "name": "walk-1",
+            "pos": [296, 187],
+            "size": [16, 16]
+        },
+        {
+            "name": "walk-2",
+            "pos": [315, 187],
+            "size": [16, 16]
+        },
+        {
+            "name": "flat",
+            "pos": [277, 43],
+            "size": [16, 16]
+        }
+    ],
+
+    "animations": [
+        {
+            "name": "walk",
+            "frameRate": 6,
+            "frames": ["walk-1", "walk-2"]
+        }
+    ]
+}
