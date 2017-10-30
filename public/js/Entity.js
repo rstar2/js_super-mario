@@ -6,6 +6,8 @@ export default class Entity {
         this._vel = new Vector(0, 0);
         this._size = new Vector(0, 0);
 
+        this._lifetime = 0;
+
         this._traits = [];
 
         this._animations = new Map();
@@ -33,6 +35,13 @@ export default class Entity {
     }
 
     /**
+     * @returns {Number}
+     */
+    get lifetime() {
+        return this._lifetime;
+    }
+
+    /**
      * 
      * @param {Trait} trait 
      */
@@ -51,7 +60,7 @@ export default class Entity {
      * @param {String} animName 
      * @param {(progress: Number)} animation 
      */
-    registerAnimatation(animName, animation) {
+    registerAnimation(animName, animation) {
         const idx = animName.indexOf('-');
         let mainName = animName;
         let subName = animName;
@@ -103,6 +112,9 @@ export default class Entity {
      */
     update(rate) {
         this._traits.forEach(trait => trait.update(this, rate));
+
+        // increase also the common lifetime of the entity
+        this._lifetime += rate;
     }
 
     /**

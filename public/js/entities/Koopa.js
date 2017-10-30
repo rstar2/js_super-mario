@@ -5,16 +5,16 @@ import { loadSprites } from '../sprites.js';
 /**
  * @param {String} entitiesName 
  */
-export function loadGoomba(entitiesName) {
+export function loadKoopa(entitiesName) {
     return loadSprites(entitiesName, true).
-        then(createGoombaFactory);
+        then(createKoopaFactory);
 }
 
 /**
  * return a synchronous create function
  * @param {SpriteSheet} sprites 
  */
-function createGoombaFactory(sprites) {
+function createKoopaFactory(sprites) {
     function draw(context, level) {
         const { tile, mirrored } = this.animate(level);
         // if no tile to animate then draw the default "idle" one,
@@ -25,7 +25,7 @@ function createGoombaFactory(sprites) {
         this.size.set(...tileSize);
     }
 
-    return function createGoomba() {
+    return function createKoopa() {
         const goomba = new Entity();
 
         goomba.registerTrait(new Wander());

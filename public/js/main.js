@@ -2,9 +2,11 @@ import CONFIG from './config.js';
 import View from './View.js';
 import Timer from './Timer.js';
 import KeyboardManager from './KeyboardManager.js';
+import { setupMarioKeyboard } from './keyboard.js';
 import { loadLevel } from './Level.js';
-import { loadMario, setupMarioKeyboard } from './entities/Mario.js';
+import { loadMario } from './entities/Mario.js';
 import { loadGoomba } from './entities/Goomba.js';
+import { loadKoopa } from './entities/Koopa.js';
 import { setupMouseControl } from './debug.js';
 import { createDebugTileCollisionLayer, createDebugEntityLayer, createDebugViewLayer } from './layers.js';
 
@@ -18,8 +20,9 @@ context.webkitImageSmoothingEnabled = false;
 
 const keyboardManager = new KeyboardManager();
 
-Promise.all([loadMario('mario'), loadGoomba('goomba'), loadLevel('1_1')]).
-    then(([createMario, createGoomba, level]) => {
+Promise.all([loadMario('mario'), loadGoomba('goomba'), loadKoopa('koopa'), 
+loadLevel('1_1')]).
+    then(([createMario, createGoomba, createKoopa, level]) => {
         const view = new View(CONFIG.VIEW_WIDTH, CONFIG.VIEW_HEIGHT);
 
         // now this createMario function can be called multiple times
@@ -29,9 +32,12 @@ Promise.all([loadMario('mario'), loadGoomba('goomba'), loadLevel('1_1')]).
         level.addMario(mario);
 
         const goomba = createGoomba();
-        goomba.pos.x = 160;
-        goomba.pos.y = 140;
-        level.addEntity(goomba)
+        goomba.pos.x = 260;
+        level.addEntity(goomba);
+
+        const koopa = createKoopa();
+        koopa.pos.x = 320;
+        level.addEntity(koopa);
 
         // setup the keyboard actions for Mario
         // adn start the keyboard manager
@@ -62,8 +68,8 @@ Promise.all([loadMario('mario'), loadGoomba('goomba'), loadLevel('1_1')]).
 
             // move the camera/view together with Mario
             // TODO: Don't position Mario always in the center, allow some margin left and right
-            if (mario.pos.x > view.size.x/2) {
-                view.pos.x = mario.pos.x - view.size.x/2;
+            if (mario.pos.x > view.size.x / 2) {
+                view.pos.x = mario.pos.x - view.size.x / 2;
             }
 
             // draw next frame

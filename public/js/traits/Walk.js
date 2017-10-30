@@ -86,7 +86,7 @@ export default class WalkTrait extends Trait {
         entity.vel.x = this._direction * this._velocity;
 
         if (this._direction !== 0) {
-            // meassure the distance "walked" after the last stop
+            // measure the distance "walked" after the last stop
             this._distance += Math.abs(entity.vel.x) * rate;
             // also remember where the entity is heading last
             this._heading = this._direction;
@@ -108,7 +108,7 @@ export default class WalkTrait extends Trait {
             }
         } else if (entity.vel.x !== 0) {
             // if stopped walking (e.g. this._direction is 0)
-            // but it's stil moving because of the acceleration
+            // but it's still moving because of the acceleration
             // then apply some DEacceleration that will stop him completely
 
             // this will in fact speed up the drag
@@ -121,7 +121,7 @@ export default class WalkTrait extends Trait {
         if (entity.vel.x !== 0) {
             // this will add some drag - the higher the velocity the grater the drag
             // it will be always with the "sign +/-" s the velocity, so we'll be always
-            // subsctractig late from the velocity - so real drag
+            // subsctracting late from the velocity - so real drag
 
             // note - put the drag 
             // 1. while moving (e.g a slowing little by little and thus applying a max speed)
@@ -130,7 +130,7 @@ export default class WalkTrait extends Trait {
             entity.vel.x -= drag;
         }
 
-        // meassure the distance "walked" after the last stop
+        // measure the distance "walked" after the last stop
         this._distance += Math.abs(entity.vel.x) * rate;
     }
 
