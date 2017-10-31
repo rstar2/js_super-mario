@@ -19,6 +19,7 @@ function createGoombaFactory(sprites) {
 
     return function createGoomba() {
         const entity = new Entity();
+        entity.size.set(16, 16);
 
         entity.registerTrait(new Wander());
 

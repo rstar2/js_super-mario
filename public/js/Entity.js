@@ -1,4 +1,5 @@
 import { Vector } from './math.js';
+import Bounds from './Bounds.js';
 
 export default class Entity {
     constructor() {
@@ -9,13 +10,23 @@ export default class Entity {
         // current size
         this._size = new Vector(0, 0);
         // current offset (allow drawn size to be different that the real size)
-        this._offset = new Vector(0, 0); // TODO: implement it
+        this._offset = new Vector(0, 0);
+
+        // it wil make all calculations 
+        this._bounds = new Bounds(this._pos, this._size, this._offset);
 
         this._lifetime = 0;
 
         this._traits = [];
 
         this._animations = new Map();
+    }
+
+    /**
+     * @returns {Bounds}
+     */
+    get bounds() {
+        return this._bounds;
     }
 
     /**

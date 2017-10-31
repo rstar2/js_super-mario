@@ -257,7 +257,7 @@ export function createDebugEntityLayer(level) {
         context.strokeStyle = 'red';
         level.forEachEntity(entity => {
             context.beginPath();
-            context.rect(entity.pos.x - x, entity.pos.y - y,
+            context.rect(entity.bounds.left - x, entity.bounds.top - y,
                 entity.size.x, entity.size.y);
             context.stroke();
         });

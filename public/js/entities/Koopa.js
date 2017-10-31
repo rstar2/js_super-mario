@@ -19,8 +19,10 @@ function createKoopaFactory(sprites) {
 
     return function createKoopa() {
         const entity = new Entity();
+        entity.size.set(16, 16);
+        entity.offset.y = 8;
 
-        entity.registerTrait(new Wander());
+        entity.registerTrait(new Wander(30));
 
         entity.registerAnimationsFromSprites(sprites);
 

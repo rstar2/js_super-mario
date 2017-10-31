@@ -29,14 +29,14 @@ export default class TileCollider {
             return;
         } else if (entity.vel.x > 0) {
             // moving forward/right
-            posX = entity.pos.x + entity.size.x;
+            posX = entity.bounds.right;
         } else {
             // moving backwards/left
-            posX = entity.pos.x;
+            posX = entity.bounds.left;
         }
 
         const matches = this._tiles.getByRange(posX, posX,
-            entity.pos.y, entity.pos.y + entity.size.y);
+            entity.bounds.top, entity.bounds.bottom);
 
         matches.forEach(match => {
             // check if collided with a ground
@@ -46,8 +46,8 @@ export default class TileCollider {
 
             // check if the entity is going right
             if (entity.vel.x > 0) {
-                if (entity.pos.x + entity.size.x > match.x1) {
-                    entity.pos.x = match.x1 - entity.size.x;
+                if (entity.bounds.right > match.x1) {
+                    entity.bounds.right = match.x1;
                     entity.vel.x = 0;
 
                     entity.collide(match.tile, Entity.COLLIDE_RIGHT);
@@ -55,8 +55,8 @@ export default class TileCollider {
             }
             // else if going left
             else if (entity.vel.x < 0) {
-                if (entity.pos.x < match.x2) {
-                    entity.pos.x = match.x2;
+                if (entity.bounds.left < match.x2) {
+                    entity.bounds.left = match.x2;
                     entity.vel.x = 0;
 
                     entity.collide(match.tile, Entity.COLLIDE_LEFT);
@@ -75,13 +75,13 @@ export default class TileCollider {
             return;
         } else if (entity.vel.y > 0) {
             // moving down
-            posY = entity.pos.y + entity.size.y;
+            posY = entity.bounds.bottom;
         } else {
             // moving up
-            posY = entity.pos.y;
+            posY = entity.bounds.top;
         }
 
-        const matches = this._tiles.getByRange(entity.pos.x, entity.pos.x + entity.size.x,
+        const matches = this._tiles.getByRange(entity.bounds.left, entity.bounds.right,
             posY, posY);
 
         matches.forEach(match => {
@@ -92,8 +92,8 @@ export default class TileCollider {
 
             // check if the entity is going down (falling)
             if (entity.vel.y > 0) {
-                if (entity.pos.y + entity.size.y > match.y1) {
-                    entity.pos.y = match.y1 - entity.size.y;
+                if (entity.bounds.bottom > match.y1) {
+                    entity.bounds.bottom = match.y1;
                     entity.vel.y = 0;
 
                     entity.collide(match.tile, Entity.COLLIDE_BOTTOM);
@@ -101,8 +101,8 @@ export default class TileCollider {
             }
             // else if going up (jumping)
             else if (entity.vel.y < 0) {
-                if (entity.pos.y < match.y2) {
-                    entity.pos.y = match.y2;
+                if (entity.bounds.top < match.y2) {
+                    entity.bounds.top = match.y2;
                     entity.vel.y = 0;
 
                     entity.collide(match.tile, Entity.COLLIDE_TOP);

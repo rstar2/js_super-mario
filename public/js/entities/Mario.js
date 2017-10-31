@@ -24,6 +24,7 @@ function createMarioFactory(sprites) {
     // createMario() will be synchronous
     return function createMario() {
         const mario = new Entity();
+        mario.size.set(14, 16);
 
         mario.registerTrait(new Walk());
         mario.registerTrait(new Jump());

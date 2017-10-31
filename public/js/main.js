@@ -26,18 +26,19 @@ Promise.all([loadEntities(), loadLevel('1_1')]).
         // e.g. : entityFactory = {createMario, createGoomba, createKoopa, ... }
 
         // add Mario to the level
-        // TODO: add all entities psition and count the level spec
+        // TODO: add all entities positions and count the level spec
         const mario = entityFactory.createMario();
         level.addEntity(mario);
-
         mario.pos.x = 64;
+
         const goomba = entityFactory.createGoomba();
-        goomba.pos.x = 260;
         level.addEntity(goomba);
+        goomba.pos.x = 260;
+        
 
         const koopa = entityFactory.createKoopa();
-        koopa.pos.x = 320;
         level.addEntity(koopa);
+        koopa.pos.x = 320;
 
         // setup the keyboard actions for Mario
         // adn start the keyboard manager

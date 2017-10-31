@@ -13,8 +13,9 @@ export function createDraw(sprites, defaultTile) {
         // tileSize is array with [width, height]
         const tileSize = sprites.draw(tile || defaultTile, context, 0, 0, mirrored);
 
+        // TODO: The drawn tile size is not necessary the "real" size of the entity
         // set the size of the entity to the size of the real drawn tile
-        this.size.set(...tileSize);
+        // this.size.set(...tileSize);
     };
 
 }
