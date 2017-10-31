@@ -14,17 +14,16 @@ export default class Level {
      * 
      * @param {Matrix} tiles 
      * @param {Number} tileSize 
-     * @param {{gravity:NUmber, marioPos: Number[]}} param2 
+     * @param {{gravity:Number}} param2 
      */
-    constructor(tiles, tileSize, { gravity = 2000, marioPos = [10, 0] }) {
+    constructor(tiles, tileSize, { gravity = 2000 }) {
         this._tileCollider = new TileCollider(tiles, tileSize);
         this._layerManager = new LayerManager();
         this._entities = new Set();
-        
+
 
         // the gravity should be on the level - thus applied to all entities
         this._gavity = gravity;
-        this._marioPos = marioPos;
 
         // compute the width and height from the tiles and tileSize
         let maxX = 0, maxY = 0;
@@ -67,17 +66,6 @@ export default class Level {
      */
     addEntity(entity) {
         this._entities.add(entity);
-    }
-
-    /**
-     * Utility method to do all all 'Mario' related stuff in one place.
-     * @param {Entity} mario 
-     */
-    addMario(mario) {
-        this.addEntity(mario);
-
-        // set Mario's initial pos depending on the level
-        mario.pos.set(...this._marioPos);
     }
 
     /**
@@ -234,7 +222,7 @@ export function loadLevel(levelName) {
                 return mergedTiles.concat(layerSpec.tiles);
             }, []);
             const gridCollision = createGrid(mergedTiles, patterns);
-            
+
             // create the level
             const level = new Level(gridCollision, tileSize, props);
 
@@ -243,7 +231,7 @@ export function loadLevel(levelName) {
                 const grid = createGrid(layerSpec.tiles, patterns);
                 level.addLayer(createBackgroundLayer(level, grid, tileSize, backgroundSprites));
             });
-            
+
 
             // attach entities to the Level
             // Note that Mario will be additioanlly attached in 'main.js'

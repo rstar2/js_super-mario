@@ -4,9 +4,7 @@ import Timer from './Timer.js';
 import KeyboardManager from './KeyboardManager.js';
 import { setupMarioKeyboard } from './keyboard.js';
 import { loadLevel } from './Level.js';
-import { loadMario } from './entities/Mario.js';
-import { loadGoomba } from './entities/Goomba.js';
-import { loadKoopa } from './entities/Koopa.js';
+import { loadEntities } from './entities/entities.js';
 import { setupMouseControl } from './debug.js';
 import { createDebugTileCollisionLayer, createDebugEntityLayer, createDebugViewLayer } from './layers.js';
 
@@ -20,22 +18,24 @@ context.webkitImageSmoothingEnabled = false;
 
 const keyboardManager = new KeyboardManager();
 
-Promise.all([loadMario('mario'), loadGoomba('goomba'), loadKoopa('koopa'), 
-loadLevel('1_1')]).
-    then(([createMario, createGoomba, createKoopa, level]) => {
+Promise.all([loadEntities(), loadLevel('1_1')]).
+    then(([entityFactory, level]) => {
         const view = new View(CONFIG.VIEW_WIDTH, CONFIG.VIEW_HEIGHT);
 
-        // now this createMario function can be called multiple times
-        const mario = createMario();
+        // now this entityFactory has multiple factory functions can be called multiple times
+        // e.g. : entityFactory = {createMario, createGoomba, createKoopa, ... }
 
         // add Mario to the level
-        level.addMario(mario);
+        // TODO: add all entities psition and count the level spec
+        const mario = entityFactory.createMario();
+        level.addEntity(mario);
 
-        const goomba = createGoomba();
+        mario.pos.x = 64;
+        const goomba = entityFactory.createGoomba();
         goomba.pos.x = 260;
         level.addEntity(goomba);
 
-        const koopa = createKoopa();
+        const koopa = entityFactory.createKoopa();
         koopa.pos.x = 320;
         level.addEntity(koopa);
 

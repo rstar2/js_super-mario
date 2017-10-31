@@ -4,8 +4,7 @@
 
     "entities": [],
     "props": {
-        "gravity": 1500,
-        "marioPos": [64, 64]
+        "gravity": 1500
     },
 
     "patterns": {

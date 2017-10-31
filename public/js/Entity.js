@@ -2,9 +2,14 @@ import { Vector } from './math.js';
 
 export default class Entity {
     constructor() {
+        // current possition
         this._pos = new Vector(0, 0);
+        // current velocity
         this._vel = new Vector(0, 0);
+        // current size
         this._size = new Vector(0, 0);
+        // current offset (allow drawn size to be different that the real size)
+        this._offset = new Vector(0, 0); // TODO: implement it
 
         this._lifetime = 0;
 
@@ -32,6 +37,13 @@ export default class Entity {
      */
     get size() {
         return this._size;
+    }
+
+    /**
+     * @returns {Vector}
+     */
+    get offset() {
+        return this._offset;
     }
 
     /**
@@ -75,6 +87,17 @@ export default class Entity {
         }
         animations.set(subName, animation);
     }
+
+    /**
+     * Move all registered animations from the {@link SpriteSheet} object to the entity
+     * @param {SpriteSheet} sprites 
+     */
+    registerAnimationsFromSprites(sprites) {
+        sprites.forEachAnimation((animation, name) => {
+            this.registerAnimation(name, animation);
+        });
+    }
+
     /**
      * 
      * @param {Level} level 

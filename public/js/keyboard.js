@@ -1,5 +1,3 @@
-import KeyboardManager from './KeyboardManager.js';
-
 // constants for the keyboard control - these are keyCode 
 const KEY_LEFT = 65;     // A
 const KEY_RIGHT = 68;    // D

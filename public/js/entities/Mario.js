@@ -2,13 +2,11 @@ import Entity from '../Entity.js';
 import Walk from '../traits/Walk.js';
 import Jump from '../traits/Jump.js';
 import { loadSprites } from '../sprites.js';
+import { createDraw } from './utils.js';
 
 // loadMario() will be async
-/**
- * @param {String} entitiesName 
- */
-export function loadMario(entitiesName) {
-    return loadSprites(entitiesName, true).
+export function loadMario() {
+    return loadSprites('mario', true).
         then(createMarioFactory);
 }
 
@@ -20,15 +18,8 @@ function createMarioFactory(sprites) {
     // moved all the support/stateless functionality out of the createMario scope
     // as they are needed to be created only ones 
 
-    function draw(context, level) {
-        const { tile, mirrored } = this.animate(level);
-        // if no tile to animate then draw the default "idle" one,
-        // tileSize is array with [width, height]
-        const tileSize = sprites.draw(tile || 'idle', context, 0, 0, mirrored);
-
-        // set the size of the entity to the size of the real drawn tile
-        this.size.set(...tileSize);
-    }
+    // create th draw method - common/static/stateless for all Goomba entities
+    const draw = createDraw(sprites, 'idle');
 
     // createMario() will be synchronous
     return function createMario() {
@@ -37,9 +28,7 @@ function createMarioFactory(sprites) {
         mario.registerTrait(new Walk());
         mario.registerTrait(new Jump());
 
-        sprites.forEachAnimation((animation, name) => {
-            mario.registerAnimation(name, animation);
-        });
+        mario.registerAnimationsFromSprites(sprites);
 
         mario.draw = draw;
 
