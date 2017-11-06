@@ -68,6 +68,11 @@ export default class Level {
         this._entities.add(entity);
     }
 
+    getMario() {
+        // assume Mairo is always set first iin the level JSON file
+        return [...this._entities][0];
+    }
+
     /**
      * @returns {Number}
      */
@@ -213,6 +218,9 @@ function createGrid(tiles, patterns) {
 // in order to get the 'entityFactory' from main.js will wrap 'loadLevel' in
 // another function that creates it
 export function createLoadLevel(entityFactory) {
+    // now this entityFactory has multiple factory functions can be called multiple times
+    // e.g. : entityFactory = {mario, goomba, koopa, ... }
+
     return function loadLevel(levelName) {
         return _loadLevel(levelName).
             then(levelSpec => Promise.all([levelSpec, loadSprites(levelSpec.sprites),])).
@@ -242,10 +250,11 @@ export function createLoadLevel(entityFactory) {
                 // attach entities to the Level
                 // Note that Mario will be additioanlly attached in 'main.js'
                 entities.forEach(entitySpec => {
-                    const { name, pos } = entitySpec;
-                    const entity = entityFactory[name]();
+                    const { name, pos: [x, y] } = entitySpec;
+                    const createEntity = entityFactory[name];
+                    const entity = createEntity();
                     level.addEntity(entity);
-                    entity.pos.set(...pos);
+                    entity.pos.set(x, y);
                 });
 
                 // creaate and add the entity layer

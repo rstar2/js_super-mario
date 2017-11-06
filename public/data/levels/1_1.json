@@ -369,6 +369,10 @@
 
     "entities": [
         {
+            "name": "mario",
+            "pos": [64, 0]
+        },
+        {
             "name": "koopa",
             "pos": [260, 0]
         },
