@@ -17,7 +17,7 @@ function createKoopaFactory(sprites) {
     // create th draw method - common/static/stateless for all Koopa entities
     const draw = createDraw(sprites, 'walk-1');
 
-    return function createKoopa() {
+    return function koopa() {
         const entity = new Entity();
         entity.size.set(16, 16);
         entity.offset.y = 8;

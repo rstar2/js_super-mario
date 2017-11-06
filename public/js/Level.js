@@ -156,17 +156,22 @@ function expandRange(range) {
 }
 
 function* expandRanges(ranges) {
+    // for (const range of ranges) {
+    //     for (const item of expandRange(range)) {
+    //         yield item;
+    //     }
+    // }
+
+    // this is the same but with Yield Delelegaion construct
     for (const range of ranges) {
-        for (const item of expandRange(range)) {
-            yield item;
-        }
+        yield* expandRange(range);
     }
 }
 
 
-function expandTiles(tiles, patterns) {
-    const expandedTiles = [];
-    function walkTiles(tiles, offsetX, offsetY) {
+function* expandTiles(tiles, patterns) {
+
+    function* walkTiles(tiles, offsetX, offsetY) {
         for (const tile of tiles) {
             for (const { x, y } of expandRanges(tile.ranges)) {
                 // take in mind the 'offset'
@@ -180,22 +185,20 @@ function expandTiles(tiles, patterns) {
                     const patternSpec = patterns[patternName];
                     if (patternSpec) {
                         // Note - patterns can have patterns - e.g. recursion
-                        walkTiles(patternSpec.tiles, realX, realY);
+                        yield* walkTiles(patternSpec.tiles, realX, realY);
                     } else {
                         logger.logWarn(`No pattern defined with name ${patternName}`);
                     }
                 } else {
-                    expandedTiles.push({
+                    yield {
                         x: realX, y: realY, tile: new Tile(tile)
-                    });
+                    };
                 }
             }
         }
     }
 
-    walkTiles(tiles, 0, 0);
-
-    return expandedTiles;
+    yield* walkTiles(tiles, 0, 0);
 }
 
 function createGrid(tiles, patterns) {
@@ -207,43 +210,48 @@ function createGrid(tiles, patterns) {
     return grid;
 }
 
-export function loadLevel(levelName) {
-    return _loadLevel(levelName).
-        then(levelSpec => Promise.all([levelSpec, loadSprites(levelSpec.sprites),])).
-        then(([levelSpec, backgroundSprites]) => {
-            // parse the level's background tiles, entities and other props
-            const { layers, patterns, entities, props } = levelSpec;
+// in order to get the 'entityFactory' from main.js will wrap 'loadLevel' in
+// another function that creates it
+export function createLoadLevel(entityFactory) {
+    return function loadLevel(levelName) {
+        return _loadLevel(levelName).
+            then(levelSpec => Promise.all([levelSpec, loadSprites(levelSpec.sprites),])).
+            then(([levelSpec, backgroundSprites]) => {
+                // parse the level's background tiles, entities and other props
+                const { layers, patterns, entities, props } = levelSpec;
 
-            // TODO: tileSize should be get from the backgroundSprites.getWidth()/getHeight()
-            const tileSize = 16;
+                // TODO: tileSize should be get from the backgroundSprites.getWidth()/getHeight()
+                const tileSize = 16;
 
-            // create the main collision grid
-            const mergedTiles = layers.reduce((mergedTiles, layerSpec) => {
-                return mergedTiles.concat(layerSpec.tiles);
-            }, []);
-            const gridCollision = createGrid(mergedTiles, patterns);
+                // create the main collision grid
+                const mergedTiles = layers.reduce((mergedTiles, layerSpec) => {
+                    return mergedTiles.concat(layerSpec.tiles);
+                }, []);
+                const gridCollision = createGrid(mergedTiles, patterns);
 
-            // create the level
-            const level = new Level(gridCollision, tileSize, props);
+                // create the level
+                const level = new Level(gridCollision, tileSize, props);
 
-            // create all background layers - the drawing ones
-            layers.forEach(layerSpec => {
-                const grid = createGrid(layerSpec.tiles, patterns);
-                level.addLayer(createBackgroundLayer(level, grid, tileSize, backgroundSprites));
+                // create all background layers - the drawing ones
+                layers.forEach(layerSpec => {
+                    const grid = createGrid(layerSpec.tiles, patterns);
+                    level.addLayer(createBackgroundLayer(level, grid, tileSize, backgroundSprites));
+                });
+
+
+                // attach entities to the Level
+                // Note that Mario will be additioanlly attached in 'main.js'
+                entities.forEach(entitySpec => {
+                    const { name, pos } = entitySpec;
+                    const entity = entityFactory[name]();
+                    level.addEntity(entity);
+                    entity.pos.set(...pos);
+                });
+
+                // creaate and add the entity layer
+                level.addLayer(createEntitiesLayer(level));
+
+                return level;
             });
-
-
-            // attach entities to the Level
-            // Note that Mario will be additioanlly attached in 'main.js'
-            // eslint-disable-next-line no-unused-vars
-            entities.forEach(entity => {
-                const e = new Entity();
-                level.addEntity(e);
-            });
-
-            // creaate and add the entity layer
-            level.addLayer(createEntitiesLayer(level));
-
-            return level;
-        });
+    };
 }

@@ -17,7 +17,7 @@ function createGoombaFactory(sprites) {
     // create th draw method - common/static/stateless for all Goomba entities
     const draw = createDraw(sprites, 'walk-1');
 
-    return function createGoomba() {
+    return function goomba() {
         const entity = new Entity();
         entity.size.set(16, 16);
 

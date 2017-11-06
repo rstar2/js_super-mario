@@ -3,22 +3,23 @@ import View from './View.js';
 import Timer from './Timer.js';
 import KeyboardManager from './KeyboardManager.js';
 import { setupMarioKeyboard } from './keyboard.js';
-import { loadLevel } from './Level.js';
+import { createLoadLevel } from './Level.js';
 import { loadEntities } from './entities/entities.js';
 import { setupMouseControl } from './debug.js';
 import { createDebugTileCollisionLayer, createDebugEntityLayer, createDebugViewLayer } from './layers.js';
 
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
-// context.scale(2, 2);
+context.scale(2, 2);
 context.imageSmoothingEnabled = false;
 context.mozImageSmoothingEnabled = false;
 context.webkitImageSmoothingEnabled = false;
 
-
 const keyboardManager = new KeyboardManager();
 
-Promise.all([loadEntities(), loadLevel('1_1')]).
+loadEntities().
+    then(entityFactory => Promise.all([entityFactory, createLoadLevel(entityFactory)])).
+    then(([entityFactory, loadLevel]) => Promise.all([entityFactory, loadLevel('1_1')])).
     then(([entityFactory, level]) => {
         const view = new View(CONFIG.VIEW_WIDTH, CONFIG.VIEW_HEIGHT);
 
@@ -27,18 +28,9 @@ Promise.all([loadEntities(), loadLevel('1_1')]).
 
         // add Mario to the level
         // TODO: add all entities positions and count the level spec
-        const mario = entityFactory.createMario();
+        const mario = entityFactory.mario();
         level.addEntity(mario);
         mario.pos.x = 64;
-
-        const goomba = entityFactory.createGoomba();
-        level.addEntity(goomba);
-        goomba.pos.x = 260;
-        
-
-        const koopa = entityFactory.createKoopa();
-        level.addEntity(koopa);
-        koopa.pos.x = 320;
 
         // setup the keyboard actions for Mario
         // adn start the keyboard manager

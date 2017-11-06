@@ -2,7 +2,6 @@
     "_sprites": "underworld",
     "sprites": "overworld",
 
-    "entities": [],
     "props": {
         "gravity": 1500
     },
@@ -365,6 +364,18 @@
                     ]
                 }
             ]
+        }
+    ],
+
+    "entities": [
+        {
+            "name": "koopa",
+            "pos": [260, 0]
+        },
+
+        {
+            "name": "goomba",
+            "pos": [220, 0]
         }
     ]
     

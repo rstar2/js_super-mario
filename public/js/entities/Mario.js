@@ -22,7 +22,7 @@ function createMarioFactory(sprites) {
     const draw = createDraw(sprites, 'idle');
 
     // createMario() will be synchronous
-    return function createMario() {
+    return function mario() {
         const mario = new Entity();
         mario.size.set(14, 16);
 
