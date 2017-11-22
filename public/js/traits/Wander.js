@@ -18,6 +18,10 @@ export default class WanderTrait extends Trait {
         return this._distance;
     }
 
+    stop() {
+        this._velocity = 0;
+    }
+
     update(entity, rate) {
         // update just the 'x' coordinate of the velocity
         entity.vel.x = this._velocity;
@@ -33,15 +37,15 @@ export default class WanderTrait extends Trait {
     animate(entity, animations) {
         let tile;
         if (this.distance > 0) {
-            // use main animation
+            // use main animation - it for sure exists
             const animation = animations.get(this.NAME);
             tile = animation(entity.lifetime);
         }
 
-        return { tile , mirrored: entity.vel.x < 0};
+        return { tile, mirrored: entity.vel.x < 0 };
     }
 
-    collide(entity, obstacle, direction) {
+    obstructed(entity, obstacle, direction) {
         switch (direction) {
             case Entity.COLLIDE_LEFT:
             case Entity.COLLIDE_RIGHT:

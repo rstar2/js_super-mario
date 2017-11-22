@@ -137,7 +137,7 @@ export default class Entity {
             }
 
             return accum;
-        }, {});
+        }, { tile: undefined, mirrored: undefined});
     }
 
     /**
@@ -162,13 +162,20 @@ export default class Entity {
     }
 
     /**
-     * 
-     * @param {Entity} entity 
+     * Called when the entity has "obstructed" with a "brick" tile
      * @param {Tile} obstacle 
      * @param {Number} direction 
      */
-    collide(obstacle, direction) {
-        this._traits.forEach(trait => trait.collide(this, obstacle, direction));
+    obstructedBy(obstacle, direction) {
+        this._traits.forEach(trait => trait.obstructed(this, obstacle, direction));
+    }
+
+    /**
+     * Called when the entity has "collided" with another entity.
+     * @param {Entity} other 
+     */
+    collidedWith(other) {
+        this._traits.forEach(trait => trait.collided(this, other));
     }
 
 }

@@ -42,4 +42,11 @@ export default class Bounds {
     set right(x) {
         this.pos.x = x - (this.size.x + this.offset.x);
     }
+
+    overlaps(otherBounds) {
+        return this.bottom > otherBounds.top &&
+            this.top < otherBounds.bottom &&
+            this.right > otherBounds.left &&
+            this.left < otherBounds.right;
+    }
 }

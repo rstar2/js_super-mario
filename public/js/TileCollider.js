@@ -50,7 +50,7 @@ export default class TileCollider {
                     entity.bounds.right = match.x1;
                     entity.vel.x = 0;
 
-                    entity.collide(match.tile, Entity.COLLIDE_RIGHT);
+                    entity.obstructedBy(match.tile, Entity.COLLIDE_RIGHT);
                 }
             }
             // else if going left
@@ -59,7 +59,7 @@ export default class TileCollider {
                     entity.bounds.left = match.x2;
                     entity.vel.x = 0;
 
-                    entity.collide(match.tile, Entity.COLLIDE_LEFT);
+                    entity.obstructedBy(match.tile, Entity.COLLIDE_LEFT);
                 }
             }
         });
@@ -96,7 +96,7 @@ export default class TileCollider {
                     entity.bounds.bottom = match.y1;
                     entity.vel.y = 0;
 
-                    entity.collide(match.tile, Entity.COLLIDE_BOTTOM);
+                    entity.obstructedBy(match.tile, Entity.COLLIDE_BOTTOM);
                 }
             }
             // else if going up (jumping)
@@ -105,7 +105,7 @@ export default class TileCollider {
                     entity.bounds.top = match.y2;
                     entity.vel.y = 0;
 
-                    entity.collide(match.tile, Entity.COLLIDE_TOP);
+                    entity.obstructedBy(match.tile, Entity.COLLIDE_TOP);
                 }
             }
         });

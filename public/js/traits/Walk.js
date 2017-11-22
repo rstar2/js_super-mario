@@ -119,9 +119,9 @@ export default class WalkTrait extends Trait {
         }
 
         if (entity.vel.x !== 0) {
-            // this will add some drag - the higher the velocity the grater the drag
-            // it will be always with the "sign +/-" s the velocity, so we'll be always
-            // subsctracting late from the velocity - so real drag
+            // this will add some drag - the higher the velocity the greater the drag
+            // it will be always with the opposite sign (+/- ) the velocity, so we'll be always
+            // subtracting from the velocity - so real drag
 
             // note - put the drag 
             // 1. while moving (e.g a slowing little by little and thus applying a max speed)
@@ -145,12 +145,14 @@ export default class WalkTrait extends Trait {
             if ((entity.vel.x > 0 && this.direction < 0) ||
                 (entity.vel.x < 0 && this.direction > 0)) {
                 // when "breaking" - e.g. changing the direction
-                
+
                 // use the 'break' animation
                 const animation = animations.get('break');
-                tile = animation(levelTotalTime);
+                if (animation) {
+                    tile = animation(levelTotalTime);
+                }
             } else {
-                // use main animation
+                // use main animation - it for sure exists
                 const animation = animations.get(this.NAME);
                 tile = animation(this.distance);
             }

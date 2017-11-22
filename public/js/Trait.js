@@ -1,8 +1,9 @@
 import Tile from './Tile.js';
 
 export default class Trait {
-    constructor(name) {
+    constructor(name, isBehavior = false) {
         this.NAME = name;
+        this._isBehavior = isBehavior;
     }
 
     /**
@@ -12,7 +13,9 @@ export default class Trait {
      */
     // eslint-disable-next-line no-unused-vars
     update(entity, rate) {
-        throw new Error("Abstract method 'update' is not implemented");
+        if (!this._isBehavior) {
+            throw new Error("Abstract method 'update' is not implemented");
+        }
     }
 
     /**
@@ -25,7 +28,9 @@ export default class Trait {
     // with the next frame/tile name to be drawn, and whether or not it's mirrored in the sprites
     // eslint-disable-next-line no-unused-vars
     animate(entity, animations, levelTotalTime) {
-        throw new Error("Abstract method 'animate' is not implemented");
+        if (!this._isBehavior) {
+            throw new Error("Abstract method 'animate' is not implemented");
+        }
     }
 
     /**
@@ -35,7 +40,17 @@ export default class Trait {
      * @param {Number} direction 
      */
     // eslint-disable-next-line no-unused-vars
-    collide(entity, obstacle, direction) {
+    obstructed(entity, obstacle, direction) {
+        // keep empty , inheritors may overwrite it they need to
+    }
+
+    /**
+     * 
+     * @param {Entity} entity 
+     * @param {Entity} otherEntity 
+     */
+    // eslint-disable-next-line no-unused-vars
+    collided(entity, otherEntity) {
         // keep empty , inheritors may overwrite it they need to
     }
 }

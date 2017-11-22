@@ -1,8 +1,10 @@
 import * as logger from './logger.js';
-import Entity from './Entity.js';
 import LayerManager from './LayerManager.js';
 import Tile from './Tile.js';
+import Entity from './Entity.js';
 import TileCollider from './TileCollider.js';
+import EntityCollider from './EntityCollider.js';
+import { } from './EntityCollider.js';
 import { Matrix } from './math.js';
 import { loadLevel as _loadLevel } from './utils.js';
 import { loadSprites } from './sprites.js';
@@ -21,9 +23,11 @@ export default class Level {
         this._layerManager = new LayerManager();
         this._entities = new Set();
 
+        this._entityCollider = new EntityCollider(this._entities);
+
 
         // the gravity should be on the level - thus applied to all entities
-        this._gavity = gravity;
+        this._gravity = gravity;
 
         // compute the width and height from the tiles and tileSize
         let maxX = 0, maxY = 0;
@@ -115,9 +119,11 @@ export default class Level {
             entity.pos.y += entity.vel.y * rate;
             this._tileCollider.checkY(entity);
 
+            this._entityCollider.check(entity);
+
             // add some gravity to all entities
             // Note - it should be added finally after the tile-collision checks
-            entity.vel.y += this._gavity * rate;
+            entity.vel.y += this._gravity * rate;
         });
 
         this._totalTime += rate;

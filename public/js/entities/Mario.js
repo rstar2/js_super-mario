@@ -1,6 +1,8 @@
 import Entity from '../Entity.js';
 import Walk from '../traits/Walk.js';
 import Jump from '../traits/Jump.js';
+import BehaviorStopper from '../traits/BehaviorStopper.js';
+import BehaviorKillable from '../traits/BehaviorKillable.js';
 import { loadSprites } from '../sprites.js';
 import { createDraw } from './utils.js';
 
@@ -23,16 +25,18 @@ function createMarioFactory(sprites) {
 
     // createMario() will be synchronous
     return function mario() {
-        const mario = new Entity();
-        mario.size.set(14, 16);
+        const entity = new Entity();
+        entity.size.set(14, 16);
 
-        mario.registerTrait(new Walk());
-        mario.registerTrait(new Jump());
+        entity.registerTrait(new BehaviorStopper());
+        entity.registerTrait(new BehaviorKillable());
+        entity.registerTrait(new Walk());
+        entity.registerTrait(new Jump());
 
-        mario.registerAnimationsFromSprites(sprites);
+        entity.registerAnimationsFromSprites(sprites);
 
-        mario.draw = draw;
+        entity.draw = draw;
 
-        return mario;
+        return entity;
     };
 }

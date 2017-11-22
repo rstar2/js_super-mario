@@ -61,7 +61,7 @@ export default class JumpTrait extends Trait {
         this._ready--;
     }
 
-    collide(entity, obstacle, direction) {
+    obstructed(entity, obstacle, direction) {
         switch (direction) {
             case Entity.COLLIDE_BOTTOM:
                 // make ready to jump
@@ -84,7 +84,7 @@ export default class JumpTrait extends Trait {
 
         // catch the case when jumping
         if (this.falling) {
-            // get the main animation
+            // get the main animation - it for sure exists
             const animation = animations.get(this.NAME);
             tile = animation(levelTotalTime);
         }
