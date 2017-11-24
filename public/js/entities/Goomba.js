@@ -11,52 +11,16 @@ export function loadGoomba() {
 }
 
 
-class Behavior extends Trait {
-    constructor() {
-        super('behavior', true);
-        // Note: finally we could use the trait like this:
-        // const goomba = ...;
-        //goomba.behavior.xxxx();
-    }
-
-    collided(goomba, otherEntity) {
-        if (goomba.killable.dead) {
-            // the Goomba is already dead - don't interact again on next collisions
-            return;
-        }
-
-        // don't check if the other entity is 'Mario'
-        // but if the other entity has a special feature,
-        // in this case for a trait named 'stomper'
-        if (otherEntity.stomper) {
-
-            // Goomba is killed only if te stomper (like Mario) is falling on it
-            if (otherEntity.vel.y > goomba.vel.y) {
-                goomba.wander.stop();
-                goomba.killable.kill();
-
-                // make the stomper bounce
-                otherEntity.stomper.bounce();
-            } else {
-                // make the stomper be killed
-                if (otherEntity.killable) {
-                    otherEntity.killable.kill();
-                }
-            }
-        }
-    }
-}
-
 /**
  * return a synchronous create function
  * @param {SpriteSheet} sprites 
  */
 function createGoombaFactory(sprites) {
 
-    // create th draw method - common/static/stateless for all Goomba entities
+    // create the draw method - common/static/stateless for all Goomba entities
     const defDraw = createDraw(sprites, 'walk-1');
     const draw = function (context, level) {
-        if (this.killable && this.killable.dead) {
+        if (this.killable.dead) {
             sprites.draw('flat', context, 0, 0);
             return;
         }
@@ -67,9 +31,9 @@ function createGoombaFactory(sprites) {
         const entity = new Entity();
         entity.size.set(16, 16);
 
+        entity.registerTrait(new Wander());
         entity.registerTrait(new Behavior());
         entity.registerTrait(new BeKillable());
-        entity.registerTrait(new Wander());
 
         entity.registerAnimationsFromSprites(sprites);
 
@@ -77,4 +41,43 @@ function createGoombaFactory(sprites) {
 
         return entity;
     };
+}
+
+class Behavior extends Trait {
+    constructor() {
+        super('behavior', true);
+    }
+
+    collided(us, otherEntity) {
+        if (us.killable.dead) {
+            // we are already dead - don't interact again on next collisions
+            return;
+        }
+
+        // don't check if the other entity is 'Mario'
+        // but if the other entity has a special feature,
+        // in this case for a trait named 'stomper'
+        if (otherEntity.stomper) {
+
+            // Goomba is killed only if te stomper (like Mario) is falling on it
+            if (otherEntity.vel.y > us.vel.y) {
+                // make us stop moving
+                us.vel.x = 0;
+                us.wander.pause();
+                
+                // make us killed
+                us.killable.kill();
+
+                // make the stomper bounce
+                otherEntity.stomper.bounce();
+            } else {
+                // make the stomper killed
+                if (otherEntity.killable) {
+                    otherEntity.killable.kill();
+                }
+            }
+        }
+    }
+
+
 }

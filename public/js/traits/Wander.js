@@ -5,7 +5,9 @@ export default class WanderTrait extends Trait {
     constructor(velocity = -30) {
         super('wander');
 
-        this._velocity = velocity;
+        this._defVelocity = velocity;
+
+        this._velocity = this._defVelocity;
 
         // the distance "walked" when in single "walking" phase
         this._distance = 0;
@@ -18,8 +20,12 @@ export default class WanderTrait extends Trait {
         return this._distance;
     }
 
-    stop() {
+    pause() {
         this._velocity = 0;
+    }
+
+    unpause() {
+        this._velocity = this._defVelocity;
     }
 
     /**

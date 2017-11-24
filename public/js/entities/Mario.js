@@ -20,7 +20,7 @@ function createMarioFactory(sprites) {
     // moved all the support/stateless functionality out of the createMario scope
     // as they are needed to be created only ones 
 
-    // create th draw method - common/static/stateless for all Goomba entities
+    // create the draw method - common/static/stateless for all Goomba entities
     const draw = createDraw(sprites, 'idle');
 
     // createMario() will be synchronous

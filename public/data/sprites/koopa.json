@@ -11,6 +11,16 @@
             "name": "walk-2",
             "pos": [315, 206],
             "size": [16, 24]
+        },
+        {
+            "name": "hiding",
+            "pos": [144, 206],
+            "size": [16, 24]
+        },
+        {
+            "name": "hiding-with-legs",
+            "pos": [163, 206],
+            "size": [16, 24]
         }
     ],
 
