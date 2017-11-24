@@ -22,6 +22,11 @@ export default class WanderTrait extends Trait {
         this._velocity = 0;
     }
 
+    /**
+     * @param {Entity} entity
+     * @param {Number} rate
+     * @param {Level} level  
+     */
     update(entity, rate) {
         // update just the 'x' coordinate of the velocity
         entity.vel.x = this._velocity;

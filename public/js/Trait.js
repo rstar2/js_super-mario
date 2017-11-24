@@ -9,10 +9,11 @@ export default class Trait {
     /**
      * 
      * @param {Entity} entity 
-     * @param {Number} rate 
+     * @param {Number} rate
+     * @param {Level} level 
      */
     // eslint-disable-next-line no-unused-vars
-    update(entity, rate) {
+    update(entity, rate, level) {
         if (!this._isBehavior) {
             throw new Error("Abstract method 'update' is not implemented");
         }

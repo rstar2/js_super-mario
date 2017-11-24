@@ -9,6 +9,7 @@ import { Matrix } from './math.js';
 import { loadLevel as _loadLevel } from './utils.js';
 import { loadSprites } from './sprites.js';
 import { createBackgroundLayer, createEntitiesLayer } from './layers.js';
+import BeControl from './traits/BeControl.js';
 
 
 export default class Level {
@@ -65,15 +66,31 @@ export default class Level {
     }
 
     /**
-     * 
      * @param {Entity} entity 
      */
     addEntity(entity) {
         this._entities.add(entity);
     }
 
+    /**
+     * @param {Entity} entity
+     * @returns {Boolean} 
+     */
+    removeEntity(entity) {
+        return this._entities.delete(entity);
+    }
+
+    /**
+     * 
+     * @param {Entity} entity
+     * @returns {Boolean} 
+     */
+    hasEntity(entity) {
+        return this._entities.has(entity);
+    }
+
     getMario() {
-        // assume Mairo is always set first iin the level JSON file
+        // assume Mario is always set first in the level JSON file
         return [...this._entities][0];
     }
 
@@ -110,7 +127,7 @@ export default class Level {
      */
     update(rate) {
         this._entities.forEach(entity => {
-            entity.update(rate);
+            entity.update(rate, this);
 
             // NOTE !!! : the x an y positions SHOULD be updated separately
             // before checking for collisions 
@@ -119,11 +136,16 @@ export default class Level {
             entity.pos.y += entity.vel.y * rate;
             this._tileCollider.checkY(entity);
 
-            this._entityCollider.check(entity);
-
             // add some gravity to all entities
-            // Note - it should be added finally after the tile-collision checks
+            // NOTE !!! : applying the gravity SHOULD be after the tile collision check have been made
+
             entity.vel.y += this._gravity * rate;
+        });
+
+        // finally check if entities collide with each other
+        // NOTE !!! : it SHOULD be after all entities have been passed through the first loop
+        this._entities.forEach(entity => {
+            this._entityCollider.check(entity);
         });
 
         this._totalTime += rate;
@@ -163,7 +185,7 @@ function expandRange(range) {
         const [xStart, yStart] = range;
         return expandSpan(xStart, 1, yStart, 1);
     }
-    throw new Error(`Unsupported range params legnth ${range.length}`);
+    throw new Error(`Unsupported range params length ${range.length}`);
 }
 
 function* expandRanges(ranges) {
@@ -173,7 +195,7 @@ function* expandRanges(ranges) {
     //     }
     // }
 
-    // this is the same but with Yield Delelegaion construct
+    // this is the same but with Yield Delegation construct
     for (const range of ranges) {
         yield* expandRange(range);
     }
@@ -189,7 +211,7 @@ function* expandTiles(tiles, patterns) {
                 const realX = x + offsetX;
                 const realY = y + offsetY;
 
-                // check if want to draw a pattern (a block of predifined tiles)
+                // check if want to draw a pattern (a block of predefined tiles)
                 // e.g. like "little" backgrounds over the main
                 const patternName = tile.pattern;
                 if (patternName) {
@@ -254,7 +276,7 @@ export function createLoadLevel(entityFactory) {
 
 
                 // attach entities to the Level
-                // Note that Mario will be additioanlly attached in 'main.js'
+                // Note that Mario will be additionally attached in 'main.js'
                 entities.forEach(entitySpec => {
                     const { name, pos: [x, y] } = entitySpec;
                     const createEntity = entityFactory[name];
@@ -263,10 +285,21 @@ export function createLoadLevel(entityFactory) {
                     entity.pos.set(x, y);
                 });
 
-                // creaate and add the entity layer
+                // create and add the entity layer
                 level.addLayer(createEntitiesLayer(level));
+
+                createEntityControllable(level.getMario(), level);
 
                 return level;
             });
     };
+}
+
+// FIXME: temporary this is here
+function createEntityControllable(controllable, level) {
+    // create a fictitious entity
+    const control = new Entity();
+    control.draw = () => { };
+    control.registerTrait(new BeControl(controllable));
+    level.addEntity(control);
 }

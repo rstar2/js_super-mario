@@ -72,6 +72,11 @@ export default class WalkTrait extends Trait {
         this._dragFactor = startAction ? DRAG_FACTOR_TURBO : DRAG_FACTOR_NORMAL;
     }
 
+    /**
+     * @param {Entity} entity
+     * @param {Number} rate
+     * @param {Level} level  
+     */
     update(entity, rate) {
         // update just the 'x' coordinate of the velocity/acceleration
         if (this._accelerate) {

@@ -39,6 +39,11 @@ export default class JumpTrait extends Trait {
         this._requestTime = 0;
     }
 
+    /**
+     * @param {Entity} entity
+     * @param {Number} rate
+     * @param {Level} level  
+     */
     update(entity, rate) {
         // check if we've pressed to 'start'
         // then we'll start to look for an opportunaty to jump

@@ -142,12 +142,13 @@ export default class Entity {
 
     /**
      * 
-     * @param {Number} rate 
+     * @param {Number} rate
+     * @param {Level} level  
      */
-    update(rate) {
-        this._traits.forEach(trait => trait.update(this, rate));
+    update(rate, level) {
+        this._traits.forEach(trait => trait.update(this, rate, level));
 
-        // increase also the common lifetime of the entity
+        // increase also the overall lifetime of the entity
         this._lifetime += rate;
     }
 

@@ -8,6 +8,10 @@ export class Vector {
         this._y = y;
     }
 
+    clone() {
+        return new Vector(this._x, this._y);
+    }
+
     get x() {
         return this._x;
     }

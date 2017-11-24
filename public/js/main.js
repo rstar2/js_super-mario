@@ -54,9 +54,7 @@ async function main(canvas) {
 
         // move the camera/view together with Mario
         // TODO: Don't position Mario always in the center, allow some margin left and right
-        if (mario.pos.x > view.size.x / 2) {
-            view.pos.x = mario.pos.x - view.size.x / 2;
-        }
+        view.pos.x = Math.max(0, mario.pos.x - view.size.x / 2);
 
         // draw next frame
         level.draw(context, view);
