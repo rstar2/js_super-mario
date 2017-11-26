@@ -20,6 +20,8 @@ export default class Entity {
         this._traits = [];
 
         this._animations = new Map();
+
+        this._canCollide = true;
     }
 
     /**
@@ -62,6 +64,20 @@ export default class Entity {
      */
     get lifetime() {
         return this._lifetime;
+    }
+
+    /**
+     * @returns {Boolean}
+     */
+    get canCollide() {
+        return this._canCollide;
+    }
+
+    /**
+     * @param {Boolean} canCollide
+     */
+    set canCollide(canCollide) {
+        this._canCollide = canCollide;
     }
 
     /**
@@ -137,7 +153,7 @@ export default class Entity {
             }
 
             return accum;
-        }, { tile: undefined, mirrored: undefined});
+        }, { tile: undefined, mirrored: undefined });
     }
 
     /**

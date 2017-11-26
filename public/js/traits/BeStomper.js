@@ -3,28 +3,25 @@ import Trait from '../Trait.js';
 export default class BeStomper extends Trait {
     constructor() {
         super('stomper', true);
-        // Note: finally we could use the trait like this:
-        // const entity = ...;
-        // entity.stopper;
 
         this._bounceVelocity = 400;
-        this._bounce = false;
-    }
-
-    bounce() {
-        this._bounce = true;
     }
 
     /**
-     * @param {Entity} entity
-     * @param {Number} rate
-     * @param {Level} level  
+     * @param {Entity} us 
+     * @param {Entity} otherEntity 
      */
-    update(entity) {
-        if (this._bounce) {
-            this._bounce = false;
+    collided(us, otherEntity) {
+        if (!otherEntity.killable || otherEntity.killable.dead) {
+            return;
+        }
 
-            entity.vel.y = -this._bounceVelocity; 
+        if (us.pos.y < otherEntity.pos.y) {
+            // go to the top of the other entity, not to collide agin with it on the next check
+            us.bounds.bottom = otherEntity.bounds.top;
+
+            // make the stomper bounce
+            us.vel.y = -this._bounceVelocity;
         }
     }
 

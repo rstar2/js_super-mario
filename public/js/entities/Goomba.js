@@ -31,9 +31,9 @@ function createGoombaFactory(sprites) {
         const entity = new Entity();
         entity.size.set(16, 16);
 
-        entity.registerTrait(new Wander());
         entity.registerTrait(new Behavior());
         entity.registerTrait(new BeKillable());
+        entity.registerTrait(new Wander());
 
         entity.registerAnimationsFromSprites(sprites);
 
@@ -48,8 +48,8 @@ class Behavior extends Trait {
         super('behavior', true);
     }
 
-    collided(us, otherEntity) {
-        if (us.killable.dead) {
+    collided(goomba, otherEntity) {
+        if (goomba.killable.dead) {
             // we are already dead - don't interact again on next collisions
             return;
         }
@@ -58,18 +58,14 @@ class Behavior extends Trait {
         // but if the other entity has a special feature,
         // in this case for a trait named 'stomper'
         if (otherEntity.stomper) {
-
-            // Goomba is killed only if te stomper (like Mario) is falling on it
-            if (otherEntity.vel.y > us.vel.y) {
+            // Goomba is killed only if the stomper (like Mario) is falling on it
+            if (otherEntity.pos.y < goomba.pos.y) {
                 // make us stop moving
-                us.vel.x = 0;
-                us.wander.pause();
+                goomba.vel.x = 0;
+                goomba.wander.pause();
                 
                 // make us killed
-                us.killable.kill();
-
-                // make the stomper bounce
-                otherEntity.stomper.bounce();
+                goomba.killable.kill();
             } else {
                 // make the stomper killed
                 if (otherEntity.killable) {
@@ -78,6 +74,5 @@ class Behavior extends Trait {
             }
         }
     }
-
 
 }

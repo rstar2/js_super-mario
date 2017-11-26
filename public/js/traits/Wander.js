@@ -2,15 +2,33 @@ import Trait from '../Trait.js';
 import Entity from '../Entity.js';
 
 export default class WanderTrait extends Trait {
-    constructor(velocity = -30) {
+    constructor(velocity = -30, panicVelocity = 90) {
         super('wander');
+        if (velocity === 0) {
+            throw new Error('Cannot have wander trait with 0 velocity');
+        }
 
-        this._defVelocity = velocity;
+        this._paused = false;
 
-        this._velocity = this._defVelocity;
+        this._velocity = velocity;
+        this._panicVelocity = Math.abs(panicVelocity); // prevent if passed negative number
 
         // the distance "walked" when in single "walking" phase
         this._distance = 0;
+    }
+
+    /**
+    * @returns {Number}
+    */
+    get velocity() {
+        return this._velocity;
+    }
+
+    /**
+     * @param {Number} velocity
+     */
+    set velocity(velocity) {
+        this._velocity = velocity;
     }
 
     /**
@@ -20,12 +38,11 @@ export default class WanderTrait extends Trait {
         return this._distance;
     }
 
-    pause() {
-        this._velocity = 0;
-    }
-
-    unpause() {
-        this._velocity = this._defVelocity;
+    /**
+     * @param {Boolean} paused 
+     */
+    pause(paused = true) {
+        this._paused = paused;
     }
 
     /**
@@ -34,6 +51,10 @@ export default class WanderTrait extends Trait {
      * @param {Level} level  
      */
     update(entity, rate) {
+        if (this._paused) {
+            return;
+        }
+
         // update just the 'x' coordinate of the velocity
         entity.vel.x = this._velocity;
 

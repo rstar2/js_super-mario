@@ -28,10 +28,10 @@ function createMarioFactory(sprites) {
         const entity = new Entity();
         entity.size.set(14, 16);
 
-        entity.registerTrait(new Walk());
-        entity.registerTrait(new Jump());
         entity.registerTrait(new BeStomper());
         entity.registerTrait(new BeKillable(0));
+        entity.registerTrait(new Walk());
+        entity.registerTrait(new Jump());
 
         entity.registerAnimationsFromSprites(sprites);
 

@@ -17,23 +17,16 @@ export function loadKoopa() {
 function createKoopaFactory(sprites) {
 
     // create the draw method - common/static/stateless for all Koopa entities
-    const defDraw = createDraw(sprites, 'walk-1');
-    const draw = function (context, level) {
-        if (this.killable.dead) {
-            sprites.draw('hiding', context, 0, 0);
-            return;
-        }
-        defDraw.call(this, context, level);
-    };
+    const draw = createDraw(sprites, 'walk-1');
 
     return function koopa() {
         const entity = new Entity();
         entity.size.set(16, 16);
         entity.offset.y = 8;
 
-        entity.registerTrait(new Wander(30));
         entity.registerTrait(new Behavior());
         entity.registerTrait(new BeKillable());
+        entity.registerTrait(new Wander(30));
 
         entity.registerAnimationsFromSprites(sprites);
 
@@ -45,74 +38,125 @@ function createKoopaFactory(sprites) {
 
 const STATE_WALKING = Symbol();
 const STATE_HIDING = Symbol();
+const STATE_PANICING = Symbol();
 
 class Behavior extends Trait {
     constructor() {
         super('behavior', true);
 
-        this._unhideTime = 2;
+        this._unhideTime = 5;
         this._hidingTime = 0;
+
+        this._panicVelocity = 300;
+        this._wanderVelocity = null;
 
         this._state = STATE_WALKING;
     }
 
-    get tile() {
-
+    /**
+     * @returns {Boolean}
+     */
+    get hiding() {
+        return this._state === STATE_HIDING ||
+            this._state === STATE_PANICING;
     }
 
-    hide(us) {
-        us.vel.x = 0;
-        us.wander.pause();
+    _hide(koopa) {
+        koopa.vel.x = 0;
+        koopa.wander.pause();
+        if (this._wanderVelocity === null) {
+            this._wanderVelocity = koopa.wander.velocity;
+        }
 
         this._state = STATE_HIDING;
         this._hidingTime = 0;
     }
 
-    unhide(us) {
-        us.wander.unpause();
+    _unhide(koopa) {
+        koopa.wander.pause(false);
+        if (this._wanderVelocity !== null) {
+            koopa.wander.velocity = this._wanderVelocity;
+        }
         this._state = STATE_WALKING;
     }
 
-    collided(us, otherEntity) {
-        if (us.killable.dead) {
+    _handleStopm(koopa, otherEntity) {
+        if (this._state === STATE_WALKING ||
+            this._state === STATE_PANICING) {
+            // make us hide
+            this._hide(koopa);
+        } else {
+            // make us killed
+            koopa.killable.kill();
+            koopa.canCollide = false;
+            // make the koopa's shell bounce up a little and continue
+            koopa.wander.pause(false);
+            koopa.vel.y = -200;
+        }
+    }
+
+    _handleNudge(koopa, otherEntity) {
+        if (this._state === STATE_WALKING) {
+            // make the stomper killed
+            if (otherEntity.killable) {
+                otherEntity.killable.kill();
+            }
+        } else if (this._state === STATE_HIDING) {
+            // make the stomper kick the koopa's shell
+            koopa.wander.velocity = this._panicVelocity * Math.sign(otherEntity.vel.x);
+            koopa.wander.pause(false);
+            this._state = STATE_PANICING;
+        } else {
+            // TODO: kill the stomper only if not in the same direction
+            if (otherEntity.killable) {
+                otherEntity.killable.kill();
+            }
+        }
+    }
+
+    collided(koopa, otherEntity) {
+        if (koopa.killable.dead) {
             // we are already dead - don't interact again on next collisions
             return;
         }
 
-        // don't check if the other entity is 'Mario'
-        // but if the other entity has a special feature,
-        // in this case for a trait named 'stomper'
         if (otherEntity.stomper) {
-
-            if (this._state === STATE_WALKING) {
-                // Goomba is killed only if te stomper (like Mario) is falling on it
-                if (otherEntity.vel.y > us.vel.y) {
-                    // make us hide
-                    this.hide(us);
-
-                    // make the stomper bounce
-                    otherEntity.stomper.bounce();
-                } else {
-                    // make the stomper killed
-                    if (otherEntity.killable) {
-                        otherEntity.killable.kill();
-                    }
-                }
+            // Koopa is hided first and after that killed
+            if (otherEntity.pos.y < koopa.pos.y) {
+                this._handleStopm(koopa, otherEntity);
             } else {
-                us.killable.kill();
+                this._handleNudge(koopa, otherEntity);
             }
         }
     }
 
-    update(us, rate) {
-        if (this._state === STATE_HIDING) {
+    update(koopa, rate) {
+        if (this._state === STATE_HIDING && !koopa.killable.dead) {
             this._hidingTime += rate;
 
             if (this._hidingTime >= this._unhideTime) {
-                this.unhide(us);
+                this._unhide(koopa);
             }
         }
     }
 
+    /**
+     * @param {Entity} entity 
+     * @param {(progress: Number)} animation
+     */
+    animate(entity, animations) {
+        let tile = this.hiding ? 'hiding' : undefined;
+        if (this._state === STATE_HIDING) {
+            if (this._hidingTime > 3) {
+                // use 'wake' animation - it for sure exists
+                const animation = animations.get('wake');
+                if (animation) {
+                    tile = animation(this._hidingTime);
+                }
+            }
+        }
+
+        return { tile };
+    }
 
 }

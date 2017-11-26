@@ -26,6 +26,11 @@
 
     "animations": [
         {
+            "name": "behavior-wake",
+            "frameRate": 0.15,
+            "frames": ["hiding-with-legs", "hiding"]
+        },
+        {
             "name": "wander",
             "frameRate": 0.15,
             "frames": ["walk-1", "walk-2"]
