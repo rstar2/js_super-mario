@@ -47,19 +47,13 @@ export default class TileCollider {
             // check if the entity is going right
             if (entity.vel.x > 0) {
                 if (entity.bounds.right > match.x1) {
-                    entity.bounds.right = match.x1;
-                    entity.vel.x = 0;
-
-                    entity.obstructedBy(match.tile, Entity.COLLIDE_RIGHT);
+                    entity.obstructedBy(match, Entity.COLLIDE_RIGHT);
                 }
             }
             // else if going left
             else if (entity.vel.x < 0) {
                 if (entity.bounds.left < match.x2) {
-                    entity.bounds.left = match.x2;
-                    entity.vel.x = 0;
-
-                    entity.obstructedBy(match.tile, Entity.COLLIDE_LEFT);
+                    entity.obstructedBy(match, Entity.COLLIDE_LEFT);
                 }
             }
         });
@@ -93,19 +87,13 @@ export default class TileCollider {
             // check if the entity is going down (falling)
             if (entity.vel.y > 0) {
                 if (entity.bounds.bottom > match.y1) {
-                    entity.bounds.bottom = match.y1;
-                    entity.vel.y = 0;
-
-                    entity.obstructedBy(match.tile, Entity.COLLIDE_BOTTOM);
+                    entity.obstructedBy(match, Entity.COLLIDE_BOTTOM);
                 }
             }
             // else if going up (jumping)
             else if (entity.vel.y < 0) {
                 if (entity.bounds.top < match.y2) {
-                    entity.bounds.top = match.y2;
-                    entity.vel.y = 0;
-
-                    entity.obstructedBy(match.tile, Entity.COLLIDE_TOP);
+                    entity.obstructedBy(match, Entity.COLLIDE_TOP);
                 }
             }
         });

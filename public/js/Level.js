@@ -131,14 +131,10 @@ export default class Level {
             // NOTE !!! : the x an y positions SHOULD be updated separately
             // before checking for collisions 
             entity.pos.x += entity.vel.x * rate;
-            if (entity.canCollide) {
-                this._tileCollider.checkX(entity);
-            }
+            this._tileCollider.checkX(entity);
 
             entity.pos.y += entity.vel.y * rate;
-            if (entity.canCollide) {
-                this._tileCollider.checkY(entity);
-            }
+            this._tileCollider.checkY(entity);
 
             // add some gravity to all entities
             // NOTE !!! : applying the gravity SHOULD be after the tile collision check have been made
@@ -148,9 +144,7 @@ export default class Level {
         // check if entities collide with each other
         // NOTE !!! : it SHOULD be after all entities have been passed through the first loop
         this._entities.forEach(entity => {
-            if (entity.canCollide) {
-                this._entityCollider.check(entity);
-            }
+            this._entityCollider.check(entity);
         });
 
         // finally execute all queued tasks,

@@ -1,6 +1,7 @@
 import Entity from '../Entity.js';
 import Trait from '../Trait.js';
 import Wander from '../traits/Wander.js';
+import BeSolid from '../traits/BeSolid.js';
 import BeKillable from '../traits/BeKillable.js';
 import { loadSprites } from '../sprites.js';
 import { createDraw } from './utils.js';
@@ -32,6 +33,7 @@ function createGoombaFactory(sprites) {
         entity.size.set(16, 16);
 
         entity.registerTrait(new Behavior());
+        entity.registerTrait(new BeSolid());
         entity.registerTrait(new BeKillable());
         entity.registerTrait(new Wander());
 

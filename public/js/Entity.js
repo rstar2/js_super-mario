@@ -21,8 +21,6 @@ export default class Entity {
         this._traits = [];
 
         this._animations = new Map();
-
-        this._canCollide = true;
     }
 
     /**
@@ -65,20 +63,6 @@ export default class Entity {
      */
     get lifetime() {
         return this._lifetime;
-    }
-
-    /**
-     * @returns {Boolean}
-     */
-    get canCollide() {
-        return this._canCollide;
-    }
-
-    /**
-     * @param {Boolean} canCollide
-     */
-    set canCollide(canCollide) {
-        this._canCollide = canCollide;
     }
 
     /**
@@ -184,8 +168,8 @@ export default class Entity {
     }
 
     /**
-     * Called when the entity has "obstructed" with a "brick" tile
-     * @param {Tile} obstacle 
+     * Called when the entity was "obstructed" by a "ground" tile
+     * @param {{tile:Tile, x1:Number, x2:Number, y1:Number, y2:Number}} obstacle
      * @param {Number} direction 
      */
     obstructedBy(obstacle, direction) {

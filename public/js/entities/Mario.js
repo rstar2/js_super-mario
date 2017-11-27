@@ -1,6 +1,7 @@
 import Entity from '../Entity.js';
 import Walk from '../traits/Walk.js';
 import Jump from '../traits/Jump.js';
+import BeSolid from '../traits/BeSolid.js';
 import BeStomper from '../traits/BeStomper.js';
 import BeKillable from '../traits/BeKillable.js';
 import { loadSprites } from '../sprites.js';
@@ -28,6 +29,7 @@ function createMarioFactory(sprites) {
         const entity = new Entity('mario');
         entity.size.set(14, 16);
 
+        entity.registerTrait(new BeSolid());
         entity.registerTrait(new BeStomper());
         entity.registerTrait(new BeKillable(0));
         entity.registerTrait(new Walk());

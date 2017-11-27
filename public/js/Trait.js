@@ -52,7 +52,7 @@ export default class Trait {
     /**
      * 
      * @param {Entity} entity 
-     * @param {Tile} obstacle 
+     * @param {{tile:Tile, x1:Number, x2:Number, y1:Number, y2:Number}} obstacle 
      * @param {Number} direction 
      */
     // eslint-disable-next-line no-unused-vars
