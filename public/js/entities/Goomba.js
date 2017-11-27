@@ -28,7 +28,7 @@ function createGoombaFactory(sprites) {
     };
 
     return function goomba() {
-        const entity = new Entity();
+        const entity = new Entity('goomba');
         entity.size.set(16, 16);
 
         entity.registerTrait(new Behavior());

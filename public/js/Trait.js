@@ -4,6 +4,21 @@ export default class Trait {
     constructor(name, isBehavior = false) {
         this.NAME = name;
         this._isBehavior = isBehavior;
+        this._queuedTasks = [];
+    }
+
+    finalize() {
+        // perform each queued tasks
+        this._queuedTasks.forEach(task => task());
+        this._queuedTasks.length = 0;
+    }
+
+    /**
+     * Queue up a task to be executed when the {@see finalize} method is called
+     * @param {Function} task 
+     */
+    queueTask(task) {
+        this._queuedTasks.push(task);
     }
 
     /**

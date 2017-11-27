@@ -2,7 +2,8 @@ import { Vector } from './math.js';
 import Bounds from './Bounds.js';
 
 export default class Entity {
-    constructor() {
+    constructor(name) {
+        this.NAME = name;
         // current possition
         this._pos = new Vector(0, 0);
         // current velocity
@@ -176,6 +177,10 @@ export default class Entity {
     // eslint-disable-next-line no-unused-vars
     draw(context, level) {
         throw new Error("Each Entity should overwrite this abstract method");
+    }
+
+    finalize() {
+        this._traits.forEach(trait => trait.finalize());
     }
 
     /**

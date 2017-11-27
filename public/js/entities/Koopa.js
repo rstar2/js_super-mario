@@ -20,7 +20,7 @@ function createKoopaFactory(sprites) {
     const draw = createDraw(sprites, 'walk-1');
 
     return function koopa() {
-        const entity = new Entity();
+        const entity = new Entity('koopa');
         entity.size.set(16, 16);
         entity.offset.y = 8;
 

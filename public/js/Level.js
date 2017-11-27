@@ -90,8 +90,7 @@ export default class Level {
     }
 
     getMario() {
-        // assume Mario is always set first in the level JSON file
-        return [...this._entities][0];
+        return [...this._entities].find(entity => entity.NAME === 'mario');
     }
 
     /**
@@ -146,13 +145,17 @@ export default class Level {
             entity.vel.y += this._gravity * rate;
         });
 
-        // finally check if entities collide with each other
+        // check if entities collide with each other
         // NOTE !!! : it SHOULD be after all entities have been passed through the first loop
         this._entities.forEach(entity => {
             if (entity.canCollide) {
                 this._entityCollider.check(entity);
             }
         });
+
+        // finally execute all queued tasks,
+        // in order to avoid updates in from the traits depending on the order they are registered
+        this._entities.forEach(entity => entity.finalize());
 
         this._totalTime += rate;
     }

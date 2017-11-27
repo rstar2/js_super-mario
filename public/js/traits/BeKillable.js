@@ -18,12 +18,16 @@ export default class BeKillable extends Trait {
     }
 
     kill() {
-        this._dead = true;
+        this.queueTask(() => { 
+            this._dead = true; 
+        });
     }
 
     revive() {
-        this._dead = false;
-        this._deadTime = 0;
+        this.queueTask(() => {
+            this._dead = false;
+            this._deadTime = 0;
+        });
     }
 
     /**
@@ -37,7 +41,9 @@ export default class BeKillable extends Trait {
             this._deadTime += rate;
 
             if (this._deadTime >= this._deadTimeRemove) {
-                level.removeEntity(entity);
+                this.queueTask(() => {
+                    level.removeEntity(entity);
+                });
             }
         }
     }
