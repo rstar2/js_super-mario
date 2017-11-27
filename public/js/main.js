@@ -10,7 +10,6 @@ import { createDebugTileCollisionLayer, createDebugEntityLayer, createDebugViewL
 
 async function main(canvas) {
     const context = canvas.getContext('2d');
-    context.scale(2, 2);
     context.imageSmoothingEnabled = false;
     context.mozImageSmoothingEnabled = false;
     context.webkitImageSmoothingEnabled = false;

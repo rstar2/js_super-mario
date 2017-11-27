@@ -3,7 +3,7 @@
     "sprites": "overworld",
 
     "props": {
-        "gravity": 1500
+        "gravity": 0
     },
 
     "patterns": {

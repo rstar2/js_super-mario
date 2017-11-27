@@ -1,6 +1,7 @@
 import Entity from '../Entity.js';
 import Trait from '../Trait.js';
 import Wander from '../traits/Wander.js';
+import BePhysics from '../traits/BePhysics.js';
 import BeSolid from '../traits/BeSolid.js';
 import BeKillable from '../traits/BeKillable.js';
 import { loadSprites } from '../sprites.js';
@@ -26,6 +27,7 @@ function createKoopaFactory(sprites) {
         entity.offset.y = 8;
 
         entity.registerTrait(new Behavior());
+        entity.registerTrait(new BePhysics());
         entity.registerTrait(new BeSolid());
         entity.registerTrait(new BeKillable());
         entity.registerTrait(new Wander(30));

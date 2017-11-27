@@ -19,13 +19,12 @@ export default class Level {
      * @param {Number} tileSize 
      * @param {{gravity:Number}} param2 
      */
-    constructor(tiles, tileSize, { gravity = 2000 }) {
+    constructor(tiles, tileSize, { gravity = 0 }) {
         this._tileCollider = new TileCollider(tiles, tileSize);
         this._layerManager = new LayerManager();
         this._entities = new Set();
 
         this._entityCollider = new EntityCollider(this._entities);
-
 
         // the gravity should be on the level - thus applied to all entities
         this._gravity = gravity;
@@ -115,30 +114,17 @@ export default class Level {
     }
 
     /**
-     * @returns {Number}
-     */
-    getGravity() {
-        return this._gravity;
-    }
-
-    /**
      * @param {Number} rate 
      */
     update(rate) {
         this._entities.forEach(entity => {
             entity.update(rate, this);
 
-            // NOTE !!! : the x an y positions SHOULD be updated separately
-            // before checking for collisions 
-            entity.pos.x += entity.vel.x * rate;
-            this._tileCollider.checkX(entity);
-
-            entity.pos.y += entity.vel.y * rate;
-            this._tileCollider.checkY(entity);
-
             // add some gravity to all entities
             // NOTE !!! : applying the gravity SHOULD be after the tile collision check have been made
-            entity.vel.y += this._gravity * rate;
+            if (this._gravity) {
+                entity.vel.y += this._gravity * rate;
+            }
         });
 
         // check if entities collide with each other
