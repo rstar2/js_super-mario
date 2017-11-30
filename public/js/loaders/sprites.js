@@ -1,8 +1,13 @@
-import SpriteSheet from './SpriteSheet.js';
+import SpriteSheet from '../SpriteSheet.js';
 import { loadImage, loadData } from './utils.js';
-import { createAnimation } from './animation.js';
+import { createAnimation } from '../animation.js';
 
-export function loadSprites(name, mirrored) {
+/**
+ * @param {String} name 
+ * @param {Boolean} mirrored
+ * @returns {Promise<SpriteSheet>}
+ */
+export function loadSprites(name, mirrored = false) {
     return loadData(`/sprites/${name}`).
         then(spritesSpec => Promise.all([spritesSpec, loadImage(spritesSpec.spritesURL)])).
         then(([spritesSpec, spritesImage]) => {

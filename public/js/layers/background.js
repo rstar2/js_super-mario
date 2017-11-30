@@ -1,16 +1,16 @@
-import * as logger from './logger.js';
-import CONFIG from './config.js';
-import TileResolver from './TileResolver.js';
+import * as logger from '../logger.js';
+import CONFIG from '../config.js';
+import TileResolver from '../TileResolver.js';
 
 /**
- * this will redraw the whole level everytime
+ * Note - this will redraw the whole level every time
  * @param {Level} level 
  * @param {Matrix} tiles 
  * @param {SpriteSheet} sprites
  * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
  */
 export function ___createBackgroundLayer(level, tiles, tileSize, sprites) {
-    // create a static/cached bachground image buffer from the level's tiles
+    // create a static/cached background image buffer from the level's tiles
     const buffer = document.createElement('canvas');
     buffer.width = level.getWidth();
     buffer.height = level.getHeight();
@@ -39,7 +39,7 @@ export function ___createBackgroundLayer(level, tiles, tileSize, sprites) {
 export function __createBackgroundLayer(level, tiles, tileSize, sprites) {
     const tileResolver = new TileResolver(tiles, tileSize);
 
-    // create a static/cached bachground image buffer from the level's tiles
+    // create a static/cached background image buffer from the level's tiles
     const buffer = document.createElement('canvas');
     buffer.width = level.getWidth();
     buffer.height = level.getHeight();
@@ -73,7 +73,7 @@ export function __createBackgroundLayer(level, tiles, tileSize, sprites) {
 }
 
 /**
- * OPTIMIZATION - keep a small buffur in memory - just as needed to draw the view
+ * OPTIMIZATION - keep a small buffer in memory - just as needed to draw the view
  * so a little wider than view's size
  * ALso - we can redraw ONLY when there's a change in view's position
  * @param {Level} level 
@@ -84,7 +84,7 @@ export function __createBackgroundLayer(level, tiles, tileSize, sprites) {
 export function _createBackgroundLayer(level, tiles, tileSize, sprites) {
     const tileResolver = new TileResolver(tiles, tileSize);
 
-    // create a static/cached bachground image buffer from the level's tiles
+    // create a static/cached background image buffer from the level's tiles
     const buffer = document.createElement('canvas');
     buffer.width = CONFIG.VIEW_WIDTH + tileSize;
     buffer.height = CONFIG.VIEW_HEIGHT;
@@ -133,7 +133,7 @@ export function _createBackgroundLayer(level, tiles, tileSize, sprites) {
 }
 
 /**
- * OPTIMIZATION - keep a small buffur in memory - just as needed to draw the view
+ * OPTIMIZATION - keep a small buffer in memory - just as needed to draw the view
  * so a little wider than view's size
  * ALso - we can redraw ONLY when there's a change in view's position
  * @param {Level} level 
@@ -144,7 +144,7 @@ export function _createBackgroundLayer(level, tiles, tileSize, sprites) {
 export function createBackgroundLayer(level, tiles, tileSize, sprites) {
     const tileResolver = new TileResolver(tiles, tileSize);
 
-    // create a static/cached bachground image buffer from the level's tiles
+    // create a static/cached background image buffer from the level's tiles
     const buffer = document.createElement('canvas');
     buffer.width = CONFIG.VIEW_WIDTH + tileSize;
     buffer.height = CONFIG.VIEW_HEIGHT;
@@ -179,101 +179,5 @@ export function createBackgroundLayer(level, tiles, tileSize, sprites) {
         redraw(drawIndexStart, drawIndexEnd);
 
         context.drawImage(buffer, -view.pos.x % tileSize, -view.pos.y);
-    };
-}
-
-/**
- * @param {Level} level 
- * @param {Number} maxEntityWidth 
- * @param {Number} maxEntityHeight
- * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
- */
-export function createEntitiesLayer(level, maxEntityWidth = 64, maxEntityHeight = 64) {
-    // create a middle image buffer in which each entity will be drawn first
-    const buffer = document.createElement('canvas');
-    buffer.width = maxEntityWidth;
-    buffer.height = maxEntityHeight;
-    const bufferContext = buffer.getContext('2d');
-
-    return function (context, view) {
-        logger.logDbg("Entities layer");
-
-        const { x, y } = view.pos;
-        level.forEachEntity(entity => {
-            // draw the entity tile in the buffer image after it's been cleared
-            bufferContext.clearRect(0, 0, maxEntityWidth, maxEntityHeight);
-            entity.draw(bufferContext, level);
-
-            // draw the buffer image in the main canvas
-            context.drawImage(buffer, entity.pos.x - x, entity.pos.y - y);
-        });
-    };
-}
-
-/**
- * @param {Level} level
- * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
- */
-export function createDebugTileCollisionLayer(level) {
-    const tileResolver = level.getTileCollider().getTileResolver();
-    const tileSize = tileResolver.getTileSize();
-
-    const collisionTiles = [];
-    // create a SPY on the resolver method
-    const getIndexByORIG = tileResolver.getByIndex;
-    tileResolver.getByIndex = function (indexX, indexY) {
-        collisionTiles.push({ indexX, indexY });
-        return getIndexByORIG.call(this, indexX, indexY);
-    };
-
-    return function (context, view) {
-        logger.logDbg("Debug tile-collision layer", collisionTiles.length);
-
-        const { x, y } = view.pos;
-        // draw a box arround each collision-tile
-        context.strokeStyle = 'green';
-        collisionTiles.forEach(({ indexX, indexY }) => {
-            context.beginPath();
-            context.rect(indexX * tileSize - x, indexY * tileSize - y,
-                tileSize, tileSize);
-            context.stroke();
-        });
-        collisionTiles.length = 0;
-    };
-}
-
-/**
- * @param {Level} level
- * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
- */
-export function createDebugEntityLayer(level) {
-    return function (context, view) {
-        logger.logDbg("Debug entity layer");
-
-        const { x, y } = view.pos;
-
-        // draw a box arround each entity
-        // Note - the entity may not be perfectly fit in a grid tile
-        context.strokeStyle = 'red';
-        level.forEachEntity(entity => {
-            context.beginPath();
-            context.rect(entity.bounds.left - x, entity.bounds.top - y,
-                entity.size.x, entity.size.y);
-            context.stroke();
-        });
-    };
-}
-
-/**
- * @param {View} view
- * @returns {(context: CanvasRenderingContext2D, view: View) => void}
- */
-export function createDebugViewLayer(viewToDraw) {
-    return function (context, view) {
-        context.strokeStyle = 'purple';
-        context.beginPath();
-        context.rect(viewToDraw.pos.x - view.pos.x, viewToDraw.pos.y - view.pos.y,
-            view.size.x, view.size.y);
-        context.stroke();
     };
 }

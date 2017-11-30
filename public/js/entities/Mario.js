@@ -5,7 +5,7 @@ import BePhysics from '../traits/BePhysics.js';
 import BeSolid from '../traits/BeSolid.js';
 import BeStomper from '../traits/BeStomper.js';
 import BeKillable from '../traits/BeKillable.js';
-import { loadSprites } from '../sprites.js';
+import { loadSprites } from '../loaders/sprites.js';
 import { createDraw } from './utils.js';
 
 // loadMario() will be async

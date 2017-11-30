@@ -3,10 +3,14 @@ import View from './View.js';
 import Timer from './Timer.js';
 import KeyboardManager from './KeyboardManager.js';
 import { setupMarioKeyboard } from './keyboard.js';
-import { createLoadLevel } from './Level.js';
+import { createLoadLevel } from './loaders/level.js';
 import { loadEntities } from './entities/entities.js';
 import { setupMouseControl } from './debug.js';
-import { createDebugTileCollisionLayer, createDebugEntityLayer, createDebugViewLayer } from './layers.js';
+import {
+    createDebugTileCollisionLayer,
+    createDebugEntityLayer,
+    createDebugViewLayer
+} from './layers/debug.js';
 
 async function main(canvas) {
     const context = canvas.getContext('2d');

@@ -11,8 +11,8 @@ const loadJson = (url) => {
     return fetch(url).then(r => r.json());
 };
 
-export function loadLevel(name) {
-    return loadJson(`/data/levels/${name}.json`);
+export function loadDataLevel(name) {
+    return loadData(`levels/${name}`);
 }
 
 export function loadData(name) {
