@@ -7,7 +7,7 @@ export class Timer {
         this._accumulatedTime = 0;
     }
 
-    _updadeProxy(time) {
+    _updateProxy(time) {
         this._accumulatedTime += (time - this._lastTime) / 1000;
 
         // temporary fix for not updating so often
@@ -22,7 +22,11 @@ export class Timer {
         }
         this._lastTime = time;
 
-        this.enqueue();
+        this._enqueue();
+    }
+
+    _enqueue() {
+        requestAnimationFrame(this._updateProxy.bind(this));
     }
 
     // eslint-disable-next-line no-unused-vars
@@ -32,11 +36,7 @@ export class Timer {
     }
 
     start() {
-        this.enqueue();
-    }
-
-    enqueue() {
-        requestAnimationFrame(this._updadeProxy.bind(this));
+        this._enqueue();
     }
 
 }
