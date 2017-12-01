@@ -16,5 +16,5 @@ export function loadDataLevel(name) {
 }
 
 export function loadData(name) {
-    return loadJson(`/data/${name}.json`);
+    return loadJson(`data/${name}.json`);
 }
