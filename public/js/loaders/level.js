@@ -1,14 +1,11 @@
 import * as logger from '../logger.js';
 import { Tile } from '../Tile.js';
-import { Entity } from '../Entity.js';
 import { Level } from '../Level.js';
 import { Matrix } from '../math.js';
 import { createBackgroundLayer } from '../layers/background.js';
 import { createEntitiesLayer } from '../layers/entities.js';
 import { loadDataLevel } from './utils.js';
 import { loadSprites } from './sprites.js';
-
-import { BeControlTrait } from '../traits/BeControl.js';
 
 function* expandSpan(xStart, xLen, yStart, yLen) {
     const xEnd = xStart + xLen;
@@ -117,15 +114,15 @@ export function createLoadLevel(entityFactory) {
                 const mergedTiles = layers.reduce((mergedTiles, layerSpec) => {
                     return mergedTiles.concat(layerSpec.tiles);
                 }, []);
-                const gridCollision = createGrid(mergedTiles, patterns);
+                const grid = createGrid(mergedTiles, patterns);
 
                 // create the level
-                const level = new Level(gridCollision, tileSize, props);
+                const level = new Level(name, grid, tileSize, props);
 
                 // create all background layers - the drawing ones
                 layers.forEach(layerSpec => {
-                    const grid = createGrid(layerSpec.tiles, patterns);
-                    level.addLayer(createBackgroundLayer(level, grid, tileSize, backgroundSprites));
+                    const tiles = createGrid(layerSpec.tiles, patterns);
+                    level.addLayer(createBackgroundLayer(level, tiles, tileSize, backgroundSprites));
                 });
 
 
@@ -142,19 +139,8 @@ export function createLoadLevel(entityFactory) {
                 // create and add the entity layer
                 level.addLayer(createEntitiesLayer(level));
 
-                createEntityControllable(level.getMario(), level);
-
                 return level;
             });
     }
     return loadLevel;
-}
-
-// FIXME: temporary this is here
-function createEntityControllable(controllable, level) {
-    // create a fictitious entity
-    const control = new Entity();
-    control.draw = () => { };
-    control.registerTrait(new BeControlTrait(controllable));
-    level.addEntity(control);
 }

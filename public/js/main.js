@@ -14,6 +14,25 @@ import {
 } from './layers/debug.js';
 import { createDashboardLayer } from './layers/dashboard.js';
 
+import { Entity } from './Entity.js';
+import { BePlayerControlTrait as BePlayerControl } from './traits/BePlayerControl.js';
+
+// FIXME: temporary this is here
+/**
+ * 
+ * @param {Entity} player 
+ * @param {Level} level
+ * @returns {Entity}
+ */
+function createPlayerEnvironment(player, level) {
+    // create a fictitious entity
+    const playerEnv = new Entity();
+    playerEnv.draw = () => { };
+    playerEnv.registerTrait(new BePlayerControl(player, level.getProp('time')));
+    level.addEntity(playerEnv);
+    return playerEnv;
+}
+
 async function main(canvas) {
     const context = canvas.getContext('2d');
     context.imageSmoothingEnabled = false;
@@ -50,8 +69,11 @@ async function main(canvas) {
         level.addLayer(createDebugViewLayer(view));
     }
 
+    // FIXME: temporary this is here
+    const playerEnv = createPlayerEnvironment(mario, level);
+
     const font = await loadFont();
-    level.addLayer(createDashboardLayer(font, level));
+    level.addLayer(createDashboardLayer(font, playerEnv, level));
 
     const timer = new Timer(CONFIG.RATE);
     timer.update = function (rate) {

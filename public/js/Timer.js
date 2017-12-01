@@ -1,5 +1,3 @@
-import { CONFIG } from './config.js';
-
 export class Timer {
     constructor(rate = 1 / 60) {
         this._rate = rate;
@@ -11,7 +9,7 @@ export class Timer {
         this._accumulatedTime += (time - this._lastTime) / 1000;
 
         // temporary fix for not updating so often
-        if (CONFIG.FIX_TIMER && this._accumulatedTime > 1) {
+        if (this._accumulatedTime > 1) {
             this._accumulatedTime = 1;
         }
 
