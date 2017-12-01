@@ -1,4 +1,4 @@
-export default {
+export const CONFIG = {
     RATE: 1 / 60,
 
     FIX_TIMER: true,

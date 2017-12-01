@@ -1,4 +1,4 @@
-export default class Bounds {
+export class Bounds {
     /**
      * 
      * @param {Vector} pos 

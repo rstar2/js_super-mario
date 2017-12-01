@@ -1,6 +1,6 @@
 import * as logger from './logger.js';
 
-export default class SpriteSheet {
+export class SpriteSheet {
 
     constructor(image, mirrored = false, tileWidth, tileHeight) {
         this._image = image;

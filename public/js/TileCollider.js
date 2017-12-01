@@ -1,7 +1,7 @@
-import Entity from './Entity.js';
-import TileResolver from './TileResolver.js';
+import { Entity } from './Entity.js';
+import { TileResolver } from './TileResolver.js';
 
-export default class TileCollider {
+export class TileCollider {
     /**
      * @param {Matrix} tiles 
      * @param {Number} tileSize 

@@ -1,9 +1,9 @@
-import Trait from '../Trait.js';
+import { Trait } from '../Trait.js';
 
 const DRAG_FACTOR_NORMAL = 1 / 1000;
 const DRAG_FACTOR_TURBO = 1 / 5000;
 
-export default class WalkTrait extends Trait {
+export class WalkTrait extends Trait {
     constructor(accelerate = true) {
         super('walk');
 

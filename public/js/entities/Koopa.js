@@ -1,9 +1,9 @@
-import Entity from '../Entity.js';
-import Trait from '../Trait.js';
-import Wander from '../traits/Wander.js';
-import BePhysics from '../traits/BePhysics.js';
-import BeSolid from '../traits/BeSolid.js';
-import BeKillable from '../traits/BeKillable.js';
+import { Entity } from '../Entity.js';
+import { Trait } from '../Trait.js';
+import { WanderTrait as Wander } from '../traits/Wander.js';
+import { BePhysicsTrait as BePhysics } from '../traits/BePhysics.js';
+import { BeSolidTrait as BeSolid } from '../traits/BeSolid.js';
+import { BeKillableTrait as BeKillable } from '../traits/BeKillable.js';
 import { loadSprites } from '../loaders/sprites.js';
 import { createDraw } from './utils.js';
 

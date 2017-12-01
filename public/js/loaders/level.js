@@ -1,14 +1,14 @@
 import * as logger from '../logger.js';
-import Tile from '../Tile.js';
-import Entity from '../Entity.js';
-import Level from '../Level.js';
+import { Tile } from '../Tile.js';
+import { Entity } from '../Entity.js';
+import { Level } from '../Level.js';
 import { Matrix } from '../math.js';
 import { createBackgroundLayer } from '../layers/background.js';
 import { createEntitiesLayer } from '../layers/entities.js';
 import { loadDataLevel } from './utils.js';
 import { loadSprites } from './sprites.js';
 
-import BeControl from '../traits/BeControl.js';
+import { BeControlTrait } from '../traits/BeControl.js';
 
 function* expandSpan(xStart, xLen, yStart, yLen) {
     const xEnd = xStart + xLen;
@@ -155,6 +155,6 @@ function createEntityControllable(controllable, level) {
     // create a fictitious entity
     const control = new Entity();
     control.draw = () => { };
-    control.registerTrait(new BeControl(controllable));
+    control.registerTrait(new BeControlTrait(controllable));
     level.addEntity(control);
 }

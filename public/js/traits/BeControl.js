@@ -1,6 +1,6 @@
-import Trait from '../Trait.js';
+import { Trait } from '../Trait.js';
 
-export default class BeControl extends Trait {
+export class BeControlTrait extends Trait {
     /**
      * @param {Entity} controllable
      */

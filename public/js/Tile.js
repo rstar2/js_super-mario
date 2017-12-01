@@ -1,4 +1,4 @@
-export default class Tile {
+export class Tile {
     /**
      * @param {{tile: String, type: String}} tileSpec 
      */

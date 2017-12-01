@@ -1,9 +1,9 @@
-import LayerManager from './LayerManager.js';
-import Entity from './Entity.js';
-import TileCollider from './TileCollider.js';
-import EntityCollider from './EntityCollider.js';
+import { LayerManager } from './LayerManager.js';
+import { Entity } from './Entity.js';
+import { TileCollider } from './TileCollider.js';
+import { EntityCollider } from './EntityCollider.js';
 
-export default class Level {
+export class Level {
     /**
      * 
      * @param {Matrix} tiles 

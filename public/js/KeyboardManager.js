@@ -55,5 +55,3 @@ export class KeyboardManager {
     }
 
 }
-
-export default KeyboardManager;

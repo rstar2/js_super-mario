@@ -1,4 +1,4 @@
-export default class LayerManager {
+export class LayerManager {
     constructor() {
         this._layers = [];
     }

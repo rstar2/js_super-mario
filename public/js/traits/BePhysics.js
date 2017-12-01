@@ -1,7 +1,7 @@
-import Trait from '../Trait.js';
-import Entity from '../Entity.js';
+import { Trait } from '../Trait.js';
+import { Entity } from '../Entity.js';
 
-export default class BePhysics extends Trait {
+export class BePhysicsTrait extends Trait {
     constructor(gravity = 1500) {
         super('physics');
 

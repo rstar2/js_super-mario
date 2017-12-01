@@ -1,6 +1,6 @@
-import Entity from './Entity.js';
+import { Entity } from './Entity.js';
 
-export default class EntityCollider {
+export class EntityCollider {
     /**
      * 
      * @param {Set<Entity>} entities 

@@ -1,7 +1,7 @@
-import Trait from '../Trait.js';
-import Entity from '../Entity.js';
+import { Trait } from '../Trait.js';
+import { Entity } from '../Entity.js';
 
-export default class JumpTrait extends Trait {
+export class JumpTrait extends Trait {
     constructor() {
         super('jump');
 

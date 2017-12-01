@@ -1,7 +1,7 @@
 import { Vector } from './math.js';
-import Bounds from './Bounds.js';
+import { Bounds } from './Bounds.js';
 
-export default class Entity {
+export class Entity {
     constructor(name) {
         this.NAME = name;
         // current possition

@@ -1,7 +1,7 @@
-import Trait from '../Trait.js';
-import Entity from '../Entity.js';
+import { Trait } from '../Trait.js';
+import { Entity } from '../Entity.js';
 
-export default class BeSolid extends Trait {
+export class BeSolidTrait extends Trait {
     constructor() {
         super('solid', true);
 

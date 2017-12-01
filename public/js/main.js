@@ -1,16 +1,18 @@
-import CONFIG from './config.js';
-import View from './View.js';
-import Timer from './Timer.js';
-import KeyboardManager from './KeyboardManager.js';
+import { CONFIG } from './config.js';
+import { View } from './View.js';
+import { Timer } from './Timer.js';
+import { KeyboardManager } from './KeyboardManager.js';
 import { setupMarioKeyboard } from './keyboard.js';
 import { createLoadLevel } from './loaders/level.js';
 import { loadEntities } from './entities/entities.js';
 import { setupMouseControl } from './debug.js';
+import { loadFont } from './loaders/font.js';
 import {
     createDebugTileCollisionLayer,
     createDebugEntityLayer,
     createDebugViewLayer
 } from './layers/debug.js';
+import { createDashboardLayer } from './layers/dashboard.js';
 
 async function main(canvas) {
     const context = canvas.getContext('2d');
@@ -48,6 +50,8 @@ async function main(canvas) {
         level.addLayer(createDebugViewLayer(view));
     }
 
+    const font = await loadFont();
+    level.addLayer(createDashboardLayer(font));
 
     const timer = new Timer(CONFIG.RATE);
     timer.update = function (rate) {

@@ -1,6 +1,6 @@
-import Trait from '../Trait.js';
+import { Trait } from '../Trait.js';
 
-export default class BeStomper extends Trait {
+export class BeStomperTrait extends Trait {
     constructor() {
         super('stomper', true);
 

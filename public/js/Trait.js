@@ -1,6 +1,6 @@
-import Tile from './Tile.js';
+import { Tile } from './Tile.js';
 
-export default class Trait {
+export class Trait {
     constructor(name, isBehavior = false) {
         this.NAME = name;
         this._isBehavior = isBehavior;

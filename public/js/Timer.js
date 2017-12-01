@@ -1,6 +1,6 @@
-import CONFIG from './config.js';
+import { CONFIG } from './config.js';
 
-export default class Timer {
+export class Timer {
     constructor(rate = 1 / 60) {
         this._rate = rate;
         this._lastTime = 0;

@@ -1,4 +1,4 @@
-export default class TileResolver {
+export class TileResolver {
     /**
      * @param {Matrix} tiles 
      * @param {Number} tileSize 

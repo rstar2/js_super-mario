@@ -1,6 +1,6 @@
-import Trait from '../Trait.js';
+import { Trait } from '../Trait.js';
 
-export default class BeKillable extends Trait {
+export class BeKillableTrait extends Trait {
     /**
      * 
      * @param {Number} deadTimeRemove 2 seconds by default

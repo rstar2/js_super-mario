@@ -1,10 +1,10 @@
-import Entity from '../Entity.js';
-import Walk from '../traits/Walk.js';
-import Jump from '../traits/Jump.js';
-import BePhysics from '../traits/BePhysics.js';
-import BeSolid from '../traits/BeSolid.js';
-import BeStomper from '../traits/BeStomper.js';
-import BeKillable from '../traits/BeKillable.js';
+import { Entity } from '../Entity.js';
+import { WalkTrait as Walk } from '../traits/Walk.js';
+import { JumpTrait as Jump } from '../traits/Jump.js';
+import { BePhysicsTrait as BePhysics } from '../traits/BePhysics.js';
+import { BeSolidTrait as BeSolid } from '../traits/BeSolid.js';
+import { BeStomperTrait as BeStomper } from '../traits/BeStomper.js';
+import { BeKillableTrait as BeKillable } from '../traits/BeKillable.js';
 import { loadSprites } from '../loaders/sprites.js';
 import { createDraw } from './utils.js';
 

@@ -1,4 +1,4 @@
-import SpriteSheet from '../SpriteSheet.js';
+import { SpriteSheet } from '../SpriteSheet.js';
 import { loadImage, loadData } from './utils.js';
 import { createAnimation } from '../animation.js';
 

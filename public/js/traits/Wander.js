@@ -1,7 +1,7 @@
-import Trait from '../Trait.js';
-import Entity from '../Entity.js';
+import { Trait } from '../Trait.js';
+import { Entity } from '../Entity.js';
 
-export default class WanderTrait extends Trait {
+export class WanderTrait extends Trait {
     constructor(velocity = -30, panicVelocity = 90) {
         super('wander');
         if (velocity === 0) {
