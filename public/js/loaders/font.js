@@ -21,6 +21,6 @@ export function loadFont() {
                 fontSprite.register(char, x, y);
             }
 
-            return new Font(fontSprite);
+            return new Font(fontSprite, CHAR_SIZE);
         });
 }

@@ -74,10 +74,9 @@ export class SpriteSheet {
             context.drawImage(image, x, y);
 
             return [image.width, image.height];
-        } else {
-            logger.logWarn(`No tile set for ${tile}`);
         }
-
+        
+        logger.logWarn(`No tile set for ${tile}`);
         return [0, 0];
     }
 

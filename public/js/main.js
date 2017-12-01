@@ -51,7 +51,7 @@ async function main(canvas) {
     }
 
     const font = await loadFont();
-    level.addLayer(createDashboardLayer(font));
+    level.addLayer(createDashboardLayer(font, level));
 
     const timer = new Timer(CONFIG.RATE);
     timer.update = function (rate) {
