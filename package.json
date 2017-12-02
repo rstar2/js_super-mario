@@ -5,12 +5,17 @@
   "main": "public/js/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "serve ./public"
+    "start": "npm run serve",
+    "serve": "serve ./public",
+    "electron": "electron ./electron-main.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rstar2/js_super-mario.git"
   },
   "author": "Rumen Neshev",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^1.7.9"
+  }
 }
