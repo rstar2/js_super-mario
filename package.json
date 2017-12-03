@@ -15,7 +15,9 @@
   },
   "author": "Rumen Neshev",
   "license": "MIT",
-  "dependencies": {
-    "electron": "^1.7.9"
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^1.7.9",
+    "webpack": "^3.9.1"
   }
 }
