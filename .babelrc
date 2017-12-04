@@ -1,0 +1,10 @@
+{
+    "presets": [
+        //automatically determine the Babel plugins and polyfills you need based on your supported environments.
+        "env"
+    ],
+    "plugins": [
+        // needed for object spreading like {...data}
+        "transform-object-rest-spread"
+    ]
+}

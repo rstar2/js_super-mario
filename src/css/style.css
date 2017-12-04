@@ -1,0 +1,16 @@
+body {
+    background-color: black;
+    margin: 0;
+}
+
+#screen {
+    /* make it as the hight of the body */
+    height: 100vh;
+
+    /* center it */
+    display: block;
+    margin: auto;
+
+    /* make it more sharp */
+    image-rendering: pixelated;
+}

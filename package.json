@@ -5,9 +5,10 @@
   "main": "public/js/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run serve",
+    "watch": "webpack --watch",
     "serve": "serve ./public",
-    "electron": "electron ./electron-main.js"
+    "electron": "electron ./electron-main.js",
+    "start": "concurrently -p \"[{name}]\" -n \"JS,HTTP\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run watch\" \"npm run serve\""
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,11 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "electron": "^1.7.9",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "concurrently": "^3.5.1",
     "webpack": "^3.9.1"
   }
 }

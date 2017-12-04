@@ -1,16 +1,26 @@
 module.exports = {
-    entry: './src/app.ts',
+    entry: './src/js/main.js',
+
     output: {
-        filename: 'public/static/js/bundle.js'
+        filename: './public/js/bundle.js'
     },
+
     resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
+        extensions: ['.js']
     },
+
     module: {
-        loaders: [
-            { test: /\.ts$/, loader: 'ts-loader' }
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader'
+                }
+            }
         ]
     },
+
     // Turn on sourcemaps
     devtool: 'source-map',
     // Add minification
