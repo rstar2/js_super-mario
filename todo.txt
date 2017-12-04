@@ -1,10 +1,12 @@
 1. Babel
- - async generators and promises (Babel Polyfills)
-
-
 
 2. Webpack
  - Bundle and CSS/LESS and extract them to a style.css file
      (https://github.com/jluccisano/webpack-es6-boilerplate.git)
  - Probably use HtmlPlugin
+
+ - Images/Data files - copy from src to public somehow
+
+
+ 3. Electron
     
