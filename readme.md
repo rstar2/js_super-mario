@@ -10,6 +10,11 @@
  - Copy Images/Data files (with 'copy-webpack-plugin')
 
  3. Electron
-    - TODO: Require local files require('./fetchLocal');
-    - TODO: Use ES6? Pass through Babel and Webpack or not ?
-    
+    - Copy the Electron render-process files directly (they should be CommonJS modules)
+    - TODO: Use ES6 - Pass through Babel and Webpack or not ?
+
+ 4. Unit testing with:
+    - Jest
+        - To have ES6 test files it needs 'babel-jest'  and a .babelrc config file on the ROOT level 
+    - TODO: Jasmine
+        - Check this framework and compare with Jest
