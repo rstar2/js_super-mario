@@ -93,7 +93,17 @@ module.exports = function (env) {
         // config.entry[bundleElectron] = './src/js-electron/renderer.js';
 
         // This will use the main JS bundle and add the Electron stuff in front
-        config.entry[bundleJS].unshift('./src/js-electron/renderer.js');
+        // config.entry[bundleJS].unshift('./src/js-electron/renderer.js');
+
+        const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
+        config.plugins.push(
+            new CopyWebpackPlugin([
+                { from: './src/js-electron', to: 'js-electron' }
+            ]),
+            new HtmlWebpackIncludeAssetsPlugin({
+                assets: ['js-electron/renderer.js'],
+                append: false
+            }));
     }
 
     return config;

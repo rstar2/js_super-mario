@@ -10,4 +10,6 @@
  - Copy Images/Data files (with 'copy-webpack-plugin')
 
  3. Electron
+    - TODO: Require local files require('./fetchLocal');
+    - TODO: Use ES6? Pass through Babel and Webpack or not ?
     
