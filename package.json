@@ -7,9 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "build:watch": "webpack --watch",
+    "build:electron": "webpack --env.electron",
+    "electron": "npm run build:electron && electron ./electron-main.js",
     "serve": "serve ./public",
-    "start": "concurrently -p \"[{name}]\" -n \"JS,HTTP\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run build:watch\" \"npm run serve\"",
-    "electron": "npm run build && electron ./electron-main.js"
+    "start": "concurrently -p \"[{name}]\" -n \"JS,HTTP\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run build:watch\" \"npm run serve\""
   },
   "repository": {
     "type": "git",
