@@ -1,0 +1,14 @@
+{
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "env": {
+        "browser": true,
+    },
+    "globals": {
+        "jest": false,
+        "describe": false,
+        "test": false,
+        "expect": false
+    }
+}
