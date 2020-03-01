@@ -3,7 +3,7 @@ export function createAnimation(frames, frameRate = 5) {
     // will be changing too fast
 
     if (frames instanceof Array) {
-        // progress - this has varios meangings depending on the context
+        // progress - this has various meanings depending on the context
         // it could be distance when walking
         // or simple time (seconds)
         return function (progress) {
@@ -13,7 +13,7 @@ export function createAnimation(frames, frameRate = 5) {
     }
 
     // if just a single frame specified then return a "fixed" function
-    return function () {
+    return function (/*progress*/) {
         return frames;
     };
 
