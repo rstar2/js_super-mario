@@ -1,5 +1,3 @@
-import { SpriteSheet } from './SpriteSheet.js';
-
 export class Font {
 
     /**

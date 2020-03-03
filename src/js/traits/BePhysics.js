@@ -1,5 +1,4 @@
 import { Trait } from '../Trait.js';
-import { Entity } from '../Entity.js';
 
 export class BePhysicsTrait extends Trait {
     constructor(gravity = 1500) {
