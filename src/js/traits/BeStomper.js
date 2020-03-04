@@ -13,14 +13,6 @@ export class BeStomperTrait extends Trait {
     }
 
     /**
-     * 
-     * @param {Function} callback 
-     */
-    addListener(callback) {
-        this._stompListeners.push(callback);
-    }
-
-    /**
      * @param {Entity} us 
      * @param {Entity} otherEntity 
      */
@@ -30,21 +22,15 @@ export class BeStomperTrait extends Trait {
         }
 
         if (us.pos.y < otherEntity.pos.y) {
-            this.onStomp(us, otherEntity);
-            this._stompListeners.forEach(callback => callback(us, otherEntity));
+            // go to the top of the other entity, not to collide again with it on the next check
+            us.bounds.bottom = otherEntity.bounds.top;
+            // make the stomper bounce
+            us.vel.y = -this._bounceVelocity;
+
+            this._emit('stomp', us, otherEntity);
+
+            this.sound('stomp');
         }
-    }
-
-    /**
-     * @param {Entity} us 
-     * @param {Entity} otherEntity 
-     */
-    onStomp(us, otherEntity) {
-        // go to the top of the other entity, not to collide agin with it on the next check
-        us.bounds.bottom = otherEntity.bounds.top;
-
-        // make the stomper bounce
-        us.vel.y = -this._bounceVelocity;
     }
 
 }

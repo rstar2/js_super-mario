@@ -1,5 +1,3 @@
-import { Entity } from './Entity.js';
-
 export class EntityCollider {
     /**
      * 

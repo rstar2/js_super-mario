@@ -77,7 +77,7 @@ export class WalkTrait extends Trait {
      * @param {Number} rate
      * @param {Level} level  
      */
-    update(entity, rate) {
+    update(entity, { rate }) {
         // update just the 'x' coordinate of the velocity/acceleration
         if (this._accelerate) {
             this._updateAcceleration(entity, rate);

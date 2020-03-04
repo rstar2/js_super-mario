@@ -10,7 +10,7 @@ export class VelocityTrait extends Trait {
      * @param {Number} rate
      * @param {Level} level  
      */
-    update(entity, rate) {
+    update(entity, { rate }) {
         entity.pos.x += entity.vel.x * rate;
         entity.pos.y += entity.vel.y * rate;
     }

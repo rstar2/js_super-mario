@@ -17,7 +17,7 @@ export class BePhysicsTrait extends Trait {
      * @param {Number} rate
      * @param {Level} level  
      */
-    update(entity, rate, level) {
+    update(entity, { rate }, level) {
         // NOTE !!! : the x an y positions SHOULD be updated separately
         // before checking for collisions 
         entity.pos.x += entity.vel.x * rate;

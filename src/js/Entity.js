@@ -2,9 +2,15 @@ import { Vector } from './math.js';
 import { Bounds } from './Bounds.js';
 
 export class Entity {
-    constructor(name) {
+    /**
+     * 
+     * @param {String} name 
+     * @param {AudioBoard} audioBoard 
+     */
+    constructor(name, audioBoard) {
         this.NAME = name;
-        // current possition
+        this._audioBoard = audioBoard;
+        // current position
         this._pos = new Vector(0, 0);
         // current velocity
         this._vel = new Vector(0, 0);
@@ -63,6 +69,10 @@ export class Entity {
      */
     get lifetime() {
         return this._lifetime;
+    }
+
+    get audioBoard() {
+        return this._audioBoard;
     }
 
     /**
@@ -143,14 +153,17 @@ export class Entity {
 
     /**
      * 
-     * @param {Number} rate
+     * @param {{rate: Number, audioContext: AudioContext}} gameContext
      * @param {Level} level  
      */
-    update(rate, level) {
-        this._traits.forEach(trait => trait.update(this, rate, level));
+    update(gameContext, level) {
+        this._traits.forEach(trait => {
+            trait.update(this, gameContext, level);
+            trait.playSounds(this.audioBoard, gameContext.audioContext);
+        });
 
         // increase also the overall lifetime of the entity
-        this._lifetime += rate;
+        this._lifetime += gameContext.rate;
     }
 
     /**

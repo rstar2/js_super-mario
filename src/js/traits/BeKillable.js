@@ -35,7 +35,7 @@ export class BeKillableTrait extends Trait {
      * @param {Number} rate
      * @param {Level} level  
      */
-    update(entity, rate, level) {
+    update(entity, { rate }, level) {
         // keep the entity for a while and then remove it from the level
         if (this._dead) {
             this._deadTime += rate;

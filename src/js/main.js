@@ -1,49 +1,52 @@
-import { CONFIG } from './config.js';
-import { View } from './View.js';
-import { Timer } from './Timer.js';
-import { KeyboardManager } from './KeyboardManager.js';
-import { setupMarioKeyboard } from './keyboard.js';
-import { createLoadLevel } from './loaders/level.js';
-import { loadEntities } from './entities/entities.js';
-import { setupMouseControl } from './debug.js';
-import { loadFont } from './loaders/font.js';
+import { CONFIG } from "./config.js";
+import { View } from "./View.js";
+import { Timer } from "./Timer.js";
+import { AudioBoard } from "./AudioBoard.js";
+import { KeyboardManager } from "./KeyboardManager.js";
+import { setupMarioKeyboard } from "./keyboard.js";
+import { createLoadLevel } from "./loaders/level.js";
+import { loadEntities } from "./entities/entities.js";
+import { setupMouseControl } from "./debug.js";
+import { loadFont } from "./loaders/font.js";
 import {
     createDebugTileCollisionLayer,
     createDebugEntityLayer,
     createDebugViewLayer
-} from './layers/debug.js';
-import { createDashboardLayer } from './layers/dashboard.js';
+} from "./layers/debug.js";
+import { createDashboardLayer } from "./layers/dashboard.js";
 
-import { Entity } from './Entity.js';
-import { BePlayerControlTrait as BePlayerControl } from './traits/BePlayerControl.js';
+import { Entity } from "./Entity.js";
+import { BePlayerControlTrait as BePlayerControl } from "./traits/BePlayerControl.js";
 
 // FIXME: temporary this is here
 /**
- * 
- * @param {Entity} player 
+ *
+ * @param {Entity} player
  * @param {Level} level
  * @returns {Entity}
  */
 function createPlayerEnvironment(player, level) {
     // create a fictitious entity
     const playerEnv = new Entity();
-    playerEnv.draw = () => { };
-    playerEnv.registerTrait(new BePlayerControl(player, level.getProp('time')));
+    playerEnv.draw = () => {};
+    playerEnv.registerTrait(new BePlayerControl(player, level.getProp("time")));
     level.addEntity(playerEnv);
     return playerEnv;
 }
 
 async function main(canvas) {
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext("2d");
     context.imageSmoothingEnabled = false;
     context.mozImageSmoothingEnabled = false;
     context.webkitImageSmoothingEnabled = false;
 
+    const audioContext = new AudioContext();
+
     const keyboardManager = new KeyboardManager();
 
-    const entityFactory = await loadEntities();
+    const entityFactory = await loadEntities(audioContext);
     const loadLevel = createLoadLevel(entityFactory);
-    const level = await loadLevel('1_1');
+    const level = await loadLevel("1_1");
 
     const view = new View(CONFIG.VIEW_WIDTH, CONFIG.VIEW_HEIGHT);
 
@@ -75,11 +78,18 @@ async function main(canvas) {
     const font = await loadFont();
     level.addLayer(createDashboardLayer(font, playerEnv, level));
 
-    const timer = new Timer(CONFIG.RATE);
-    timer.update = function (rate) {
-        // update all level entities (including Mario)
-        level.update(rate);
+    // the game context that will hold different properties
+    const gameContext = {
+        /*AudioContext*/ audioContext,
+        /*Number*/ rate: 0,
+    };
 
+    const timer = new Timer(CONFIG.RATE);
+    timer.update = function(rate) {
+        gameContext.rate = rate;
+
+        // update all level entities (including Mario)
+        level.update(gameContext);
 
         // move the camera/view together with Mario
         // TODO: Don't position Mario always in the center, allow some margin left and right
@@ -92,5 +102,5 @@ async function main(canvas) {
     timer.start();
 }
 
-const canvas = document.getElementById('screen');
+const canvas = document.getElementById("screen");
 main(canvas);

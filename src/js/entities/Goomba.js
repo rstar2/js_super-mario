@@ -4,20 +4,22 @@ import { WanderTrait as Wander } from '../traits/Wander.js';
 import { BePhysicsTrait as BePhysics } from '../traits/BePhysics.js';
 import { BeSolidTrait as BeSolid } from '../traits/BeSolid.js';
 import { BeKillableTrait as BeKillable } from '../traits/BeKillable.js';
-import { loadSprites } from '../loaders/sprites.js';
-import { createDraw } from './utils.js';
+import { createDraw, loadEntity } from './utils.js';
 
-export function loadGoomba() {
-    return loadSprites('goomba', true).
+/**
+ * @param {AudioContext} audioContext 
+ */
+export function loadGoomba(audioContext) {
+    return loadEntity('goomba', audioContext).
         then(createGoombaFactory);
 }
 
-
 /**
  * return a synchronous create function
- * @param {SpriteSheet} sprites 
+ * @param {SpriteSheet} sprites
+ * @param {AudioBoard} audioBoard
  */
-function createGoombaFactory(sprites) {
+function createGoombaFactory({sprites, audioBoard}) {
 
     // create the draw method - common/static/stateless for all Goomba entities
     const defDraw = createDraw(sprites, 'walk-1');
@@ -30,7 +32,7 @@ function createGoombaFactory(sprites) {
     };
 
     return function goomba() {
-        const entity = new Entity('goomba');
+        const entity = new Entity('goomba', audioBoard);
         entity.size.set(16, 16);
 
         entity.registerTrait(new Behavior());

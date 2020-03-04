@@ -1,5 +1,4 @@
 import { LayerManager } from './LayerManager.js';
-import { Entity } from './Entity.js';
 import { TileCollider } from './TileCollider.js';
 import { EntityCollider } from './EntityCollider.js';
 
@@ -44,7 +43,6 @@ export class Level {
     }
 
     /**
-     * 
      * @param {(progress: Entity)} callback 
      */
     forEachEntity(callback) {
@@ -74,7 +72,6 @@ export class Level {
     }
 
     /**
-     * 
      * @param {Entity} entity
      * @returns {Boolean} 
      */
@@ -87,7 +84,6 @@ export class Level {
     }
 
     /**
-     * 
      * @param {*} name 
      */
     getProp(name) {
@@ -116,11 +112,12 @@ export class Level {
     }
 
     /**
-     * @param {Number} rate 
+     * @param {{rate: Number, audioContext: AudioContext}} gameContext
      */
-    update(rate) {
+    update(gameContext) {
+        const { rate } = gameContext;
         this._entities.forEach(entity => {
-            entity.update(rate, this);
+            entity.update(gameContext, this);
 
             // add some gravity to all entities
             // NOTE !!! : applying the gravity SHOULD be after the tile collision check have been made
@@ -136,7 +133,7 @@ export class Level {
         });
 
         // finally execute all queued tasks,
-        // in order to avoid updates in from the traits depending on the order they are registered
+        // in order to avoid updates from the traits depending on the order they are registered
         this._entities.forEach(entity => entity.finalize());
 
         this._totalTime += rate;

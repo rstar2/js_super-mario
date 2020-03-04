@@ -1,3 +1,6 @@
+import { loadSprites } from '../loaders/sprites.js';
+import { loadSounds } from '../loaders/sounds.js';
+
 /**
  * Common utility function that will be used when creating each entity.
  * It creates a 'draw' method that will be attached to each entity.
@@ -18,4 +21,16 @@ export function createDraw(sprites, defaultTile) {
         // this.size.set(...tileSize);
     };
 
+}
+
+/**
+ * 
+ * @param {String} name
+ * @param {AudioContext} audioContext
+ * @return {Promise<{sprites: SpriteSheet, audioBoard: AudioBoard}>}
+ */
+export function loadEntity(name, audioContext) {
+    return Promise.all([loadSprites(name, true), loadSounds(name, audioContext)]).
+        then(([sprites, audioBoard]) => ({sprites, audioBoard}));
+        
 }

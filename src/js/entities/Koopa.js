@@ -4,25 +4,28 @@ import { WanderTrait as Wander } from '../traits/Wander.js';
 import { BePhysicsTrait as BePhysics } from '../traits/BePhysics.js';
 import { BeSolidTrait as BeSolid } from '../traits/BeSolid.js';
 import { BeKillableTrait as BeKillable } from '../traits/BeKillable.js';
-import { loadSprites } from '../loaders/sprites.js';
-import { createDraw } from './utils.js';
+import { createDraw, loadEntity } from './utils.js';
 
-export function loadKoopa() {
-    return loadSprites('koopa', true).
+/**
+ * @param {AudioContext} audioContext 
+ */
+export function loadKoopa(audioContext) {
+    return loadEntity('koopa', audioContext).
         then(createKoopaFactory);
 }
 
 /**
  * return a synchronous create function
- * @param {SpriteSheet} sprites 
+ * @param {SpriteSheet} sprites
+ * @param {AudioBoard} audioBoard
  */
-function createKoopaFactory(sprites) {
+function createKoopaFactory({sprites, audioBoard}) {
 
     // create the draw method - common/static/stateless for all Koopa entities
     const draw = createDraw(sprites, 'walk-1');
 
     return function koopa() {
-        const entity = new Entity('koopa');
+        const entity = new Entity('koopa', audioBoard);
         entity.size.set(16, 16);
         entity.offset.y = 8;
 

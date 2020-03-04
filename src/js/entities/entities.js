@@ -2,18 +2,22 @@ import { loadMario } from './Mario.js';
 import { loadGoomba } from './Goomba.js';
 import { loadKoopa } from './Koopa.js';
 
-export function loadEntities() {
+/**
+ * 
+ * @param {AudioContext} audioContext 
+ */
+export function loadEntities(audioContext) {
 
-    // the aim is to have mfactory methods like:
+    // the aim is to have factory methods like:
     // entityFactory.mario()
     // entityFactory.goomba()
     // entityFactory.koopa()
 
     // I. simple version relying on the fact that each 'loadXXX' 
     // that resolves to a factory function that is named
-    // specifically like this: "mari/goomba/koopa/...."
+    // specifically like this: "mario/goomba/koopa/...."
     const entityFactory = {};
-    return Promise.all([loadMario(), loadGoomba(), loadKoopa()]).
+    return Promise.all([loadMario(audioContext), loadGoomba(audioContext), loadKoopa(audioContext)]).
         then(factories => {
             factories.forEach(factory => entityFactory[factory.name] = factory);
 

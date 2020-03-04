@@ -1,16 +1,35 @@
-import { Tile } from './Tile.js';
+import {EventEmitter} from './EventEmitter.js';
 
 export class Trait {
     constructor(name, isBehavior = false) {
         this.NAME = name;
         this._isBehavior = isBehavior;
         this._queuedTasks = [];
+        this._queuedSounds = new Set();
+        this._eventEmitter = new EventEmitter();
+    }
+
+    /**
+     * 
+     * @param {String} name
+     * @param {Function} listener 
+     */
+    addListener(name, listener) {
+        this._eventEmitter.add(name, listener);
     }
 
     finalize() {
         // perform each queued tasks
         this._queuedTasks.forEach(task => task());
         this._queuedTasks.length = 0;
+    }
+
+    /**
+     * Add a sound to be played
+     * @param {String} name 
+     */
+    sound(name) {
+        this._queuedSounds.add(name);
     }
 
     /**
@@ -22,13 +41,23 @@ export class Trait {
     }
 
     /**
+     * Play all queued sounds
+     * @param {AudioBoard} audioBoard
+     * @param {AudioContext} audioContext
+     */
+    playSounds(audioBoard, audioContext) {
+        this._queuedSounds.forEach(name => audioBoard.play(name, audioContext));
+        this._queuedSounds.clear();
+    }
+
+    /**
      * 
      * @param {Entity} entity 
-     * @param {Number} rate
+     * @param {{rate: Number, audioContext: AudioContext}} gameContext
      * @param {Level} level 
      */
     // eslint-disable-next-line no-unused-vars
-    update(entity, rate, level) {
+    update(entity, gameContext, level) {
         if (!this._isBehavior) {
             throw new Error("Abstract method 'update' is not implemented");
         }
@@ -68,5 +97,15 @@ export class Trait {
     // eslint-disable-next-line no-unused-vars
     collided(entity, otherEntity) {
         // keep empty , inheritors may overwrite it they need to
+    }
+
+    /**
+     * 
+     * @param {String} name 
+     * @param  {...any} args
+     * @protected
+     */
+    _emit(name, ...args) {
+        this._eventEmitter.emit(name, ...args);
     }
 }

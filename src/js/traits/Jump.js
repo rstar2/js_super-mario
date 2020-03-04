@@ -44,11 +44,12 @@ export class JumpTrait extends Trait {
      * @param {Number} rate
      * @param {Level} level  
      */
-    update(entity, rate) {
+    update(entity, { rate }) {
         // check if we've pressed to 'start'
-        // then we'll start to look for an opportunaty to jump
+        // then we'll start to look for an opportunity to jump
         if (this._requestTime > 0) {
             if (this._ready > 0) {
+                this.sound('jump');
                 this._engagedTime = this._duration;
                 this._requestTime = 0;
             } else {
@@ -61,6 +62,7 @@ export class JumpTrait extends Trait {
             // the faster we run the more speed we gain and thus higher jump
             entity.vel.y = -(this._velocity + Math.abs(entity.vel.x) * this._speedBoost);
             this._engagedTime -= rate;
+            
         }
 
         this._ready--;

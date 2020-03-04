@@ -19,7 +19,7 @@ export class BePlayerControlTrait extends Trait {
         this._coins = 0;
 
         // add a stomper listener
-        this._player.stomper.addListener(() => this._score += 100);
+        this._player.stomper.addListener('stomp', () => this._score += 100);
     }
 
     /**
@@ -48,7 +48,7 @@ export class BePlayerControlTrait extends Trait {
      * @param {Number} rate
      * @param {Level} level  
      */
-    update(entity, rate, level) {
+    update(entity, { rate }, level) {
         // revive the killed entity
         if (!level.hasEntity(this._player)) {
             this._player.killable.revive();

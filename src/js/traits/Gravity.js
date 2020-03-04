@@ -12,7 +12,7 @@ export default class VelocityTrait extends Trait {
      * @param {Number} rate
      * @param {Level} level  
      */
-    update(entity, rate) {
+    update(entity, { rate }) {
         // add some gravity
         entity.vel.y += this._gravity * rate;
     }

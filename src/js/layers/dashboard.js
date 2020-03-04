@@ -1,7 +1,4 @@
 import * as logger from '../logger.js';
-import { Font } from '../Font.js';
-import { Level } from '../Level.js';
-
 
 function pad(number, len = 6) {
     return ('' + Math.floor(number)).padStart(len, '0');

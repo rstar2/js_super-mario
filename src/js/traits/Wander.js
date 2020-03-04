@@ -50,7 +50,7 @@ export class WanderTrait extends Trait {
      * @param {Number} rate
      * @param {Level} level  
      */
-    update(entity, rate) {
+    update(entity, { rate }) {
         if (this._paused) {
             return;
         }
