@@ -18,6 +18,8 @@ export function createEntitiesLayer(level, maxEntityWidth = 64, maxEntityHeight 
 
         const { x, y } = view.pos;
         level.forEachEntity(entity => {
+            if (!entity.isDrawable) return;
+
             // draw the entity tile in the buffer image after it's been cleared
             bufferContext.clearRect(0, 0, maxEntityWidth, maxEntityHeight);
             entity.draw(bufferContext, level);

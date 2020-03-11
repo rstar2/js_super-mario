@@ -6,8 +6,9 @@ export class Entity {
      * 
      * @param {String} name 
      * @param {AudioBoard} audioBoard 
+     * @param {Boolean} isDrawable 
      */
-    constructor(name, audioBoard) {
+    constructor(name, audioBoard, isDrawable = true) {
         this.NAME = name;
         this._audioBoard = audioBoard;
         // current position
@@ -27,6 +28,8 @@ export class Entity {
         this._traits = [];
 
         this._animations = new Map();
+
+        this._isDrawable = isDrawable;
     }
 
     /**
@@ -76,6 +79,13 @@ export class Entity {
     }
 
     /**
+     * @returns {Boolean}
+     */
+    get isDrawable() {
+        return this._isDrawable;
+    }
+
+    /**
      * 
      * @param {Trait} trait 
      */
@@ -95,6 +105,8 @@ export class Entity {
      * @param {(progress: Number)} animation 
      */
     registerAnimation(animName, animation) {
+        if (!this._isDrawable) throw new Error('Non-drawable entities cannon have animations');
+
         const idx = animName.indexOf('-');
         let mainName = animName;
         let subName = animName;
@@ -115,6 +127,8 @@ export class Entity {
      * @param {SpriteSheet} sprites 
      */
     registerAnimationsFromSprites(sprites) {
+        if (!this._isDrawable) throw new Error('Non-drawable entities cannon have animations');
+
         sprites.forEachAnimation((animation, name) => {
             this.registerAnimation(name, animation);
         });
@@ -125,6 +139,8 @@ export class Entity {
      * @param {Level} level 
      */
     animate(level) {
+        if (!this._isDrawable) throw new Error('Non-drawable entities cannon animate');
+
         return Array.from(this._animations).reduce((accum, [animName, animations]) => {
             // check to see if there's such Trait registered and if there is then
             // call it's animation method,
@@ -173,7 +189,8 @@ export class Entity {
      */
     // eslint-disable-next-line no-unused-vars
     draw(context, level) {
-        throw new Error("Each Entity should overwrite this abstract method");
+        if (this._isDrawable)
+            throw new Error("Each drawable entity should have draw method");
     }
 
     finalize() {

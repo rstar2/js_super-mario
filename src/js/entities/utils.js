@@ -27,10 +27,11 @@ export function createDraw(sprites, defaultTile) {
  * 
  * @param {String} name
  * @param {AudioContext} audioContext
- * @return {Promise<{sprites: SpriteSheet, audioBoard: AudioBoard}>}
+ * @param {{[factory]: Function}} entityFactories
+ * @return {Promise<{sprites: SpriteSheet, audioBoard: AudioBoard, entityFactories: {[factory]: Function}}>}
  */
-export function loadEntity(name, audioContext) {
+export function loadEntity(name, audioContext, entityFactories) {
     return Promise.all([loadSprites(name, true), loadSounds(name, audioContext)]).
-        then(([sprites, audioBoard]) => ({sprites, audioBoard}));
+        then(([sprites, audioBoard]) => ({sprites, audioBoard, entityFactories}));
         
 }

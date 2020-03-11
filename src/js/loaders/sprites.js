@@ -8,6 +8,9 @@ import { createAnimation } from '../animation.js';
  * @returns {Promise<SpriteSheet>}
  */
 export function loadSprites(name, mirrored = false) {
+    if (!name) return Promise.resolve(null);
+
+
     return loadData(`sprites/${name}`).
         then(spritesSpec => Promise.all([spritesSpec, loadImage(spritesSpec.spritesURL)])).
         then(([spritesSpec, spritesImage]) => {

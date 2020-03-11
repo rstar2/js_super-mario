@@ -2,6 +2,7 @@ import { loadMario } from './Mario.js';
 import { loadGoomba } from './Goomba.js';
 import { loadKoopa } from './Koopa.js';
 import { loadBullet } from './Bullet.js';
+import { loadCannon } from './Cannon.js';
 
 /**
  * 
@@ -23,6 +24,7 @@ export function loadEntities(audioContext) {
         loadGoomba(audioContext),
         loadKoopa(audioContext),
         loadBullet(audioContext),
+        loadCannon(audioContext, entityFactory),
     ]).
         then(factories => {
             factories.forEach(factory => entityFactory[factory.name] = factory);
