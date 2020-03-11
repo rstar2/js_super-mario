@@ -1,6 +1,7 @@
 import { loadMario } from './Mario.js';
 import { loadGoomba } from './Goomba.js';
 import { loadKoopa } from './Koopa.js';
+import { loadBullet } from './Bullet.js';
 
 /**
  * 
@@ -17,7 +18,12 @@ export function loadEntities(audioContext) {
     // that resolves to a factory function that is named
     // specifically like this: "mario/goomba/koopa/...."
     const entityFactory = {};
-    return Promise.all([loadMario(audioContext), loadGoomba(audioContext), loadKoopa(audioContext)]).
+    return Promise.all([
+        loadMario(audioContext),
+        loadGoomba(audioContext),
+        loadKoopa(audioContext),
+        loadBullet(audioContext),
+    ]).
         then(factories => {
             factories.forEach(factory => entityFactory[factory.name] = factory);
 

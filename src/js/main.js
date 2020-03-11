@@ -1,7 +1,6 @@
 import { CONFIG } from "./config.js";
 import { View } from "./View.js";
 import { Timer } from "./Timer.js";
-import { AudioBoard } from "./AudioBoard.js";
 import { KeyboardManager } from "./KeyboardManager.js";
 import { setupMarioKeyboard } from "./keyboard.js";
 import { createLoadLevel } from "./loaders/level.js";

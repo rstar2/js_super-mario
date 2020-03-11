@@ -135,6 +135,24 @@
                     ]
                 }
             ]
+        },
+        "cannon-2h" :  {
+            "tiles": [
+                {
+                    "name": "cannon-1",
+                    "type": "ground",
+                    "ranges": [
+                        [0, 0]
+                    ]
+                },
+                {
+                    "name": "cannon-2",
+                    "type": "ground",
+                    "ranges": [
+                        [0, 1]
+                    ]
+                }
+            ]
         }
     },
 
@@ -365,6 +383,17 @@
                     ]
                 }
             ]
+        },
+        {
+            "order": 2,
+            "tiles": [
+                {
+                    "pattern": "cannon-2h",
+                    "ranges": [
+                        [6, 7]
+                    ]
+                }
+            ]
         }
     ],
 
@@ -380,6 +409,10 @@
         {
             "name": "goomba",
             "pos": [220, 0]
+        },
+        {
+            "name": "bullet",
+            "pos": [96, 196]
         }
     ]
     
