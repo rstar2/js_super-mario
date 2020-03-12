@@ -30,7 +30,7 @@ function createBulletFactory({sprites, audioBoard}) {
         entity.registerTrait(new BeKillable());
 
         entity.draw = function (context) {
-            sprites.draw('bullet', context, 0, 0);
+            sprites.draw('bullet', context, 0, 0, entity.vel.x < 0);
         };
 
         return entity;

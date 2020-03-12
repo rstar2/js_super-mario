@@ -49,7 +49,7 @@ export class JumpTrait extends Trait {
         // then we'll start to look for an opportunity to jump
         if (this._requestTime > 0) {
             if (this._ready > 0) {
-                this.sound('jump');
+                entity.sound('jump');
                 this._engagedTime = this._duration;
                 this._requestTime = 0;
             } else {

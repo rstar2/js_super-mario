@@ -29,6 +29,8 @@ export class Entity {
 
         this._animations = new Map();
 
+        this._queuedSounds = new Set();
+
         this._isDrawable = isDrawable;
     }
 
@@ -72,10 +74,6 @@ export class Entity {
      */
     get lifetime() {
         return this._lifetime;
-    }
-
-    get audioBoard() {
-        return this._audioBoard;
     }
 
     /**
@@ -175,8 +173,11 @@ export class Entity {
     update(gameContext, level) {
         this._traits.forEach(trait => {
             trait.update(this, gameContext, level);
-            trait.playSounds(this.audioBoard, gameContext.audioContext);
         });
+
+        // play all queued sounds
+        this._queuedSounds.forEach(name => this._audioBoard.play(name, gameContext.audioContext));
+        this._queuedSounds.clear();
 
         // increase also the overall lifetime of the entity
         this._lifetime += gameContext.rate;
@@ -212,6 +213,14 @@ export class Entity {
      */
     collidedWith(other) {
         this._traits.forEach(trait => trait.collided(this, other));
+    }
+
+    /**
+     * Add a sound to be played
+     * @param {String} name 
+     */
+    sound(name) {
+        this._queuedSounds.add(name);
     }
 
 }

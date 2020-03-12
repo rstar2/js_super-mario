@@ -1,5 +1,5 @@
 import { Entity } from '../Entity.js';
-import { Trait } from '../Trait.js';
+import { generatePlayer } from '../player.js';
 import { EmitterTrait as Emitter } from '../traits/Emitter.js';
 import { loadEntity } from './utils.js';
 
@@ -8,9 +8,11 @@ import { loadEntity } from './utils.js';
  * @param {{[factory]: Function}} entityFactories 
  */
 export function loadCannon(audioContext, entityFactories) {
-    return loadEntity(null, audioContext, entityFactories).
+    return loadEntity('cannon', audioContext, entityFactories).
         then(createCannonFactory);
 }
+
+const HOLD_SHOOT_THRESHOLD = 30;
 
 /**
  * return a synchronous create function
@@ -18,65 +20,40 @@ export function loadCannon(audioContext, entityFactories) {
  * @param {AudioBoard} audioBoard
  * @param {{[factory]: Function}} entityFactories
  */
-function createCannonFactory({sprites, audioBoard, entityFactories}) {
+function createCannonFactory({audioBoard, entityFactories}) {
 
     return function cannon() {
-        const entity = new Entity('cannon', audioBoard, false);
+        const cannon = new Entity('cannon', audioBoard, false);
 
-        entity.registerTrait(new Emitter());
+        cannon.registerTrait(new Emitter(4));
 
-        entity.emitter.add(function (/*Entity*/ent, gameContext, /*Level*/level) {
+        cannon.emitter.add(function (/*Entity*/entity, gameContext, /*Level*/level) {
+            // here actually cannon === entity
+
+            let direction = 1;
+
+            // check if any player is near the cannon and if yes then don't shoot
+            for (const player of generatePlayer(level)) {
+                if (player.pos.x > cannon.pos.x - HOLD_SHOOT_THRESHOLD &&
+                    player.pos.x < cannon.pos.x + HOLD_SHOOT_THRESHOLD) {
+                    // don't shoot
+                    return;
+                }
+
+                // check to see if which direction to fire
+                if (player.pos.x < cannon.pos.x)
+                    direction = -1;
+            }
+
+            cannon.sound('shoot');
+            
             const bullet = entityFactories.bullet();
-            bullet.pos.set(ent.pos.x, ent.pos.y);
+            bullet.pos.set(cannon.pos.x, cannon.pos.y);
+            bullet.vel.x = direction * bullet.vel.x;
             
             level.addEntity(bullet);
         });
 
-        return entity;
+        return cannon;
     };
-}
-
-class Behavior extends Trait {
-    constructor() {
-        super('behavior', true);
-        this._gravity = null;
-    }
-
-    collided(bullet, otherEntity) {
-        if (bullet.killable.dead) {
-            // we are already dead - don't interact again on next collisions
-            return;
-        }
-
-        // don't check if the other entity is 'Mario'
-        // but if the other entity has a special feature,
-        // in this case for a trait named 'stomper'
-        if (otherEntity.stomper) {
-            // Bullet is killed only if the stomper (like Mario) is falling on it
-            if (otherEntity.pos.y < bullet.pos.y) {
-                // make us killed
-                bullet.killable.kill();
-                this._gravity = new Gravity();
-            } else {
-                // make the stomper killed
-                if (otherEntity.killable) {
-                    otherEntity.killable.kill();
-                }
-            }
-        }
-    }
-
-    /**
-     * @param {Entity} bullet
-     * @param {{rate: Number, audioContext: AudioContext}} gameContext
-     * @param {Level} level  
-     */
-    update(bullet, gameContext, level) {
-        // if bullet is "dead", so it has gravity, then apply to it
-        if (this._gravity) {
-            this._gravity.update(bullet, gameContext, level);
-        }
-    }
-
-
 }

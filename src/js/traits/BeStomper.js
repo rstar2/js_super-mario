@@ -29,7 +29,7 @@ export class BeStomperTrait extends Trait {
 
             this._emit('stomp', us, otherEntity);
 
-            this.sound('stomp');
+            us.sound('stomp');
         }
     }
 

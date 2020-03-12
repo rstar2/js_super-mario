@@ -8,6 +8,8 @@ import { AudioBoard } from '../AudioBoard.js';
  * @returns {Promise<AudioBoard>}
  */
 export function loadSounds(name, audioContext) {
+    if (!name) return Promise.resolve(null);
+
     const audioBoard = new AudioBoard();
 
     return loadDataSounds(name)
@@ -31,6 +33,6 @@ export function loadSounds(name, audioContext) {
 
             return Promise.all(promises);
         })
-        .catch(console.log)
+        .catch(error => console.error(`Failed to load sounds for ${name} : ${error}`))
         .then(() => audioBoard);
 }

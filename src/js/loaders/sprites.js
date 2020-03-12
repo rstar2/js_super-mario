@@ -10,7 +10,6 @@ import { createAnimation } from '../animation.js';
 export function loadSprites(name, mirrored = false) {
     if (!name) return Promise.resolve(null);
 
-
     return loadData(`sprites/${name}`).
         then(spritesSpec => Promise.all([spritesSpec, loadImage(spritesSpec.spritesURL)])).
         then(([spritesSpec, spritesImage]) => {
@@ -52,5 +51,6 @@ export function loadSprites(name, mirrored = false) {
             }
 
             return sprites;
-        });
+        })
+        .catch(error => console.error(`Failed to load sprites for ${name} : ${error}`));
 }

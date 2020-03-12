@@ -5,7 +5,6 @@ export class Trait {
         this.NAME = name;
         this._isBehavior = isBehavior;
         this._queuedTasks = [];
-        this._queuedSounds = new Set();
         this._eventEmitter = new EventEmitter();
     }
 
@@ -25,29 +24,11 @@ export class Trait {
     }
 
     /**
-     * Add a sound to be played
-     * @param {String} name 
-     */
-    sound(name) {
-        this._queuedSounds.add(name);
-    }
-
-    /**
      * Queue up a task to be executed when the {@see finalize} method is called
      * @param {Function} task 
      */
     queueTask(task) {
         this._queuedTasks.push(task);
-    }
-
-    /**
-     * Play all queued sounds
-     * @param {AudioBoard} audioBoard
-     * @param {AudioContext} audioContext
-     */
-    playSounds(audioBoard, audioContext) {
-        this._queuedSounds.forEach(name => audioBoard.play(name, audioContext));
-        this._queuedSounds.clear();
     }
 
     /**

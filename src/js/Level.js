@@ -41,6 +41,13 @@ export class Level {
     getTileCollider() {
         return this._tileCollider;
     }
+    
+    /**
+     * @param {(context: CanvasRenderingContext2D, view: View) => void} layer 
+     */
+    addLayer(layer) {
+        this._layerManager.add(layer);
+    }
 
     /**
      * @param {(progress: Entity)} callback 
@@ -50,10 +57,13 @@ export class Level {
     }
 
     /**
-     * @param {(context: CanvasRenderingContext2D, view: View) => void} layer 
+     * @generator
+     * @yields {Entity} next entity
      */
-    addLayer(layer) {
-        this._layerManager.add(layer);
+    *generateEntity() {
+        for (const entity of this._entities) {
+            yield entity;
+        }
     }
 
     /**
