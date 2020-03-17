@@ -167,7 +167,7 @@ export class Entity {
 
     /**
      * 
-     * @param {{rate: Number, audioContext: AudioContext}} gameContext
+     * @param {GameContext} gameContext
      * @param {Level} level  
      */
     update(gameContext, level) {

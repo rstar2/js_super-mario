@@ -5,7 +5,8 @@ import * as logger from '../logger.js';
  * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
  */
 export function createDebugTileCollisionLayer(level) {
-    const tileResolver = level.getTileCollider().getTileResolver();
+    // TODO:
+    const tileResolvers = level.getTileCollider().getTileResolvers();
     const tileSize = tileResolver.getTileSize();
 
     const collisionTiles = [];

@@ -43,6 +43,11 @@ export class Matrix {
         this._grid[x][y] = value;
     }
 
+    delete(x, y) {
+        const col = this._grid[x];
+        col && delete col[y];
+    }
+
     get(x, y) {
         const col = this._grid[x];
         return col ? col[y] : undefined;

@@ -34,7 +34,7 @@ export class Trait {
     /**
      * 
      * @param {Entity} entity 
-     * @param {{rate: Number, audioContext: AudioContext}} gameContext
+     * @param {GameContext} gameContext
      * @param {Level} level 
      */
     // eslint-disable-next-line no-unused-vars

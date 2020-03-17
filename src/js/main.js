@@ -63,6 +63,7 @@ async function main(canvas) {
     // the game context that will hold different properties
     const gameContext = {
         /*AudioContext*/ audioContext,
+        /*Object*/ entityFactory,
         /*Number*/ rate: 0,
     };
 

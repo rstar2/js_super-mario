@@ -1,5 +1,5 @@
 import { LayerManager } from './LayerManager.js';
-import { TileCollider } from './TileCollider.js';
+import { TileCollider } from './tiles/TileCollider.js';
 import { EntityCollider } from './EntityCollider.js';
 
 const PROPS_DEFAULT = { gravity: 0, time: 300 };
@@ -8,13 +8,13 @@ export class Level {
     /**
      * 
      * @param {String} name 
-     * @param {Matrix} tiles 
-     * @param {Number} tileSize 
+     * @param {Number} width 
+     * @param {Number} height 
      * @param {{gravity:Number, time:Number, ...}} props 
      */
-    constructor(name, tiles, tileSize, props = {}) {
+    constructor(name, width, height, props = {}) {
         this.NAME = name;
-        this._tileCollider = new TileCollider(tiles, tileSize);
+        this._tileCollider = new TileCollider();
         this._layerManager = new LayerManager();
         this._entities = new Set();
 
@@ -22,15 +22,8 @@ export class Level {
 
         this._props = { ...PROPS_DEFAULT, ...props };
 
-        // compute the width and height from the tiles and tileSize
-        let maxX = 0, maxY = 0;
-        tiles.forEach((x, y, tile) => {
-            maxX = Math.max(maxX, x);
-            maxY = Math.max(maxY, y);
-            tile._name == 0;
-        });
-        this._width = maxX * tileSize;
-        this._height = maxY * tileSize;
+        this._width = width;
+        this._height = height;
 
         this._totalTime = 0;
     }
@@ -41,7 +34,7 @@ export class Level {
     getTileCollider() {
         return this._tileCollider;
     }
-    
+
     /**
      * @param {(context: CanvasRenderingContext2D, view: View) => void} layer 
      */
@@ -122,7 +115,7 @@ export class Level {
     }
 
     /**
-     * @param {{rate: Number, audioContext: AudioContext}} gameContext
+     * @param {GameContext} gameContext
      */
     update(gameContext) {
         const { rate } = gameContext;

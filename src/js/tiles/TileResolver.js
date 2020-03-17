@@ -41,7 +41,7 @@ export class TileResolver {
             const y1 = indexY * this._tileSize;
             const y2 = y1 + this._tileSize;
             return {
-                tile, x1, x2, y1, y2
+                indexX, indexY, tile, x1, x2, y1, y2
             };
         }
         return null;
@@ -64,6 +64,10 @@ export class TileResolver {
         });
 
         return tiles;
+    }
+
+    deleteByIndex(indexX, indexY) {
+        this._tiles.delete(indexX, indexY);
     }
 
 }

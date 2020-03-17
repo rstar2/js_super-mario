@@ -1,6 +1,6 @@
 import * as logger from '../logger.js';
 import { CONFIG } from '../config.js';
-import { TileResolver } from '../TileResolver.js';
+import { TileResolver } from '../tiles/TileResolver.js';
 
 /**
  * Note - this will redraw the whole level every time

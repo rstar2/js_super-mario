@@ -14,17 +14,19 @@ export class BePhysicsTrait extends Trait {
 
     /**
      * @param {Entity} entity
-     * @param {Number} rate
+     * @param {GameContext} gameContext
      * @param {Level} level  
      */
-    update(entity, { rate }, level) {
+    update(entity, gameContext, level) {
+        const { rate } = gameContext;
+
         // NOTE !!! : the x an y positions SHOULD be updated separately
         // before checking for collisions 
         entity.pos.x += entity.vel.x * rate;
-        level.getTileCollider().checkX(entity);
+        level.getTileCollider().checkX(entity, gameContext, level);
 
         entity.pos.y += entity.vel.y * rate;
-        level.getTileCollider().checkY(entity);
+        level.getTileCollider().checkY(entity, gameContext, level);
 
         if (this._gravity) {
             // NOTE !!! : applying the gravity SHOULD be after the tile collision check have been made

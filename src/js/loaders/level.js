@@ -1,5 +1,5 @@
 import * as logger from '../logger.js';
-import { Tile } from '../Tile.js';
+import { Tile } from '../tiles/Tile.js';
 import { Level } from '../Level.js';
 import { Matrix } from '../math.js';
 import { createBackgroundLayer } from '../layers/background.js';
@@ -110,19 +110,28 @@ export function createLoadLevel(entityFactory) {
                 // TODO: tileSize should be get from the backgroundSprites.getWidth()/getHeight()
                 const tileSize = 16;
 
+                // calculate properly the width and height of the level
                 // create the main collision grid
                 const mergedTiles = layers.reduce((mergedTiles, layerSpec) => {
                     return mergedTiles.concat(layerSpec.tiles);
                 }, []);
                 const grid = createGrid(mergedTiles, patterns);
+                // compute the width and height from the tiles and tileSize
+                let maxX = 0, maxY = 0;
+                grid.forEach((x, y) => {
+                    maxX = Math.max(maxX, x);
+                    maxY = Math.max(maxY, y);
+                });
+
 
                 // create the level
-                const level = new Level(name, grid, tileSize, props);
-
+                const level = new Level(name, maxX * tileSize, maxY * tileSize, props);
+                
                 // create all background layers - the drawing ones
                 layers.forEach(layerSpec => {
-                    const tiles = createGrid(layerSpec.tiles, patterns);
-                    level.addLayer(createBackgroundLayer(level, tiles, tileSize, backgroundSprites));
+                    const tilesGrid = createGrid(layerSpec.tiles, patterns);
+                    level.addLayer(createBackgroundLayer(level, tilesGrid, tileSize, backgroundSprites));
+                    level.getTileCollider().addTilesGrid(tilesGrid, tileSize);
                 });
 
 
