@@ -83,6 +83,8 @@ async function main(canvas) {
     };
 
     timer.start();
+
+    level.getMusicPlayer().play('main');
 }
 
 const canvas = document.getElementById("screen");

@@ -8,9 +8,9 @@ import { AudioBoard } from '../AudioBoard.js';
  * @returns {Promise<AudioBoard>}
  */
 export function loadSounds(name, audioContext) {
-    if (!name) return Promise.resolve(null);
-
     const audioBoard = new AudioBoard();
+
+    if (!name) return Promise.resolve(audioBoard);
 
     return loadDataSounds(name)
         .then(sounds => {

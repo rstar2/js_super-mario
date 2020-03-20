@@ -1,6 +1,7 @@
 {
     "_sprites": "underworld",
     "sprites": "overworld",
+    "music": "overworld",
 
     "props": {
         "gravity": 0,

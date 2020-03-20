@@ -26,6 +26,22 @@ export class Level {
         this._height = height;
 
         this._totalTime = 0;
+
+        this._musicPlayer = null;
+    }
+
+    /**
+     * @param {MusicPlayer}
+     */
+    setMusicPlayer(musicPlayer) {
+        this._musicPlayer = musicPlayer;
+    }
+
+    /**
+     * @returns {MusicPlayer}
+     */
+    getMusicPlayer() {
+        return this._musicPlayer;
     }
 
     /**

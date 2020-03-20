@@ -11,7 +11,7 @@ export function loadSprites(name, mirrored = false) {
     if (!name) return Promise.resolve(null);
 
     return loadData(`sprites/${name}`).
-        then(spritesSpec => Promise.all([spritesSpec, loadImage(spritesSpec.spritesURL)])).
+        then(spritesSpec => Promise.all([spritesSpec, loadImage(spritesSpec.url)])).
         then(([spritesSpec, spritesImage]) => {
             const sprites = new SpriteSheet(spritesImage, mirrored,
                 spritesSpec.tileWidth, spritesSpec.tileHeight);

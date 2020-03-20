@@ -6,6 +6,7 @@ import { createBackgroundLayer } from '../layers/background.js';
 import { createEntitiesLayer } from '../layers/entities.js';
 import { loadDataLevel } from './utils.js';
 import { loadSprites } from './sprites.js';
+import { loadMusic } from './music.js';
 
 function* expandSpan(xStart, xLen, yStart, yLen) {
     const xEnd = xStart + xLen;
@@ -102,8 +103,8 @@ export function createLoadLevel(entityFactory) {
      */
     function loadLevel(name) {
         return loadDataLevel(name).
-            then(levelSpec => Promise.all([levelSpec, loadSprites(levelSpec.sprites)])).
-            then(([levelSpec, backgroundSprites]) => {
+            then(levelSpec => Promise.all([levelSpec, loadSprites(levelSpec.sprites), loadMusic(levelSpec.music)])).
+            then(([levelSpec, backgroundSprites, musicPlayer]) => {
                 // parse the level's background tiles, entities and other props
                 const { layers, patterns, entities, props } = levelSpec;
 
@@ -147,6 +148,8 @@ export function createLoadLevel(entityFactory) {
 
                 // create and add the entity layer
                 level.addLayer(createEntitiesLayer(level));
+
+                level.setMusicPlayer(musicPlayer);
 
                 return level;
             });

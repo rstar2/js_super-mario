@@ -26,6 +26,14 @@ export function loadDataSounds(name) {
  * @param {String} name
  * @return {Promise<Object>}
  */
+export function loadDataMusic(name) {
+    return loadData(`music/${name}`);
+}
+
+/**
+ * @param {String} name
+ * @return {Promise<Object>}
+ */
 export function loadData(name) {
     return loadJson(`data/${name}.json`);
 }
