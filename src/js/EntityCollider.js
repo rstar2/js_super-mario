@@ -21,7 +21,6 @@ export class EntityCollider {
             if (entity.bounds.overlaps(candidate.bounds)) {
                 // notify both entities for the collision between them
                 entity.collidedWith(candidate);
-                candidate.collidedWith(entity);
             }
         });
     }

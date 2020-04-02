@@ -1,5 +1,7 @@
 import { Vector } from './math.js';
 import { Bounds } from './Bounds.js';
+import { EventBuffer } from './EventBuffer.js';
+import { Trait } from './Trait.js';
 
 export class Entity {
     /**
@@ -30,6 +32,8 @@ export class Entity {
         this._animations = new Map();
 
         this._queuedSounds = new Set();
+
+        this._eventBuffer = new EventBuffer();
 
         this._isDrawable = isDrawable;
     }
@@ -195,7 +199,11 @@ export class Entity {
     }
 
     finalize() {
-        this._traits.forEach(trait => trait.finalize());
+        this._eventBuffer.emit(Trait.EVENT_TASK);
+
+        this._traits.forEach(trait => trait.finalize(this._eventBuffer));
+
+        this._eventBuffer.clear();
     }
 
     /**
@@ -221,6 +229,16 @@ export class Entity {
      */
     sound(name) {
         this._queuedSounds.add(name);
+    }
+
+    /**
+     * Emits a new event
+     * @param {String} name 
+     * @param  {...any} args
+     * @protected
+     */
+    emit(name, ...args) {
+        this._eventBuffer.emit(name, ...args);
     }
 
 }

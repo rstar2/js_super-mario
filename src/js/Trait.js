@@ -1,26 +1,25 @@
-import {EventEmitter} from './EventEmitter.js';
-
 export class Trait {
+    static EVENT_TASK = Symbol('task');
+
     constructor(name, isBehavior = false) {
         this.NAME = name;
         this._isBehavior = isBehavior;
-        this._queuedTasks = [];
-        this._eventEmitter = new EventEmitter();
+        this._listeners = new Map();
     }
 
     /**
-     * 
+     * Add a listener for specific event name
      * @param {String} name
      * @param {Function} listener 
      */
     addListener(name, listener) {
-        this._eventEmitter.add(name, listener);
-    }
+        let listeners = this._listeners.get(name);
+        if (!listeners) {
+            listeners = [];
+            this._listeners.set(name, listeners);
+        }
 
-    finalize() {
-        // perform each queued tasks
-        this._queuedTasks.forEach(task => task());
-        this._queuedTasks.length = 0;
+        listeners.push(listener);
     }
 
     /**
@@ -28,7 +27,7 @@ export class Trait {
      * @param {Function} task 
      */
     queueTask(task) {
-        this._queuedTasks.push(task);
+        this.addListener(Trait.EVENT_TASK, task);
     }
 
     /**
@@ -81,12 +80,21 @@ export class Trait {
     }
 
     /**
-     * 
-     * @param {String} name 
-     * @param  {...any} args
-     * @protected
+     * Called once on each loop, after update
+     * @param {EventBuffer} entityEventBuffer 
      */
-    _emit(name, ...args) {
-        this._eventEmitter.emit(name, ...args);
+    finalize(entityEventBuffer) {
+        // process all stored events and notify all registered listeners
+        // NOTE: this will also perform each queued tasks
+        this._listeners.forEach((listeners, name) => {
+            listeners.forEach(listener => {
+                entityEventBuffer.process(name, listener);
+            });
+        });
+
+        // tasks (e.g these types od listeners) are to be executed ONLY ONCE
+        // a new task can be added later when needed
+        this._listeners.delete(Trait.EVENT_TASK);
     }
+    
 }

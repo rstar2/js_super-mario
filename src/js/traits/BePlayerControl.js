@@ -14,26 +14,7 @@ export class BePlayerControlTrait extends Trait {
         this._playerTime = playerTime;
         this._remainTime = this._playerTime;
         this._timeSpeed = 2;
-
-        this._score = 0;
-        this._coins = 0;
-
-        // add a stomper listener
-        this._player.stomper.addListener('stomp', () => this._score += 100);
-    }
-
-    /**
-     * @returns {Number}
-     */
-    get score() {
-        return this._score;
-    }
-
-    /**
-     * @returns {Number}
-     */
-    get coins() {
-        return this._coins;
+        
     }
 
     /**

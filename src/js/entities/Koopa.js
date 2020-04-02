@@ -138,7 +138,7 @@ class Behavior extends Trait {
         }
     }
 
-    update(koopa, rate) {
+    update(koopa, { rate }) {
         if (this._state === STATE_HIDING && !koopa.killable.dead) {
             this._hidingTime += rate;
 

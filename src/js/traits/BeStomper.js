@@ -1,6 +1,9 @@
 import { Trait } from '../Trait.js';
 
 export class BeStomperTrait extends Trait {
+
+    static STOMP_EVENT = Symbol('stomp');
+
     constructor() {
         super('stomper', true);
 
@@ -22,12 +25,15 @@ export class BeStomperTrait extends Trait {
         }
 
         if (us.pos.y < otherEntity.pos.y) {
-            // go to the top of the other entity, not to collide again with it on the next check
-            us.bounds.bottom = otherEntity.bounds.top;
-            // make the stomper bounce
-            us.vel.y = -this._bounceVelocity;
+            this.queueTask(() => {
+                // go to the top of the other entity, not to collide again with it on the next check
+                us.bounds.bottom = otherEntity.bounds.top;
+                // make the stomper bounce
+                us.vel.y = -this._bounceVelocity;
+            });
+            
 
-            this._emit('stomp', us, otherEntity);
+            us.emit(BeStomperTrait.STOMP_EVENT, us, otherEntity);
 
             us.sound('stomp');
         }
