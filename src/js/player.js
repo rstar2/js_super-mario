@@ -5,15 +5,13 @@ import { BePlayerTrait as BePlayer } from "./traits/BePlayer.js";
 /**
  *
  * @param {Entity} player
- * @param {Level} level
  * @returns {Entity}
  */
-export function createPlayerEnvironment(player, level) {
+export function createPlayerEnvironment(player) {
     // create a fictitious entity
     const playerEnv = new Entity();
     playerEnv.draw = () => {};
-    playerEnv.registerTrait(new BePlayerControl(player, level.getProp("time")));
-    level.addEntity(playerEnv);
+    playerEnv.registerTrait(new BePlayerControl(player));
     return playerEnv;
 }
 
@@ -22,6 +20,7 @@ export function createPlayerEnvironment(player, level) {
  */
 export function createPlayer(player) {
     player.registerTrait(new BePlayer());
+    return player;
 }
 
 /**

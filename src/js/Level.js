@@ -1,6 +1,7 @@
 import { LayerManager } from './LayerManager.js';
 import { TileCollider } from './tiles/TileCollider.js';
 import { EntityCollider } from './EntityCollider.js';
+import { EventEmitter } from './EventEmitter.js';
 
 const PROPS_DEFAULT = { gravity: 0, time: 300 };
 
@@ -25,23 +26,47 @@ export class Level {
         this._width = width;
         this._height = height;
 
+        this._eventEmitter = new EventEmitter();
+
+        // total increasing time
         this._totalTime = 0;
 
-        this._musicPlayer = null;
+        /**
+         * @type {MusicController}
+         */
+        this._musicController = null;
     }
 
     /**
-     * @param {MusicPlayer}
+     * 
+     * @param {String} name 
+     * @param {Function} listener 
      */
-    setMusicPlayer(musicPlayer) {
-        this._musicPlayer = musicPlayer;
+    addListener(name, listener) {
+        this._eventEmitter.add(name, listener);
+    }
+
+    /**
+     * 
+     * @param {String} name 
+     * @param {any} args 
+     */
+    emit(name, ...args) {
+        this._eventEmitter.emit(name, ...args);
+    }
+
+    /**
+     * @param {MusicController}
+     */
+    setMusicController(musicController) {
+        this._musicController = musicController;
     }
 
     /**
      * @returns {MusicPlayer}
      */
-    getMusicPlayer() {
-        return this._musicPlayer;
+    getMusicController() {
+        return this._musicController;
     }
 
     /**

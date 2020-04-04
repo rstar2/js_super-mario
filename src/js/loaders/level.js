@@ -7,6 +7,9 @@ import { createEntitiesLayer } from '../layers/entities.js';
 import { loadDataLevel } from './utils.js';
 import { loadSprites } from './sprites.js';
 import { loadMusic } from './music.js';
+import { MusicController } from '../MusicController.js';
+import { Entity } from '../Entity.js';
+import { BeLevelTimerTrait as LevelTimer } from '../traits/BeLevelTimer.js';
 
 function* expandSpan(xStart, xLen, yStart, yLen) {
     const xEnd = xStart + xLen;
@@ -89,6 +92,24 @@ function createGrid(tiles, patterns) {
     return grid;
 }
 
+/**
+ * @param {Level}
+ */
+function setupLevel(level) {
+    // create a "Level Entity" that will control the music and etc...
+    const levelEntity = new Entity('level', null, false);
+    levelEntity.registerTrait(new LevelTimer(level.getProp("time")));
+    
+    level.addEntity(levelEntity);
+
+    // start the music
+    level.addListener(LevelTimer.EVENT_TIMER_OK, () => {
+        level.getMusicController().playThemeMain();
+    });
+    level.addListener(LevelTimer.EVENT_TIMER_HURRY, () => {
+        level.getMusicController().playThemeHurry();
+    });
+}
 
 // in order to get the 'entityFactory' from main.js will wrap 'loadLevel' in
 // another function that creates it
@@ -149,7 +170,9 @@ export function createLoadLevel(entityFactory) {
                 // create and add the entity layer
                 level.addLayer(createEntitiesLayer(level));
 
-                level.setMusicPlayer(musicPlayer);
+                level.setMusicController(new MusicController(musicPlayer));
+
+                setupLevel(level);
 
                 return level;
             });

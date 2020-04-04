@@ -23,7 +23,7 @@ export class AudioBoard {
             audioSource.buffer = buffer;
             audioSource.connect(audioContext.destination);
 
-            audioSource.start(0);
+            // audioSource.start(0);
         }
     }
 

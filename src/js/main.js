@@ -54,11 +54,14 @@ async function main(canvas) {
     }
 
     // FIXME: temporary this is here
-    createPlayer(mario);
-    const playerEnv = createPlayerEnvironment(mario, level);
+    const player = createPlayer(mario);
+    level.addEntity(player);
+
+    // FIXME: will be removed 
+    level.addEntity(createPlayerEnvironment(player));
 
     const font = await loadFont();
-    level.addLayer(createDashboardLayer(font, playerEnv, level));
+    level.addLayer(createDashboardLayer(font, level));
 
     // the game context that will hold different properties
     const gameContext = {
@@ -83,9 +86,10 @@ async function main(canvas) {
     };
 
     timer.start();
-
-    // level.getMusicPlayer().play('main');
 }
 
 const canvas = document.getElementById("screen");
-main(canvas);
+
+window.addEventListener('click', () => {
+    main(canvas);
+}, {once: true});
