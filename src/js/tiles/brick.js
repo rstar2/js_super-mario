@@ -42,8 +42,6 @@ function handleY({entity, match, tileResolver, gameContext, level}) {
                 level.addEntity(goomba);
             }
 
-
-
             entity.obstructedBy(match, Entity.COLLIDE_TOP);
         }
     }

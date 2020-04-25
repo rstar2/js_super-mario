@@ -199,7 +199,8 @@ export class Entity {
     }
 
     finalize() {
-        this._eventBuffer.emit(Trait.EVENT_TASK);
+        // call all queded task and pass the current Entity instance
+        this._eventBuffer.emit(Trait.EVENT_TASK, this);
 
         this._traits.forEach(trait => trait.finalize(this._eventBuffer));
 

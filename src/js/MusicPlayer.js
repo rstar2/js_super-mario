@@ -36,7 +36,7 @@ export class MusicPlayer {
             if (onEnd) {
                 audio.addEventListener('ended', onEnd, { once : true });
             }
-            // audio.play();
+            audio.play();
         } else {
             // eslint-disable-next-line no-console
             console.error('No track with name', name);

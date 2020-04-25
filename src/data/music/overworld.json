@@ -5,6 +5,10 @@
     },
     "hurry": {
        "url" : "audio/music/hurry.ogg"
-    }
+    },
+
+    "silence": {
+        "url" : ""
+     }
 }
 

@@ -40,8 +40,8 @@ export function createDashboardLayer(font, level) {
         font.print('MARIO', context, 16, LINE1);
         font.print(pad(playerTrait.score, 6), context, 16, LINE2);
 
-        // NOTE - the '@' and 'x' are replaced in the 'font.png'
-        // similar trick like font-icon
+        // NOTE - the '@' and 'x' are replaced in the 'font.png' - similar trick like font-icon
+        font.print('+x' + pad(playerTrait.lives, 2), context, 96, LINE1); // for testing of the lives
         font.print('@x' + pad(playerTrait.coins, 2), context, 96, LINE2);
 
         font.print('WORLD', context, 152, LINE1);
