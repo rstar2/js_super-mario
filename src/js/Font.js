@@ -3,18 +3,23 @@ export class Font {
     /**
      * 
      * @param {SpriteSheet} sprites 
-     * @param {Number} lineHeight 
      */
-    constructor(sprites, lineHeight) {
+    constructor(sprites) {
         this._sprites = sprites;
-        this._lineHeight = lineHeight;
     }
 
     /**
      * @returns {Number}
      */
-    get lineHeight() {
-        return this._lineHeight;
+    get tileWidth() {
+        return this._sprites.tileWidth;
+    }
+    
+    /**
+     * @returns {Number}
+     */
+    get tileHeight() {
+        return this._sprites.tileHeight;
     }
 
     /**

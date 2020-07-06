@@ -1,29 +1,57 @@
+import { KeyboardManager } from "./KeyboardManager.js";
+
 // constants for the keyboard control - these are keyCode 
 const KEY_LEFT = 65;     // A
 const KEY_RIGHT = 68;    // D
 const KEY_TURBO = 79;    // O
 const KEY_JUMP = 80;     // P
 
+
 /**
  * 
- * @param {Entity} mario 
- * @param {KeyboardManager} keyboardManager 
+ * @param {Window} window 
  */
-export function setupMarioKeyboard(mario, keyboardManager) {
+export function setupMarioKeyboard(window) {
+    const keyboardManager = new KeyboardManager();
+    keyboardManager.start(window);
+
+    const receivers = new Set();
+    const notify = (callback) => {
+        receivers.forEach(entity => callback(entity));
+    };
+
     keyboardManager.register(KEY_JUMP, keyState => {
         if (keyState) {
-            mario.jump.start();
+            notify(entity => entity.jump.start());
         } else {
-            mario.jump.cancel();
+            notify(entity => entity.jump.cancel());
         }
     });
     keyboardManager.register(KEY_LEFT, keyState => {
-        mario.walk.left(!!keyState);
+        notify(entity => entity.walk.left(!!keyState));
     });
     keyboardManager.register(KEY_RIGHT, keyState => {
-        mario.walk.right(!!keyState);
+        notify(entity => entity.walk.right(!!keyState));
     });
     keyboardManager.register(KEY_TURBO, keyState => {
-        mario.walk.turbo(!!keyState);
+        notify(entity => entity.walk.turbo(!!keyState));
     });
+
+    return {
+        /**
+         * Callback must be with 
+         * @param {Entity} receiver 
+         */
+        addReceiver(receiver) {
+            receivers.add(receiver);
+        },
+
+        /**
+         * 
+         * @param {Entity} receiver 
+         */
+        removeReceiver(receiver) {
+            receivers.delete(receiver);
+        }
+    };
 }

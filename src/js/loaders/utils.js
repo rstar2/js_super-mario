@@ -18,6 +18,14 @@ export function loadDataLevel(name) {
  * @param {String} name
  * @return {Promise<Object>}
  */
+export function loadDataPatterns(name) {
+    return loadData(`sprites/patterns/${name}`);
+}
+
+/**
+ * @param {String} name
+ * @return {Promise<Object>}
+ */
 export function loadDataSounds(name) {
     return loadData(`sounds/${name}`);
 }

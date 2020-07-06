@@ -11,6 +11,7 @@ export function createPlayerEnvironment(player) {
     // create a fictitious entity
     const playerEnv = new Entity();
     playerEnv.draw = () => {};
+    player.pos.set(64,64);
     playerEnv.registerTrait(new BePlayerControl(player));
     return playerEnv;
 }

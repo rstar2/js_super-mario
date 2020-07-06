@@ -4,12 +4,13 @@ import { Level } from '../Level.js';
 import { Matrix } from '../math.js';
 import { createBackgroundLayer } from '../layers/background.js';
 import { createEntitiesLayer } from '../layers/entities.js';
-import { loadDataLevel } from './utils.js';
+import { loadDataLevel, loadDataPatterns } from './utils.js';
 import { loadSprites } from './sprites.js';
 import { loadMusic } from './music.js';
 import { MusicController } from '../MusicController.js';
 import { Entity } from '../Entity.js';
 import { BeLevelTimerTrait as LevelTimer } from '../traits/BeLevelTimer.js';
+import { TriggerTrait } from '../traits/Trigger.js';
 
 function* expandSpan(xStart, xLen, yStart, yLen) {
     const xEnd = xStart + xLen;
@@ -49,7 +50,6 @@ function* expandRanges(ranges) {
         yield* expandRange(range);
     }
 }
-
 
 function* expandTiles(tiles, patterns) {
 
@@ -93,7 +93,7 @@ function createGrid(tiles, patterns) {
 }
 
 /**
- * @param {Level}
+ * @param {Level} level
  */
 function setupLevel(level) {
     // create a "Level Entity" that will control the music and etc...
@@ -101,6 +101,14 @@ function setupLevel(level) {
     levelEntity.registerTrait(new LevelTimer(level.getProp("time")));
     
     level.addEntity(levelEntity);
+}
+
+/**
+ * @param {Level} level
+ * @param {MusicController} musicPlayer
+ */
+function setupMusic(level, musicPlayer) {
+    level.setMusicController(new MusicController(musicPlayer));
 
     // start the music
     level.addListener(LevelTimer.EVENT_TIMER_OK, () => {
@@ -109,6 +117,30 @@ function setupLevel(level) {
     level.addListener(LevelTimer.EVENT_TIMER_HURRY, () => {
         level.getMusicController().playThemeHurry();
     });
+}
+
+/**
+ * @param {Level} level
+ * @param {[]} triggerSpecs
+ */
+function setupTriggers(level, triggerSpecs) {
+    for (const triggerSpec of triggerSpecs) {
+        const triggerEntity = new Entity('trigger', null, false);
+        level.addEntity(triggerEntity);
+
+        const triggerTrait = new TriggerTrait();
+
+        triggerTrait.addTrigger((entity, touches) => {
+            level.emit(Level.EVENT_TRIGGER, triggerSpec, entity, touches);
+        });
+
+        triggerEntity.registerTrait(triggerTrait);
+        triggerEntity.pos.set(triggerSpec.pos[0], triggerSpec.pos[1]);
+
+        // TODO - set in triggerSpec
+        triggerEntity.size.set(64, 64);
+    }
+    
 }
 
 // in order to get the 'entityFactory' from main.js will wrap 'loadLevel' in
@@ -124,10 +156,11 @@ export function createLoadLevel(entityFactory) {
      */
     function loadLevel(name) {
         return loadDataLevel(name).
-            then(levelSpec => Promise.all([levelSpec, loadSprites(levelSpec.sprites), loadMusic(levelSpec.music)])).
-            then(([levelSpec, backgroundSprites, musicPlayer]) => {
+            then(levelSpec => Promise.all([levelSpec, loadDataPatterns(levelSpec.patterns),
+                loadSprites(levelSpec.sprites), loadMusic(levelSpec.music)])).
+            then(([levelSpec, patterns, sprites, musicPlayer]) => {
                 // parse the level's background tiles, entities and other props
-                const { layers, patterns, entities, props } = levelSpec;
+                const { layers, entities, props, triggers } = levelSpec;
 
                 // TODO: tileSize should be get from the backgroundSprites.getWidth()/getHeight()
                 const tileSize = 16;
@@ -145,14 +178,13 @@ export function createLoadLevel(entityFactory) {
                     maxY = Math.max(maxY, y);
                 });
 
-
                 // create the level
                 const level = new Level(name, maxX * tileSize, maxY * tileSize, props);
                 
                 // create all background layers - the drawing ones
                 layers.forEach(layerSpec => {
                     const tilesGrid = createGrid(layerSpec.tiles, patterns);
-                    level.addLayer(createBackgroundLayer(level, tilesGrid, tileSize, backgroundSprites));
+                    level.addLayer(createBackgroundLayer(level, tilesGrid, tileSize, sprites));
                     level.getTileCollider().addTilesGrid(tilesGrid, tileSize);
                 });
 
@@ -167,12 +199,17 @@ export function createLoadLevel(entityFactory) {
                     entity.pos.set(x, y);
                 });
 
+
+                if (triggers) {
+                    setupTriggers(level, triggers);
+                }
+
                 // create and add the entity layer
                 level.addLayer(createEntitiesLayer(level));
 
-                level.setMusicController(new MusicController(musicPlayer));
-
                 setupLevel(level);
+
+                setupMusic(level, musicPlayer);
 
                 return level;
             });

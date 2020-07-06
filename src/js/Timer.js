@@ -1,16 +1,18 @@
 export class Timer {
     constructor(rate = 1 / 60) {
         this._rate = rate;
-        this._lastTime = 0;
+        this._lastTime = null;
         this._accumulatedTime = 0;
     }
 
     _updateProxy(time) {
-        this._accumulatedTime += (time - this._lastTime) / 1000;
+        if (this._lastTime) {
+            this._accumulatedTime += (time - this._lastTime) / 1000;
 
-        // temporary fix for not updating so often
-        if (this._accumulatedTime > 1) {
-            this._accumulatedTime = 1;
+            // temporary fix for not updating so often
+            if (this._accumulatedTime > 1) {
+                this._accumulatedTime = 1;
+            }
         }
 
         while (this._accumulatedTime > this._rate) {

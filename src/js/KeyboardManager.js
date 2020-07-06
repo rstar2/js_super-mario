@@ -14,6 +14,10 @@ export class KeyboardManager {
         this._started = false;
     }
 
+    /**
+     * 
+     * @param {Window} window 
+     */
     start(window) {
         if (this._started) {
             logger.logWarn("KeyboardManager is already started");
@@ -29,6 +33,11 @@ export class KeyboardManager {
         });
     }
 
+    /**
+     * 
+     * @param {Number} key 
+     * @param {Function} callback 
+     */
     register(key, callback) {
         this._keyMap.set(key, callback);
         // this._keyState.set(key, KEY_STATE_RELEASED);

@@ -1,5 +1,5 @@
-import * as logger from '../logger.js';
 import { generatePlayer } from '../player.js';
+import { Trait } from '../Trait.js';
 
 function pad(number, len = 6) {
     return ('' + Math.floor(number)).padStart(len, '0');
@@ -7,26 +7,32 @@ function pad(number, len = 6) {
 
 /**
  * @param {Level} level 
- * @returns {Entity} 
+ * @returns {Trait} 
  */
 function getPlayerTrait(level) {
     for (const player of generatePlayer(level)) {
         return player.player;
     }
+    throw new Error('No player entity');
 }
 
+/**
+ * @param {Level} level 
+ * @returns {Trait} 
+ */
 function getLevelTimerTrait(level) {
     for (const entity of level.generateEntity()) {
         // check if the entity has the "player" trait
         if (entity.levelTimer)
             return entity.levelTimer;
     }
+    throw new Error('No entity with LeverTimer trait');
 }
 
 export function createDashboardLayer(font, level) {
 
-    const LINE1 = font.lineHeight;
-    const LINE2 = font.lineHeight * 2;
+    const LINE1 = font.tileHeight;
+    const LINE2 = font.tileHeight * 2;
 
     const levelTimerTrait = getLevelTimerTrait(level);
     const playerTrait = getPlayerTrait(level);

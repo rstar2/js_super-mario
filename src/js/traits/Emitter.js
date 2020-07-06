@@ -3,7 +3,7 @@ import { Trait } from '../Trait.js';
 export class EmitterTrait extends Trait {
     /**
      * 
-     * @param {Number} interval 
+     * @param {Number} interval (secs)
      */
     constructor(interval = 2) {
         super('emitter');
@@ -28,7 +28,6 @@ export class EmitterTrait extends Trait {
         this._funcs.push(func);
     }
 
-    /**
     /**
      * @param {Entity} entity
      * @param {{rate: Number, audioContext: AudioContext}} gameContext

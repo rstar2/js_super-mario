@@ -3,6 +3,10 @@ body {
     margin: 0;
 }
 
+#startInfo {
+    color: wheat;
+}
+
 #screen {
     /* make it as the hight of the body */
     height: 100vh;

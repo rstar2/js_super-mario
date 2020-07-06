@@ -1,11 +1,27 @@
-import { LayerManager } from './LayerManager.js';
+import { Scene } from './Scene.js';
 import { TileCollider } from './tiles/TileCollider.js';
 import { EntityCollider } from './EntityCollider.js';
-import { EventEmitter } from './EventEmitter.js';
+import { Camera } from './Camera.js';
+import { CONFIG } from './config.js';
+import { generatePlayer } from './player.js';
 
 const PROPS_DEFAULT = { gravity: 0, time: 300 };
 
-export class Level {
+/**
+ * 
+ * @param {Level} level 
+ */
+function focusPlayer(level) {
+    for (const player of generatePlayer(level)) {
+        // move the camera/view together with Mario
+        level._camera.pos.x = Math.max(0, player.pos.x - 100);
+    }
+}
+
+export class Level extends Scene {
+    
+    static EVENT_TRIGGER = Symbol('trigger');
+
     /**
      * 
      * @param {String} name 
@@ -14,19 +30,18 @@ export class Level {
      * @param {{gravity:Number, time:Number, ...}} props 
      */
     constructor(name, width, height, props = {}) {
-        this.NAME = name;
+        super(name);
         this._tileCollider = new TileCollider();
-        this._layerManager = new LayerManager();
         this._entities = new Set();
 
         this._entityCollider = new EntityCollider(this._entities);
 
         this._props = { ...PROPS_DEFAULT, ...props };
 
+        this._camera = new Camera(CONFIG.VIEW_WIDTH, CONFIG.VIEW_HEIGHT);
+
         this._width = width;
         this._height = height;
-
-        this._eventEmitter = new EventEmitter();
 
         // total increasing time
         this._totalTime = 0;
@@ -35,24 +50,6 @@ export class Level {
          * @type {MusicController}
          */
         this._musicController = null;
-    }
-
-    /**
-     * 
-     * @param {String} name 
-     * @param {Function} listener 
-     */
-    addListener(name, listener) {
-        this._eventEmitter.add(name, listener);
-    }
-
-    /**
-     * 
-     * @param {String} name 
-     * @param {any} args 
-     */
-    emit(name, ...args) {
-        this._eventEmitter.emit(name, ...args);
     }
 
     /**
@@ -74,13 +71,6 @@ export class Level {
      */
     getTileCollider() {
         return this._tileCollider;
-    }
-
-    /**
-     * @param {(context: CanvasRenderingContext2D, view: View) => void} layer 
-     */
-    addLayer(layer) {
-        this._layerManager.add(layer);
     }
 
     /**
@@ -121,10 +111,6 @@ export class Level {
      */
     hasEntity(entity) {
         return this._entities.has(entity);
-    }
-
-    getMario() {
-        return [...this._entities].find(entity => entity.NAME === 'mario');
     }
 
     /**
@@ -181,14 +167,20 @@ export class Level {
         this._entities.forEach(entity => entity.finalize());
 
         this._totalTime += rate;
+
+        focusPlayer(this);
     }
 
     /**
-     * @param {CanvasRenderingContext2D} context 
-     * @param {View} view 
+     * @param {GameContext} gameContext
      */
-    draw(context, view) {
-        this._layerManager.draw(context, view);
+    draw(gameContext) {
+        this._layerManager.draw(gameContext.videoContext, this._camera);
+    }
+
+    pause() {
+        super.pause();
+        this._musicController.pause();
     }
 
 }

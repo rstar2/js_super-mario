@@ -18,9 +18,8 @@ const HOLD_SHOOT_THRESHOLD = 30;
  * return a synchronous create function
  * @param {SpriteSheet} sprites
  * @param {AudioBoard} audioBoard
- * @param {{[factory]: Function}} entityFactories
  */
-function createCannonFactory({audioBoard, entityFactories}) {
+function createCannonFactory({audioBoard}) {
 
     return function cannon() {
         const cannon = new Entity('cannon', audioBoard, false);
@@ -47,7 +46,7 @@ function createCannonFactory({audioBoard, entityFactories}) {
 
             cannon.sound('shoot');
             
-            const bullet = entityFactories.bullet();
+            const bullet = gameContext.entityFactory.bullet();
             bullet.pos.set(cannon.pos.x, cannon.pos.y);
             bullet.vel.x = direction * bullet.vel.x;
             

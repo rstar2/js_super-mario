@@ -8,9 +8,7 @@ export class MusicController {
     }
 
     playThemeMain(speed = 1) {
-        // this._musicPlayer.play('main', { speed });
-
-        this._musicPlayer.play('silence', { speed });
+        this._musicPlayer.play('main', { speed });
     }
 
     playThemeHurry() {
@@ -20,5 +18,9 @@ export class MusicController {
                 this.playThemeMain(1.3);
             }
         });
+    }
+
+    pause() {
+        this._musicPlayer.pause();
     }
 }

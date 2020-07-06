@@ -1,12 +1,10 @@
 import * as logger from '../logger.js';
 
 /**
- * @param {Level} level
+ * @param {TileResolver} tileResolver
  * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
  */
-export function createDebugTileCollisionLayer(level) {
-    // TODO:
-    const tileResolvers = level.getTileCollider().getTileResolvers();
+function createDebugTileCollisionLayer(tileResolver) {
     const tileSize = tileResolver.getTileSize();
 
     const collisionTiles = [];
@@ -37,6 +35,23 @@ export function createDebugTileCollisionLayer(level) {
  * @param {Level} level
  * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
  */
+export function createDebugTileCollisionsLayer(level) {
+    const tileResolvers = level.getTileCollider().getTileResolvers();
+
+    const tileResolversLayers = tileResolvers.map(createDebugTileCollisionLayer);
+
+    return function (context, view) {
+        logger.logDbg("Debug tile-collision layers");
+
+        tileResolversLayers.forEach(draw => draw(context, view));
+    };
+    
+}
+
+/**
+ * @param {Level} level
+ * @returns {(context: CanvasRenderingContext2D, view: View) => void} 
+ */
 export function createDebugEntityLayer(level) {
     return function (context, view) {
         logger.logDbg("Debug entity layer");
@@ -56,14 +71,14 @@ export function createDebugEntityLayer(level) {
 }
 
 /**
- * @param {View} view
+ * TODO: Fix this as currently its useless
  * @returns {(context: CanvasRenderingContext2D, view: View) => void}
  */
-export function createDebugViewLayer(viewToDraw) {
+export function createDebugViewLayer() {
     return function (context, view) {
         context.strokeStyle = 'purple';
         context.beginPath();
-        context.rect(viewToDraw.pos.x - view.pos.x, viewToDraw.pos.y - view.pos.y,
+        context.rect(view.pos.x - view.pos.x, view.pos.y - view.pos.y,
             view.size.x, view.size.y);
         context.stroke();
     };

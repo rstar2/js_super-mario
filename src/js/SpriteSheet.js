@@ -98,5 +98,13 @@ export class SpriteSheet {
         return this._animations.has(tile);
     }
 
+    get tileWidth() {
+        return this._tileWidth;
+    }
+    
+    get tileHeight() {
+        return this._tileHeight;
+    }
+
 }
 
