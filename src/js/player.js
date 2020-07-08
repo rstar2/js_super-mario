@@ -17,11 +17,12 @@ export function createPlayerEnvironment(player) {
 }
 
 /**
- * @param {Entity} player
+ * @param {Entity} entity
+ * @param {String} name
  */
-export function createPlayer(player) {
-    player.registerTrait(new BePlayer());
-    return player;
+export function makePlayer(entity, name) {
+    entity.registerTrait(new BePlayer(name));
+    return entity;
 }
 
 /**

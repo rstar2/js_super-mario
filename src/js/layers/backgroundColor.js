@@ -1,3 +1,6 @@
+/**
+ * @param {String} color
+ */
 export function createBackgroundColorLayer(color) {
     /**
      * @param {CanvasRenderingContext2D} context

@@ -47,7 +47,7 @@ export class Scene {
      * @param {GameContext} gameContext
      */
     update(gameContext) {
-        throw new Error('Abstract method "update');
+        // do nothing by default
     }
 
     /**

@@ -13,8 +13,10 @@ import {
 import { createDashboardLayer } from "./layers/dashboard.js";
 import { createPlayerProgressLayer } from "./layers/playerProgress.js";
 import { createBackgroundColorLayer } from "./layers/backgroundColor.js";
-import { createPlayer, createPlayerEnvironment } from "./player.js";
+import { createTextLayer } from "./layers/text.js";
+import { makePlayer, createPlayerEnvironment } from "./player.js";
 import { Level } from "./Level.js";
+import { Scene } from "./Scene.js";
 import { SceneRunner } from "./SceneRunner.js";
 import { ProgressScene } from "./ProgressScene.js";
 
@@ -33,17 +35,23 @@ async function main(canvas) {
     const entityFactory = await loadEntities(audioContext);
     const font = await loadFont();
 
-    const mario = entityFactory.mario();
+    const player = makePlayer(entityFactory.mario(), 'MARIO');
 
     // setup the keyboard actions for Mario
     // adn start the keyboard manager
     const keyboard = setupMarioKeyboard(window);
-    keyboard.addReceiver(mario);
+    keyboard.addReceiver(player);
 
     const loadLevel = createLoadLevel(entityFactory);
 
-
     async function runLevel(name) {
+        const loadingScene = new Scene('loading');
+        loadingScene.addLayer(createTextLayer(font, `Loading level ${name}...`));
+        sceneRunner.addScene(loadingScene);
+        // this will show immediately the "loading" scene , but it will not show the 'level' scene
+        // until "await loadLevel()" completes
+        sceneRunner.next();
+
         const level = await loadLevel(name);
 
         level.addListener(Level.EVENT_TRIGGER, (triggerSpec, entity, touches) => {
@@ -62,7 +70,7 @@ async function main(canvas) {
 
         // DEBUG: add Mario easy replacement if needed
         if (CONFIG.DEBUG_MARIO) {
-            setupMouseControl(mario, canvas, level);
+            setupMouseControl(player, canvas, level);
         }
 
         // DEBUG: add visual collisions if needed
@@ -75,8 +83,6 @@ async function main(canvas) {
             level.addLayer(createDebugViewLayer());
         }
 
-        // FIXME: temporary this is here
-        const player = createPlayer(mario);
         level.addEntity(player);
 
         // FIXME: will be removed 
@@ -115,7 +121,7 @@ async function main(canvas) {
 
     timer.start();
 
-    runLevel('debug-progression');
+    runLevel('1-1');
 }
 
 const canvas = document.getElementById("screen");

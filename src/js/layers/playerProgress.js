@@ -15,6 +15,10 @@ function getPlayer(level) {
     throw new Error('No player entity');
 }
 
+/**
+ * @param {Font} font
+ * @param {Level} level
+ */
 export function createPlayerProgressLayer(font, level) {
 
     const tileWidth = font.tileWidth;

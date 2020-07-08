@@ -29,6 +29,10 @@ function getLevelTimerTrait(level) {
     throw new Error('No entity with LeverTimer trait');
 }
 
+/**
+ * @param {Font} font
+ * @param {Level} level
+ */
 export function createDashboardLayer(font, level) {
 
     const LINE1 = font.tileHeight;
@@ -43,7 +47,7 @@ export function createDashboardLayer(font, level) {
     return function (context) {
         // logger.logDbg("Dashboard layer");
 
-        font.print('MARIO', context, 16, LINE1);
+        font.print(playerTrait.name, context, 16, LINE1);
         font.print(pad(playerTrait.score, 6), context, 16, LINE2);
 
         // NOTE - the '@' and 'x' are replaced in the 'font.png' - similar trick like font-icon

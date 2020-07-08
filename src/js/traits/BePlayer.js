@@ -4,8 +4,14 @@ import { BeStomperTrait } from "../traits/BeStomper.js";
 const EXTRA_LIFE_COINS = 1000;
 
 export class BePlayerTrait extends Trait {
-    constructor() {
+    /**
+     * 
+     * @param {String} name name of the player
+     */
+    constructor(name) {
         super("player", true);
+
+        this._name = name;
         this._score = 0;
         this._coins = 0;
         this._lives = 3;
@@ -15,22 +21,29 @@ export class BePlayerTrait extends Trait {
     }
 
     /**
-   * @returns {Number}
-   */
+     * @returns {String}
+     */
+    get name() {
+        return this._name;
+    }
+    
+    /**
+     * @returns {Number}
+     */
     get score() {
         return this._score;
     }
 
     /**
-   * @returns {Number}
-   */
+     * @returns {Number}
+     */
     get coins() {
         return this._coins;
     }
 
     /**
-   * @returns {Number}
-   */
+     * @returns {Number}
+     */
     get lives() {
         return this._lives;
     }

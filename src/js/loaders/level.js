@@ -125,14 +125,15 @@ function setupMusic(level, musicPlayer) {
  */
 function setupTriggers(level, triggerSpecs) {
     for (const triggerSpec of triggerSpecs) {
-        const triggerEntity = new Entity('trigger', null, false);
-        level.addEntity(triggerEntity);
-
+        
         const triggerTrait = new TriggerTrait();
 
         triggerTrait.addTrigger((entity, touches) => {
             level.emit(Level.EVENT_TRIGGER, triggerSpec, entity, touches);
         });
+
+        const triggerEntity = new Entity('trigger', null, false);
+        level.addEntity(triggerEntity);
 
         triggerEntity.registerTrait(triggerTrait);
         triggerEntity.pos.set(triggerSpec.pos[0], triggerSpec.pos[1]);
